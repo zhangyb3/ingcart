@@ -1,0 +1,22 @@
+
+<view class="container">
+    
+    <view class="action">
+        
+        <view class="action-input">
+            <input class="phone_number_input" bindinput="phoneNumberInput" type="number" placeholder="请输入手机号码" />
+
+            <view class="verification_container">
+              <input class="verification_code_input" bindinput="verificationCodeInput" type="number" placeholder="验证码" />
+              <view class="verification_button">
+                <button disabled="{{lock_countdown}}" class="send_verification_code_button" bindtap="sendVerificationCode">{{countdownText}}</button>
+              </view>
+            </view>  
+
+        </view>
+        <view class="action-submit">
+            <button class="submit-btn"  loading="{{loading}}"  >提交</button>
+        </view>
+    </view>
+</view>
+

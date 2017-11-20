@@ -1,0 +1,24 @@
+
+<view class="container">
+    <view class="choose">
+        <view class="title">请选择故障类型</view> 
+        <checkbox-group bindchange="checkboxChange" class="choose-grids">
+            <block wx:for="{{itemsValue}}" wx:key="{{item}}">
+                <view class="grid">
+                    <checkbox value="{{item.value}}" checked="{{item.checked}}" color="{{item.color}}" />{{item.value}}
+                </view>
+            </block>
+        </checkbox-group>        
+    </view>
+    <view class="action">
+        
+        <view class="action-input">
+            <input bindinput="numberChange" name="number" placeholder="车牌号（车牌损坏不用填）" />
+            <input bindinput="descChange" name="desc" placeholder="备注" />            
+        </view>
+        <view class="action-submit">
+            <button class="submit-btn"  loading="{{loading}}"  >提交</button>
+        </view>
+    </view>
+</view>
+

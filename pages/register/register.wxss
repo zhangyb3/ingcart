@@ -1,0 +1,58 @@
+
+
+.action .action-input{
+	padding-left: 50rpx;
+	margin-top: 30rpx;
+  text-align: center;
+  
+}
+
+.phone_number_input{
+	width: 90%;
+  border-bottom: 2rpx solid #ccc;
+	padding-top: 40rpx;
+	padding-bottom: 40rpx;
+}
+
+.action .action-submit{
+	padding: 40rpx 40rpx;
+	background-color: #ffffff;
+}
+
+.verification_container{
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 2rpx solid #ccc;
+}
+
+.verification_code_input{
+  width: 50%;
+  text-align: center;
+  padding-top: 40rpx;
+	padding-bottom: 40rpx;
+  
+}
+
+.verification_button{
+  width: 50%;
+  height: 100%;
+}
+
+.send_verification_code_button{
+  height: 100%;
+  font-size: 28rpx;
+  padding-top: 0rpx;
+	padding-bottom: 0rpx;
+  border: none;
+  background-color: #ffffff;
+}
+
+.submit-btn{
+  background-color: yellow;
+}
+
+.submit-btn:active{
+  background-color: gray;
+}

@@ -1,0 +1,19 @@
+{
+  "pages":[
+    "pages/index/index",
+    "pages/maintenance/call",
+    "pages/scanresult/index",
+    "pages/bill/list",
+    "pages/my/display",
+    "pages/wallet/total",
+    "pages/wallet/charge",
+    "pages/register/register",
+    "pages/logs/logs"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "yellow",
+    "navigationBarTitleText": "共享车",
+    "navigationBarTextStyle":"black"
+  }
+}
