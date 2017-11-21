@@ -3,7 +3,7 @@ var config = require('./config')
 var user = require('./user')
 var app = getApp();
 
-const CHECK_REGISTER_URL = `${config.PytheRestfulServerURL}/user/login/prepare`;//校验是否注册
+const CHECK_REGISTER_URL = `${config.PytheRestfulServerURL}/customer/register/check`;//校验是否注册
 
 const SEND_PHONENUM_REGISTER_URL = `${config.PytheRestfulServerURL}/message/verification/`;//发送手机号注册
 
@@ -16,9 +16,9 @@ var checkRegister = (success,fail) => {
       data: {
         // SessionID: wx.getStorageSync(user.SessionID),
         openId : wx.getStorageSync(user.OpenID),
-        
+        unionId: wx.getStorageSync(user.UnionID),
       },
-      method: 'GET', 
+      method: 'POST', 
       success: function(res){
         typeof success == "function" && success(res)
       },
@@ -58,45 +58,17 @@ function sendVerificationCode(registerPhonenumber)
 function commitRegister(the)
 {
   var that = the;
-  if (that.data.registerParams.status == 0 && that.data.registerParams.gradeId == null) {
-    wx.showModal({
-      title: '提示',
-      content: '年级必填',
-      success: function (res) {
-        if (res.confirm) {
-          console.log('用户点击确定')
-        }
-      }
-    });
-  }
-  else if (that.data.registerParams.status == 1 && that.data.registerParams.subjectId == null) {
-    wx.showModal({
-      title: '提示',
-      content: '科目必填',
-      success: function (res) {
-        if (res.confirm) {
-          console.log('用户点击确定')
-        }
-      }
-    });
-  }
-  else if ((that.data.registerParams.status == 1 && that.data.registerParams.subjectId != null) || (that.data.registerParams.status == 0 && that.data.registerParams.gradeId != null)) {
-    //注册
-    that.setData({
-      lock_register: true,
-    });
+  
 
     wx.request({
-      url: config.PytheRestfulServerURL + '/user/register/',
+      url: config.PytheRestfulServerURL + '/customer/register/',
       data: {
-        status: that.data.registerParams.status,
-        userName: wx.getStorageSync('wxNickName'),
+        
+        name: wx.getStorageSync('wxNickName'),
         phoneNum: wx.getStorageSync('registerPhoneNum'),
         verificationCode: wx.getStorageSync('verificationCode'),
-        gradeId: that.data.registerParams.gradeId,
-        subjectId: that.data.registerParams.subjectId,
+        
         openId: wx.getStorageSync(user.OpenID),
-        userImg: wx.getStorageSync('avatarUrl'),
         unionId: wx.getStorageSync(user.UnionID),
       },
       method: 'POST',
@@ -158,7 +130,7 @@ function commitRegister(the)
       },
 
     });
-  }
+  
 }
 
 function loadRegisterSelections(the)

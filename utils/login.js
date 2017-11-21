@@ -4,7 +4,7 @@ var register = require('./register')
 var util = require("./util");
 var WXBizDataCrypt = require('./decode.js');
 
-const LOGIN_URL = `${config.PytheRestfulServerURL}/user/login/request`;//登录服务
+const LOGIN_URL = `${config.PytheRestfulServerURL}/wxSession/request`;//登录服务
 const FULL_USER_INFO_URL = `${config.PytheRestfulServerURL}/user/userInfo`;//获取unionid并保存在服务端
 const CHECK_LOGIN_URL = `${config.PytheRestfulServerURL}/user/login/session`;//校验是否登录
 const CHECK_REGISTER_URL = `${config.PytheRestfulServerURL}/user/register/is`;//校验是否注册

@@ -68,6 +68,9 @@ Page({
     console.log(e.detail.value);
     wx.setStorageSync('verificationCode', verificationCode);
   },
+  customerRegister:function(e){
+    register.commitRegister(this);
+  },
 
   /**
    * 生命周期函数--监听页面隐藏
