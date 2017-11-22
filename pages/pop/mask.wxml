@@ -1,0 +1,15 @@
+
+
+<template name="register_lock_mask">
+
+   
+    
+    
+    
+    <!-- 遮罩 -->
+    <view class="register_lock_mask"  ></view>
+    
+
+
+
+</template>

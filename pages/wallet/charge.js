@@ -1,7 +1,9 @@
 // pages/charge/index.js
 Page({
   data:{
-    inputValue: 0
+    inputValue: 0,
+
+    selectAmount: 0
   },
 // 页面加载
   onLoad:function(options){
@@ -9,6 +11,24 @@ Page({
       title: '充值'
     })
   },
+
+  onShow:function(){
+    this.setData({
+      selectAmount: this.data.selectAmount,
+    });
+  },
+
+  selectChargeAmount:function(res){
+    console.log(res.currentTarget);
+    var chargeAmount = res.currentTarget.dataset.charge_amount;
+
+    //充值流程
+
+    this.setData({
+      selectAmount: chargeAmount,
+    });
+  },
+
 // 存储输入的充值金额
   bindInput: function(res){
     this.setData({

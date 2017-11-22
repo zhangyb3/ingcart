@@ -1,16 +1,44 @@
 <!--pages/my/index.wxml-->
 <view class="container">
     <view class="user-info">
-    <block wx:if="{{userInfo.avatarUrl != ''}}">
-        <image src="{{userInfo.avatarUrl}}"></image>
+    <block wx:if="{{avatarUrl != null}}">
+        <image src="{{avatarUrl}}"></image>
     </block>
-        <text>{{userInfo.nickName}}</text>
+        <text>{{wxNickName}}</text>
     </view>
-    <block wx:if="{{userInfo.avatarUrl != ''}}">
-    <view class="my-wallet tapbar" bindtap="movetoWallet">
-        <text>我的钱包</text>
-        <text>></text>
+    
+    
+
+    <view class="line_item_container" bindtap="toWallet">
+      <view class="line_item">
+        <view class="line_include_item_container account_name">
+          <text>余额</text>
+        </view>
+        <view class="line_include_item_container account_amount">
+          <text>{{account.amount}}元</text>
+        </view>
+        <view class="line_include_item_container account_operation">
+          <image src="../../images/to_charge.jpg"></image>
+        </view>
+      </view>
+      <view class="split_line"></view>
     </view>
-    </block>
-    <button bindtap="bindAction" class="btn-login" hover-class="gray" type="{{bType}}" >{{actionText}}</button>
+
+    <view class="line_item_container" bindtap="toCard">
+      <view class="line_item">
+        <view class="line_include_item_container card_name">
+          <text >卡券</text>
+        </view>
+        <view class="line_include_item_container card_quantity">
+          <text>{{cardQuantity}}张</text>
+        </view>
+        <view class="line_include_item_container card_operation">
+          <text>></text>
+        </view>
+      </view>
+      
+    </view>
+
+
+    <button bindtap="loginORlogout" class="switchID" >切换账号</button>
 </view>

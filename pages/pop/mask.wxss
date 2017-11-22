@@ -1,0 +1,10 @@
+.register_lock_mask {
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.01);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 99;
+    opacity: 1;
+}

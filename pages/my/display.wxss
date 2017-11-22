@@ -1,6 +1,11 @@
 /* pages/my/index.wxss */
+
+page{
+  background-color: lightgray;
+}
+
 .user-info{
-	background-color: #fff;
+	background-color: lightgray;
 	padding-top: 60rpx;
 }
 .user-info image{
@@ -12,18 +17,53 @@
 	box-shadow: 0 0 20rpx rgba(0,0,0,.2)
 }
 .user-info text{
+  
 	display: block;
 	text-align: center;
 	padding: 30rpx 0;
 	margin-bottom: 30rpx;
 }
-.btn-login{
+.switchID{
 	position: absolute;
-	bottom: 60rpx;
-	width: 90%;
-	left: 50%;
-	margin-left: -45%;
+	bottom: 0rpx;
+	width: 100%;
+	background-color: lightgray;
+  border: none;
 }
-.gray{
-	background-color: #ccc;
+
+.account_name{
+  width: 50%;
+  text-align: left;
 }
+
+.account_amount{
+  width: 20%;
+  text-align: right;
+}
+
+.account_operation{
+  width: 30%;
+  text-align: right;
+}
+
+.account_operation image{
+  width: 160rpx;
+  height: 60rpx;
+}
+
+.card_name{
+  width: 50%;
+  text-align: left;
+}
+
+.card_quantity{
+  width: 20%;
+  text-align: right;
+}
+
+.card_operation{
+  width: 30%;
+  text-align: right;
+}
+
+@import "../section/line_item.wxss";

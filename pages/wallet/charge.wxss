@@ -12,3 +12,20 @@
 	height: 100%;
 	text-align: center;
 }
+
+.choose_grids{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	padding: 50rpx;
+}
+
+.choose_item{
+  padding-top: 20rpx;
+  padding-bottom: 20rpx;
+}
+
+.charge_image{
+  width: 300rpx;
+  height: 100rpx;
+}

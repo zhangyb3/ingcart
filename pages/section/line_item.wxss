@@ -1,0 +1,28 @@
+
+.line_item_container{
+  width: 100%;
+
+  background-color: white;
+}
+
+.line_item{
+  width: 90%;
+  margin-left: 5%;
+  margin-right: 5%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.split_line{
+  width: 90%;
+  margin-left: 5%;
+  margin-right: 5%;
+  height: 1px;
+  background-color: lightgray;
+}
+
+.line_include_item_container{
+  padding-top: 40rpx;
+  padding-bottom: 40rpx;
+}
