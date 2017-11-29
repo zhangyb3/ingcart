@@ -1,23 +1,49 @@
 
 <view class="container">
+
+    <view class="call_maintenance">申报车辆故障</view>
+
+    <view class="maintenance_car_id_container" >
+      <view class="maintenance_scan_image_container" bindtap="scanFaultCar">
+        <image id="maintenance_scan_image" src="../../images/uses.png"></image>
+      </view>
+      <view class="maintenance_scan_car_id_container">
+        <view class="maintenance_car_id">
+          <input class="maintenance_car_id_input" value="{{maintenanceCarId}}" bindinput="carIdInput"/>
+        </view>
+        <view class="maintenance_scan_operation" bindtap="scanFaultCar">轻触左边按钮重新扫码或上方手动输入车号</view>
+      </view>
+    </view>
+
     <view class="choose">
-        <view class="title">请选择故障类型</view> 
+        
         <checkbox-group bindchange="checkboxChange" class="choose-grids">
-            <block wx:for="{{itemsValue}}" wx:key="{{item}}">
+            <block wx:for="{{checkboxItemsValue}}" wx:key="{{item}}">
                 <view class="grid">
                     <checkbox value="{{item.value}}" checked="{{item.checked}}" color="{{item.color}}" />{{item.value}}
                 </view>
             </block>
         </checkbox-group>        
     </view>
+
+     <view class="text_edit_textarea_container"  style="width:90%;margin-left:5%;">
+        <textarea class="text_edit_textarea" bindinput="getTextInput" maxlength="{{maxLength}}"  value='{{original}}' auto-height='true' placeholder="备注" placeholder-style="font-size: 12px;color:gray;" style="margin-left: 5%;padding-top: 20rpx;padding-bottom: 20rpx;"/>
+    </view>
+
+    <view style="height:20rpx;"></view>
+
+    <view class="words_countdown_container"  style="width:90%;margin-left:5%;">
+        <view class="words_countdown_text">还可输入{{wordsCountdown}}字</view>
+    </view>
+
+    <view style="height:20rpx;"></view>
+
+
     <view class="action">
         
-        <view class="action-input">
-            <input bindinput="numberChange" name="number" placeholder="车牌号（车牌损坏不用填）" />
-            <input bindinput="descChange" name="desc" placeholder="备注" />            
-        </view>
+       
         <view class="action-submit">
-            <button class="submit-btn"  loading="{{loading}}"  >提交</button>
+            <button class="submit-btn"  loading="{{loading}}" bindtap="submitFaults" >提交</button>
         </view>
     </view>
 </view>

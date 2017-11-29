@@ -2,16 +2,17 @@
 
 page{
   background-color: lightgray;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .user-info{
 	background-color: lightgray;
-	padding-top: 60rpx;
+	padding-top: 50rpx;
 }
 .user-info image{
 	display: block;
-	width: 180rpx;
-	height: 180rpx;
+	width: 150rpx;
+	height: 150rpx;
 	border-radius: 50%;
 	margin: 0 auto 40rpx;
 	box-shadow: 0 0 20rpx rgba(0,0,0,.2)
@@ -20,8 +21,8 @@ page{
   
 	display: block;
 	text-align: center;
-	padding: 30rpx 0;
-	margin-bottom: 30rpx;
+	padding: 20rpx 0;
+	margin-bottom: 20rpx;
 }
 .switchID{
 	position: absolute;

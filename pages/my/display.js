@@ -1,4 +1,8 @@
 
+var config = require("../../utils/config.js");
+var user = require("../../utils/user.js");
+var util = require("../../utils/util.js");
+
 Page({
   data:{
 
@@ -20,12 +24,37 @@ Page({
 
   onShow:function(){
 
-    this.setData({
-      avatarUrl: wx.getStorageSync("avatarUrl"),
-      wxNickName: wx.getStorageSync("wxNickName"),
-      account: this.data.account,
-      cardQuantity: this.data.cardQuantity,
-    });
+    var that = this;
+    wx.request({
+      url: config.PytheRestfulServerURL + '/customer/select',
+      data: {
+        customerId: wx.getStorageSync(user.CustomerID)
+      },
+      method: 'GET',
+      dataType: '',
+      success: function(res) {
+        console.log(res);
+        var info = res.data.data;
+        that.data.account = info;
+
+        
+      },
+      fail: function(res) {},
+      complete: function(res) {
+
+        var showPhoneNum = util.replaceStr(that.data.account.phoneNum,3,7,"····");
+        console.log(showPhoneNum);
+        that.setData({
+          avatarUrl: wx.getStorageSync("avatarUrl"),
+          wxNickName: wx.getStorageSync("wxNickName"),
+          showPhoneNum: showPhoneNum,
+          account: that.data.account,
+          cardQuantity: that.data.cardQuantity,
+        });
+      },
+    })
+
+    
 
   },
 

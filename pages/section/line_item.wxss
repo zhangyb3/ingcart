@@ -23,6 +23,6 @@
 }
 
 .line_include_item_container{
-  padding-top: 40rpx;
-  padding-bottom: 40rpx;
+  padding-top: 20rpx;
+  padding-bottom: 20rpx;
 }

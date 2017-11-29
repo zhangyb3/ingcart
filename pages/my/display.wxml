@@ -4,7 +4,7 @@
     <block wx:if="{{avatarUrl != null}}">
         <image src="{{avatarUrl}}"></image>
     </block>
-        <text>{{wxNickName}}</text>
+        <text>{{showPhoneNum}}</text>
     </view>
     
     
@@ -40,5 +40,6 @@
     </view>
 
 
-    <button bindtap="loginORlogout" class="switchID" >切换账号</button>
+    <!--<button bindtap="loginORlogout" class="switchID" >切换账号</button>-->
+    
 </view>

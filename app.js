@@ -25,6 +25,9 @@ App({
     wx.setStorageSync('last_latitude', 'undefined');
     wx.setStorageSync('last_longtitude', 'undefined');
 
+    
+    
+
 
   },
   getUserInfo: function (cb) {

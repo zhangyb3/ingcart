@@ -1,142 +1,250 @@
-// pages/wallet/index.js
+
+var config = require("../../utils/config.js");
+var user = require("../../utils/user.js");
 
 Page({
   data:{
     // 故障车周围环境图路径数组
     picUrls: [],
     // 故障车编号和备注
-    inputValue: {
-      num: 0,
-      desc: ""
+    faultCar: {
+      id: null,
+      desc: "",
     },
     // 故障类型数组
-    checkboxValue: [],
+    faults: [],
     // 选取图片提示
     actionText: "拍照/相册",
     // 提交按钮的背景色，未勾选类型时无颜色
     btnBgc: "",
     // 复选框的value，此处预定义，然后循环渲染到页面
-    itemsValue: [
+    checkboxItemsValue: [
       {
         checked: false,
         value: "私锁私用",
-        color: "#b9dd08"
+        faultType: 1,
       },
       {
         checked: false,
         value: "车牌缺损",
-        color: "#b9dd08"
+        faultType: 2,
       },
       {
         checked: false,
         value: "轮胎坏了",
-        color: "#b9dd08"
+        faultType: 3,
       },
       {
         checked: false,
         value: "车锁坏了",
-        color: "#b9dd08"
+        faultType: 4,
       },
       {
         checked: false,
         value: "违规乱停",
-        color: "#b9dd08"
+        faultType: 5,
       },
       {
         checked: false,
         value: "密码不对",
-        color: "#b9dd08"
+        faultType: 6,
       },
       {
         checked: false,
         value: "刹车坏了",
-        color: "#b9dd08"
+        faultType: 7,
       },
       {
         checked: false,
         value: "其他故障",
-        color: "#b9dd08"
+        faultType: 8,
       }
-    ]
+    ],
+
+   
+    wordsCountdown: 140,
+    maintenanceCarId: 'xxxxxxxxx',
+    faultDescription: null,
   },
+
 // 页面加载
   onLoad:function(options){
     wx.setNavigationBarTitle({
       title: '报障维修'
     })
   },
-// 勾选故障类型，获取类型值存入checkboxValue
+
+// 勾选故障类型，获取类型值存入faults
   checkboxChange: function(e){
-    let _values = e.detail.value;
-    if(_values.length == 0){
-      this.setData({
-        btnBgc: ""
-      })
+    console.log(e);
+    let selectFaults = e.detail.value;
+    if(selectFaults.length == 0){
+     
     }else{
       this.setData({
-        checkboxValue: _values,
-        btnBgc: "#b9dd08"
+        faults: selectFaults,
       })
     }   
   },
-// 输入单车编号，存入inputValue
-  numberChange: function(e){
+
+// 输入单车编号，存入faultCar
+  carIdInput: function(e){
     this.setData({
-      inputValue: {
-        num: e.detail.value,
-        desc: this.data.inputValue.desc
-      }
+      
+      maintenanceCarId: e.detail.value,
     })
   },
-// 输入备注，存入inputValue
-  descChange: function(e){
-    this.setData({
-      inputValue: {
-        num: this.data.inputValue.num,
-        desc: e.detail.value
-      }
-    })
+
+
+// 输入备注 
+  getTextInput: function (e) {
+    var that = this;
+    console.log(e.detail.value);
+    that.data.faultDescription = e.detail.value;
+
+   
+    var leftLength = 140 - e.detail.value.length;
+    that.setData({
+
+      wordsCountdown: leftLength,
+    });
+    
   },
-// 提交到服务器
-  formSubmit: function(e){
-    if(this.data.picUrls.length > 0 && this.data.checkboxValue.length> 0){
-      wx.request({
-        url: 'https://www.easy-mock.com/mock/59098d007a878d73716e966f/ofodata/msg',
-        data: {
-          // picUrls: this.data.picUrls,
-          // inputValue: this.data.inputValue,
-          // checkboxValue: this.data.checkboxValue
-        },
-        method: 'get', // POST
-        // header: {}, // 设置请求的 header
-        success: function(res){
-          wx.showToast({
-            title: res.data.data.msg,
-            icon: 'success',
-            duration: 2000
+
+  //扫描故障车牌
+  scanFaultCar:function(e) {
+    var that = this;
+    wx.scanCode({
+      onlyFromCamera: true,
+      success: function(res) {
+        console.log(res);
+        if(res.errMsg == 'scanCode:ok')
+        {
+          that.data.maintenanceCarId = res.result;
+          that.setData({
+            maintenanceCarId: res.result,
           })
         }
-      })
-    }else{
-      wx.showModal({
-        title: "请填写反馈信息",
-        content: '看什么看，赶快填反馈信息，削你啊',
-        confirmText: "我我我填",
-        cancelText: "劳资不填",
-        success: (res) => {
-          if(res.confirm){
-            // 继续填
-          }else{
-            console.log("back")
-            wx.navigateBack({
-              delta: 1 // 回退前 delta(默认为1) 页面
-            })
-          }
+      },
+      fail: function(res) {},
+      complete: function(res) {},
+    });
+  },
+
+
+// 提交到服务器
+  submitFaults: function(e){
+
+    var that = this;
+    //先获取位置再报修
+    wx.getLocation({
+      type: 'gcj02',
+      complete: function (res) {
+        wx.setStorageSync(user.Latitude, res.latitude);
+        wx.setStorageSync(user.Longitude, res.longitude);
+
+        if (that.data.faults.length > 0) {
+
+          // switchFaultType(that.data.faults, that);
+
+          wx.request({
+            url: config.PytheRestfulServerURL + '/use/callRepair',
+            data: {
+              customerId: wx.getStorageSync(user.CustomerID),
+              type: that.data.faults[0],
+              carId: that.data.maintenanceCarId,
+              longitude: wx.getStorageSync(user.Longitude),
+              latitude: wx.getStorageSync(user.Latitude),
+              description: "haha"
+            },
+            method: 'POST',
+            success: function (res) {
+              console.log(res);
+              wx.showToast({
+                title: res.data.data,
+                duration: 1500,
+                success: function (res) { },
+                fail: function (res) { },
+                complete: function (res) { },
+              })
+            }
+          })
+        } else {
+          wx.showModal({
+            title: "请填写反馈信息",
+            content: '客服热线400-300-100',
+            confirmText: "确定",
+            cancelText: "取消",
+            success: (res) => {
+              if (res.confirm) {
+                // 继续填
+              } else {
+                console.log("back")
+                wx.navigateBack({
+                  delta: 1 // 回退前 delta(默认为1) 页面
+                })
+              }
+            }
+          })
         }
-      })
-    }
+
+      },
+    });
+    
     
   }
 
 
 })
+
+
+function switchFaultType(selectFaults, the){
+
+  for(var i = 0; i < selectFaults.length; i++)
+  {
+    switch (selectFaults[i])
+    {
+      case "私锁私用":
+        {
+          selectFaults[i] = 1;
+          break;
+        };
+      case "车牌缺损":
+        {
+          selectFaults[i] = 2;
+          break;
+        };
+      case "轮胎坏了":
+        {
+          selectFaults[i] = 3;
+          break;
+        };
+      case "车锁坏了":
+        {
+          selectFaults[i] = 4;
+          break;
+        };
+      case "违规乱停":
+        {
+          selectFaults[i] = 5;
+          break;
+        };
+      case "密码不对":
+        {
+          selectFaults[i] = 6;
+          break;
+        };
+      case "刹车坏了":
+        {
+          selectFaults[i] = 7;
+          break;
+        };
+      case "其他故障":
+        {
+          selectFaults[i] = 8;
+          break;
+        };
+    }
+  }
+
+}

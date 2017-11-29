@@ -4,115 +4,59 @@ var register = require("../../utils/register.js");
 var config = require("../../utils/config.js");
 var user = require("../../utils/user.js");
 var login = require("../../utils/login.js");
+// var JSEncrypt = require("../../utils/jsencrypt.js");
+var operation = require("../../utils/operation.js");
 
 var app = getApp()
 Page({
   data: {
     scale: 18,
     latitude: 0,
-    longitude: 0
+    longitude: 0,
+
+    timing: false,
+
   },
+
 // 页面加载
   onLoad: function (options) {
 
-   
-
-    // 1.获取定时器，用于判断是否已经在计费
-    this.timer = options.timer;
-
-    // 2.获取并设置当前位置经纬度
-    wx.getLocation({
-      type: "gcj02",
-      success: (res) => {
-        this.setData({
-          longitude: res.longitude,
-          latitude: res.latitude
+    wx.openBluetoothAdapter({
+      success: function (res) {
+        console.log(res.errMsg)
+        // success  
+        wx.showToast({
+          title: "初始化蓝牙适配器成功",
+          duration: 2000
         })
+      },
+      complete: function (res) {
+        console.log(res);
       }
+    })  
+
+    // var testData = 'code';
+    // var publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDTu5u08Wel08uWM02GYYRlFXfmEHH7DAbSWufUdU8NlZrE/4BAOwqPMu/vMLdCi4GRHDSmWhoqjC5/7oKoALl6nFCAObtSl6RiWdc8KvcN1D45PASs8M/YPY+oa8iNYZA/drtgXEw4NniC0EB47miGVL4POyLOE3dJlk4LD/AjtQIDAQAB";
+    // var encrypt = new JSEncrypt();
+    // encrypt.setPublicKey(publicKey);
+    // var data = encrypt.encrypt(testData);
+    // wx.request({
+    //   url: config.PytheRestfulServerURL + '/decode',
+    //   data: data,
+    //   method: 'GET',
+    //   success: function(res) {},
+    //   fail: function(res) {},
+    //   complete: function(res) {
+    //     console.log(res);
+    //   },
+    // });
+
+    this.setData({
+      timing: true,
     });
 
-    // 3.设置地图控件的位置及大小，通过设备宽高定位
-    wx.getSystemInfo({
-      success: (res) => {
-        this.setData({
-          controls: [{
-            id: 1,
-            iconPath: '/images/location.png',
-            position: {
-              left: 20,
-              top: res.windowHeight - 80,
-              width: 50,
-              height: 50
-            },
-            clickable: true
-          },
-          {
-            id: 2,
-            iconPath: '/images/use.png',
-            position: {
-              left: res.windowWidth/2 - 45,
-              top: res.windowHeight - 100,
-              width: 90,
-              height: 90
-            },
-            clickable: true
-          },
-          {
-            id: 3,
-            iconPath: '/images/warn.png',
-            position: {
-              left: 20,
-              top: res.windowHeight - 160,
-              width: 50,
-              height: 50
-            },
-            clickable: true
-          },
-          {
-            id: 4,
-            iconPath: '/images/marker.jpg',
-            position: {
-              left: res.windowWidth/2 - 10,
-              top: res.windowHeight/2 - 36,
-              width: 20,
-              height: 36
-            },
-            clickable: true
-          },
-          {
-            id: 5,
-            iconPath: '/images/avatar.png',
-            position: {
-              left: res.windowWidth - 68,
-              top: res.windowHeight - 80,
-              width: 45,
-              height: 45
-            },
-            clickable: true
-          }]
-        })
-      }
-    });
-
-    // 4.请求服务器，显示附近的单车，用marker标记
-    wx.request({
-      url: 'https://www.easy-mock.com/mock/59098d007a878d73716e966f/ofodata/biyclePosition',
-      data: {},
-      method: 'GET', // OPTIONS, GET, HEAD, POST, PUT, DELETE, TRACE, CONNECT
-      // header: {}, // 设置请求的 header
-      success: (res) => {
-          this.setData({
-            markers: res.data.data
-          })
-      },
-      fail: function(res) {
-        // fail
-      },
-      complete: function(res) {
-        // complete
-      }
-    })
   },
+
 // 页面显示
   onShow: function(){
 
@@ -151,9 +95,11 @@ Page({
       });
     }
 
+    //刷新页面
+    refreshPage(this);
 
-    // 1.创建地图上下文，移动当前位置到地图中心
-    this.mapCtx = wx.createMapContext("ofoMap");
+    // 创建地图上下文，移动当前位置到地图中心
+    this.mapCtx = wx.createMapContext("ingcartMap");
     this.movetoPosition()
   },
 // 地图控件点击事件
@@ -163,45 +109,28 @@ Page({
       // 点击定位控件
       case 1: this.movetoPosition();
         break;
-      // 点击立即用车，判断当前是否正在计费
-      case 2: if(this.timer === "" || this.timer === undefined){
-          // 没有在计费就扫码
+      // 点击立即用车，判断当前是否可以用车
+      case 2: 
+        {
+          var that = this;
           wx.scanCode({
-            success: (res) => {
-              // 正在获取密码通知
-              wx.showLoading({
-                title: '正在获取密码',
-                mask: true
-              })
-              // 请求服务器获取密码和车号
-              wx.request({
-                url: 'https://www.easy-mock.com/mock/59098d007a878d73716e966f/ofodata/password',
-                data: {},
-                method: 'GET', 
-                success: function(res){
-                  // 请求密码成功隐藏等待框
-                  wx.hideLoading();
-                  // 携带密码和车号跳转到密码页
-                  wx.redirectTo({
-                    url: '../scanresult/index?password=' + res.data.data.password + '&number=' + res.data.data.number,
-                    success: function(res){
-                      wx.showToast({
-                        title: '获取密码成功',
-                        duration: 1000
-                      })
-                    }
-                  })           
-                }
-              })
-            }
+            onlyFromCamera: true,
+            success: function(res) {
+              console.log(res);
+              if (res.errMsg == 'scanCode:ok') {
+                var carId = res.result;
+                var customerId = wx.getStorageSync(user.CustomerID);
+                operation.unlock(customerId,carId);
+              
+              }
+
+            },
+            fail: function(res) {},
+            complete: function(res) {},
           })
-        // 当前已经在计费就回退到计费页
-        }else{
-          wx.navigateBack({
-            delta: 1
-          })
-        }  
-        break;
+          
+          break;
+        }
       // 点击保障控件，跳转到报障页
       case 3: wx.navigateTo({
           url: '../maintenance/call'
@@ -215,49 +144,58 @@ Page({
       default: break;
     }
   },
+
 // 地图视野改变事件
-  bindregionchange: function(e){
+  changeRegion: function(e){
     // 拖动地图，获取附件单车位置
-    if(e.type == "begin"){
-      wx.request({
-        url: 'https://www.easy-mock.com/mock/59098d007a878d73716e966f/ofodata/biyclePosition',
-        data: {},
-        method: 'GET', 
-        success: (res) => {
-          this.setData({
-            _markers: res.data.data
-          })
-        }
-      })
+    console.log(e);
     // 停止拖动，显示单车位置
-    }else if(e.type == "end"){
+    if(e.type == "end")
+    {
+      var mapCtx = wx.createMapContext("ingcartMap");
+      var locationLatitude, locationLongitude;
+
+      var that = this;
+      //获取当前地图的中心经纬度
+      mapCtx.getCenterLocation({
+        success: function (res) {
+          console.log(res);
+          locationLatitude = res.latitude;
+          locationLongitude = res.longitude;
+
+          //显示附近的车
+          showNearbyCars(locationLongitude,locationLatitude,that);
+        }
+      });
+
+
+
+      // mapCtx.includePoints({
+      //   padding: [10],
+      //   points: [{
+      //     latitude: latitude,
+      //     longitude: longitude
+      //   }]
+      // });
+      // mapCtx.translateMarker({
+      //   markerId: 0,
+      //   autoRotate: true,
+      //   duration: 1000,
+      //   destination: {
+      //     latitude: latitude,
+      //     longitude: longitude,
+      //   },
+      //   animationEnd() {
+      //     console.log('animation end')
+      //   }
+      // });
+
         this.setData({
           markers: this.data._markers
         })
     }
   },
-// 地图标记点击事件，连接用户位置和点击的单车位置
-  bindmarkertap: function(e){
-    console.log(e);
-    let _markers = this.data.markers;
-    let markerId = e.markerId;
-    let currMaker = _markers[markerId];
-    this.setData({
-      polyline: [{
-        points: [{
-          longitude: this.data.longitude,
-          latitude: this.data.latitude
-        }, {
-          longitude: currMaker.longitude,
-          latitude: currMaker.latitude
-        }],
-        color:"#FF0000DD",
-        width: 1,
-        dottedLine: true
-      }],
-      scale: 18
-    })
-  },
+
 // 定位函数，移动位置到地图中心
   movetoPosition: function(){
     this.mapCtx.moveToLocation();
@@ -321,33 +259,17 @@ function loginSystem(that) {
           
           else {
             wx.setStorageSync('alreadyRegister', 'yes');
-            wx.setStorageSync(user.UserID, registerInfo.userid);
-            // wx.setStorageSync(user.StudentID, registerInfo.studentid);
-            // wx.setStorageSync(user.TeacherID, registerInfo.teacherid);
-            wx.setStorageSync(user.GradeID, registerInfo.gradeid);
-            wx.setStorageSync(user.UserDescription, registerInfo.description);
-            wx.setStorageSync(user.UserNickName, registerInfo.username);
-            wx.setStorageSync('userAvatarUrl', registerInfo.userimg);
+            wx.setStorageSync(user.CustomerID, registerInfo.id);
+            wx.setStorageSync(user.Description, registerInfo.description);
             wx.setStorageSync(user.Status, registerInfo.status);
-            wx.setStorageSync(user.TeacherID, registerInfo.userid);
-            wx.setStorageSync(user.StudentID, registerInfo.userid);
-            wx.setStorageSync(user.TeacherID, registerInfo.userid);
-
-
-
-            if (wx.getStorageSync(user.UserID) != 'userID') {
-              wx.setStorageSync('alreadyRegister', 'yes');
-              wx.setStorageSync('fromRegister', 'no');
+            wx.setStorageSync(user.UsingCar, registerInfo.carid);
+            wx.setStorageSync(user.RecordID, registerInfo.recordid);
+            wx.setStorageSync(user.UsingCarStatus, registerInfo.carstatus);
 
               wx.showToast({
                 title: '已登录',
                 duration: 1200
               });
-
-              
-
-            }
-
 
             
           }
@@ -371,4 +293,126 @@ function loginSystem(that) {
   wx.setStorageSync('logoutSystem', 'no');
 
   return 'finish';
+}
+
+function refreshPage(the){
+
+  var that = the;
+  // 1.获取定时器，用于判断是否已经在计费
+  // this.timer = options.timer;
+
+  // 2.获取并设置当前位置经纬度
+  wx.getLocation({
+    type: "gcj02",
+    success: (res) => {
+      that.setData({
+        longitude: res.longitude,
+        latitude: res.latitude
+      });
+
+      // 4.请求服务器，显示附近的单车，用marker标记
+      showNearbyCars(res.longitude, res.latitude, that);
+    }
+  });
+
+  // 3.设置地图控件的位置及大小，通过设备宽高定位
+  wx.getSystemInfo({
+    success: (res) => {
+      that.setData({
+        controls: [{
+          id: 1,
+          iconPath: '/images/location.png',
+          position: {
+            left: 20,
+            top: res.windowHeight - 80,
+            width: 50,
+            height: 50
+          },
+          clickable: true
+        },
+        {
+          id: 2,
+          iconPath: '/images/use.png',
+          position: {
+            left: res.windowWidth / 2 - 70,
+            top: res.windowHeight - 72,
+            width: 140,
+            height: 34
+          },
+          clickable: true
+        },
+        {
+          id: 3,
+          iconPath: '/images/warn.png',
+          position: {
+            left: 20,
+            top: res.windowHeight - 160,
+            width: 50,
+            height: 50
+          },
+          clickable: true
+        },
+        {
+          id: 4,
+          iconPath: '/images/marker.png',
+          position: {
+            left: res.windowWidth / 2 - 18,
+            top: res.windowHeight / 2 - 36,
+            width: 36,
+            height: 36
+          },
+          clickable: true
+        },
+        {
+          id: 5,
+          iconPath: '/images/avatar.png',
+          position: {
+            left: res.windowWidth - 68,
+            top: res.windowHeight - 80,
+            width: 50,
+            height: 50
+          },
+          clickable: true
+        }]
+      })
+    }
+  });
+
+  
+
+}
+
+function showNearbyCars(longitude,latitude,the){
+
+  var that = the;
+  wx.request({
+    url: config.PytheRestfulServerURL + '/map/carShow',
+    data: {
+      longitude: longitude,
+      latitude: latitude
+    },
+    method: 'GET',
+    success: function(res) {
+      console.log(res);
+      var result = res.data;
+      if(result.status == 300)
+      {
+        wx.showToast({
+          title: result.msg,
+          icon: "loading",
+          duration: 500,
+          mask: false,
+        })
+      }
+      else
+      {
+        that.setData({
+          markers: result.data,
+        });
+      }
+    },
+    fail: function(res) {},
+    complete: function(res) {},
+  })
+
 }

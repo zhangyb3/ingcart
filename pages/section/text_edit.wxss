@@ -1,0 +1,58 @@
+page{
+    background-color: white;
+}
+
+.text_edit_container{
+    width: 80%;
+    height: 100%;
+    margin-left: 10%;
+
+}
+
+.text_edit_textarea_container{
+    /*width: 90%;
+    margin-left: 5%;*/
+    min-height: 120rpx;
+    background-color: #f2f2f2;
+
+
+}
+
+.text_edit_textarea{
+    width: 90%;
+    margin-left: 5%;
+    padding-top: 10rpx;
+    padding-bottom: 20rpx;
+    line-height: 40rpx;
+    font-size: 36rpx;
+    color: #999999;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    word-break: break-all;
+}
+
+.words_countdown_container{
+    /*width: 90%;
+    margin-right: 5%;*/
+    height: 50rpx;
+    line-height: 50rpx;
+}
+
+.words_countdown_text{
+
+    float: right;
+    color: lightgray;
+    font-size: 36rpx;
+}
+
+.text_edit_confirm_button{
+
+    height: 80rpx;
+    line-height: 80rpx;
+    text-align: center;
+    font-size: 40rpx;
+    background-color: white;
+    color: #d25353;
+    border: 1px solid #d25353;
+    border-radius: 33rpx;
+
+}

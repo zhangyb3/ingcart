@@ -16,6 +16,18 @@ function formatNumber(n) {
   return n[1] ? n : '0' + n
 }
 
+function replaceStr(source, posStart, posStop, newStr) {
+  if (posStart < 0 || posStop >= source.length || source.length == 0 || posStart > posStop) {
+    return "invalid parameters...";
+  }
+  var iBeginPos = 0, iEndPos = source.length;
+  var sFrontPart = source.substr(iBeginPos, posStart);
+  var sTailPart = source.substr(posStop, source.length);
+  var sRet = sFrontPart + newStr + sTailPart;
+  return sRet;
+}  
+
 module.exports = {
-  formatTime: formatTime
+  formatTime: formatTime,
+  replaceStr: replaceStr
 }
