@@ -20,6 +20,9 @@ Page({
     holding: false,
     countingMinutes: 0,
 
+    selection_after_lock: false,
+    select_hold_time: false,
+
   },
 
 // 页面加载
@@ -127,34 +130,39 @@ Page({
                 var recordId = wx.getStorageSync(user.RecordID);
 
                 //开锁
-                operation.unlock(customerId,carId,
-                (result)=>{
-                  console.log(result);
-                  if(result.status == 200)
-                  {
-                    wx.setStorageSync(user.RecordID, result.data.recordId);
-                    wx.setStorageSync(user.UsingCar, carId);
-                    
-                    //成功即启动计时器
-                    that.setData({
-                      timing: true,
-                    });
-                    //每分钟刷新一下
-                    var myVar = setInterval(
-                      function () { refreshUsingMinutes(that) },
-                      1000 * 60);
-                  }
-                  
-
-                },
-                ()=>{});
-
-                // operation.lock(customerId, carId, recordId,
-                //   (result) => {
+                // operation.unlock(customerId,carId,
+                //   (result)=>{
                 //     console.log(result);
+                //     if(result.status == 200)
+                //     {
+                      
+                //       //成功即启动计时器
+                //       that.setData({
+                //         timing: false,
+                //       });
+                //       //每分钟刷新一下
+                //       var myVar = setInterval(
+                //         function () { refreshUsingMinutes(that) },
+                //         1000 * 60);
+                //     }
                     
                 //   },
-                //   () => { });
+                //   ()=>{}
+                // );
+
+                //关锁
+                operation.lock(customerId, carId, recordId,
+                  (result) => {
+                    console.log(result);
+                    if (result.status == 200) {
+                      that.setData({
+                        selection_after_lock: true,
+                      });
+                    }
+
+                  },
+                  () => { }
+                );
               
               }
 
@@ -212,7 +220,22 @@ Page({
 // 定位函数，移动位置到地图中心
   movetoPosition: function(){
     this.mapCtx.moveToLocation();
-  }
+  },
+
+  lockToPay:function(e){
+    lockToPay(this);
+  },
+  lockToHold:function(e){
+    lockToHold(this);
+  },
+
+  selectHoldTime:function(res){
+    var appointmentTime = res.currentTarget.dataset.appointment_time;
+
+    selectHoldTime(appointmentTime, this);
+
+  },
+
 })
 
 
@@ -289,43 +312,48 @@ function loginSystem(that) {
             var that__ = that_;
             if (wx.getStorageSync(user.UsingCar) != null)
             {
-              //检查是否保留用车，显示
-              login.checkHoldingMinutes(
-                wx.getStorageSync(user.CustomerID),
-                (result) => {
-                  if(result.status == 200)
-                  {
-                    that.data.holdingMinutes = result.data.time;
-                    that.setData({
-                      holding: true,
-                      holdingMinutes: result.data.time,
-                    });
+              if (wx.getStorageSync(user.UsingCarStatus) == 2)
+              {
+                //检查是否保留用车，显示
+                operation.checkHoldingMinutes(
+                  wx.getStorageSync(user.CustomerID),
+                  (result) => {
+                    if (result.status == 200) {
+                      that.data.holdingMinutes = result.data.time;
+                      that.setData({
+                        holding: true,
+                        holdingMinutes: result.data.time,
+                      });
 
-                    var myVar = setInterval(
-                      function () { refreshHoldingMinutes(that__) },
-                      1000*60);
-                  }
-                },
-              );
+                      var myVar = setInterval(
+                        function () { refreshHoldingMinutes(that__) },
+                        1000 * 60);
+                    }
+                  },
+                );
+              }
+              
+              if (wx.getStorageSync(user.UsingCarStatus) == 1)
+              {
+                //检查是否用车，显示
+                operation.checkUsingMinutes(
+                  wx.getStorageSync(user.UsingCar),
+                  (result) => {
+                    if (result.status == 200) {
+                      that.data.usingMinutes = result.data.time;
+                      that.setData({
+                        timing: false,
+                        usingMinutes: result.data.time,
+                      });
 
-              //检查是否用车，显示
-              login.checkUsingMinutes(
-                wx.getStorageSync(user.UsingCar),
-                (result) => {
-                  if (result.status == 200) 
-                  {
-                    that.data.usingMinutes = result.data.time;
-                    that.setData({
-                      timing: true,
-                      usingMinutes: result.data.time,
-                    });
-
-                    var myVar = setInterval(
-                      function () { refreshUsingMinutes(that__) },
-                      1000*60);
-                  }
-                },
-              ); 
+                      var myVar = setInterval(
+                        function () { refreshUsingMinutes(that__) },
+                        1000 * 60);
+                    }
+                  },
+                ); 
+              }
+              
             }
              
             
@@ -480,7 +508,7 @@ function showNearbyCars(longitude,latitude,the){
 function refreshUsingMinutes(the){
 
   var that = the;
-  login.checkUsingMinutes(
+  operation.checkUsingMinutes(
     wx.getStorageSync(user.UsingCar),
     (result) => {
       if (result.status == 200) {
@@ -500,7 +528,7 @@ function refreshUsingMinutes(the){
 function refreshHoldingMinutes(the) {
 
   var that = the;
-  login.checkHoldingMinutes(
+  operation.checkHoldingMinutes(
     wx.getStorageSync(user.CustomerID),
     (result) => {
       if (result.status == 200) {
@@ -512,6 +540,49 @@ function refreshHoldingMinutes(the) {
 
       }
     },
+  );
+
+}
+
+function lockToPay(the){
+
+  var that = the;
+  operation.computeFee(
+    wx.getStorageSync(user.CustomerID),
+    wx.getStorageSync(user.UsingCar),
+    wx.getStorageSync(user.RecordID),
+    (result)=>{
+      console.log("compute fee: " + result.data);
+      that.setData({
+        selection_after_lock: false,
+        select_hold_time: false,
+      });
+    }
+  );
+}
+
+function lockToHold(the) {
+
+  the.setData({
+    selection_after_lock: false,
+    select_hold_time: true,
+  });
+}
+
+function selectHoldTime(appointmentTime,the){
+
+  var that = the;
+  operation.hold(
+    wx.getStorageSync(user.CustomerID),
+    wx.getStorageSync(user.UsingCar),
+    appointmentTime,
+    (result) => {
+      console.log("select hold time: " + result.data);
+      that.setData({
+        selection_after_lock: false,
+        select_hold_time: false,
+      });
+    }
   );
 
 }

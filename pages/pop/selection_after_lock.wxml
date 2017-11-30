@@ -1,0 +1,23 @@
+
+
+<template name="selection_after_lock">
+
+   
+  <view class="pop_container">
+    
+    <view id="selection_after_lock_container"  >
+      
+      <image id="lock_to_select" src="../../images/lock.png"></image>
+      <text>1分钟自动结束用车</text>
+
+      <view class="selections">
+        <button class="compute_fee selection" bindtap="lockToPay">结束计费</button>
+        <button class="hold_car selection" bindtap="lockToHold">保留用车</button>
+      </view>
+
+    </view>
+    
+
+  </view>
+
+</template>

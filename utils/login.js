@@ -268,41 +268,7 @@ var decodeUserData = (success,fail) => {
 }
 
 
-function checkUsingMinutes(carId,success,fail){
 
-  wx.request({
-    url: config.PytheRestfulServerURL + '/use/car/time',
-    data: {
-      carId: carId
-    },
-    method: 'GET',
-    success: function(res) {
-      typeof success == "function" && success(res.data);
-    },
-    fail: function(res) {
-      typeof fail == "function" && fail(res.data);
-    }
-  })
-
-}
-
-function checkHoldingMinutes(customerId, success, fail) {
-
-  wx.request({
-    url: config.PytheRestfulServerURL + '/save/time',
-    data: {
-      customerId: customerId
-    },
-    method: 'GET',
-    success: function (res) {
-      typeof success == "function" && success(res.data);
-    },
-    fail: function (res) {
-      typeof fail == "function" && fail(res.data);
-    }
-  })
-
-}
 
 module.exports = {
     login: login,
@@ -311,8 +277,7 @@ module.exports = {
     
     getUserAllData : getUserAllData,
     decodeUserData : decodeUserData,
-    alreadyRegister : 'no',
+    alreadyRegister : 'no'
 
-    checkUsingMinutes: checkUsingMinutes,
-    checkHoldingMinutes: checkHoldingMinutes
+    
 }

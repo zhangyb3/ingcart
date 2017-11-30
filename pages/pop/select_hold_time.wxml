@@ -1,0 +1,23 @@
+
+
+<template name="select_hold_time">
+
+   <view class="pop_container">
+    
+    
+    <view id="selection_hold_time_container"  >
+      
+      
+      <text id="select_hold_time_hint" >请选择保留时间</text>
+
+      <view class="selections">
+        <button class="hold_time_selection" bindtap="selectHoldTime" data-appointment_time="30">30分钟</button>
+        <button class="hold_time_selection" bindtap="selectHoldTime" data-appointment_time="60">60分钟</button>
+      </view>
+
+    </view>
+    
+
+  </view>
+
+</template>

@@ -16,8 +16,22 @@
   z-index: 1;
 }
 
+.pop_container{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 20;
+}
+
 @import "../pop/mask.wxss";
 
 @import "../pop/using.wxss";
 
 @import "../pop/holding.wxss";
+
+@import "../pop/selection_after_lock.wxss";
+
+@import "../pop/select_hold_time.wxss";

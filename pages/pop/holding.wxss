@@ -7,8 +7,8 @@
   
   background-color: white;
     
-  height: 100rpx;
-  line-height: 100rpx;
+  height: 100px;
+  line-height: 100px;
 
   position: absolute;
   top: 0rpx;
@@ -17,13 +17,28 @@
   opacity: 1;
 
   text-align: center;
-  font-size: 28rpx;
+  font-size: 28px;
 
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
 }
 
-#time_num{
-  font-size: 32rpx;
+#holding_time_num{
+  font-size: 50px;
+  color: orange;
+}
+
+#holding_hint{
+  font-size: 32px;
+  color: orangered;
+}
+
+#cancel_holding_container{
+  background-color: #f6f6f6;
+}
+
+#cancel_holding{
+  font-size: 32px;
+  color: orange;
 }

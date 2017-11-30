@@ -6,7 +6,10 @@
     
     
     <view id="using_timer_container"  >
-      <text id="time_num" >{{usingMinutes}}</text>
+      <view id="using_timer_view" style="background-image:url(../../images/using_timer_image.png)">
+        <text id="using_time_num" >{{usingMinutes}}</text>
+      </view>
+      
       <text>用车中</text>
     </view>
     

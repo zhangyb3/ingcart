@@ -1,6 +1,6 @@
 .register_lock_mask {
     position: fixed;
-    background-color: rgba(0, 0, 0, 0.01);
+    background-color: rgba(0, 0, 0, 0.2);
     top: 0;
     right: 0;
     left: 0;

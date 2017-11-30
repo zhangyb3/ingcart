@@ -14,6 +14,8 @@ const HOLD_URL = `${config.PytheRestfulServerURL}/use/hold`;
 //结束用车，计费
 const COMPUTEFEE_URL = `${config.PytheRestfulServerURL}/use/computeFee`;
 
+//更新客户状态
+const UPDATE_CUSTOMER_STATUS_URL = `${config.PytheRestfulServerURL}/customer/select`;
 
 function unlock(customerId, carId, success, fail){
 
@@ -30,7 +32,13 @@ function unlock(customerId, carId, success, fail){
         },
         method: 'POST',
         success: function (res) {
-          typeof success == "function" && success(res.data);
+          var result = res;
+          normalUpdateCustomerStatus(
+            customerId,
+            ()=>{
+              typeof success == "function" && success(result.data);
+            });
+          
         },
         fail: function (res) { 
           typeof fail == "function" && fail(res.data);
@@ -58,7 +66,12 @@ function lock(customerId, carId, recordId, success, fail){
         },
         method: 'POST',
         success: function (res) {
-          typeof success == "function" && success(res.data);
+          var result = res;
+          normalUpdateCustomerStatus(
+            customerId,
+            () => {
+              typeof success == "function" && success(result.data);
+            });
         },
         fail: function (res) { 
           typeof fail == "function" && fail(res.data);
@@ -81,7 +94,12 @@ function hold(customerId, carId, appointmentTime, success, fail){
     },
     method: 'POST',
     success: function (res) {
-      typeof success == "function" && success(res.data);
+      var result = res;
+      normalUpdateCustomerStatus(
+        customerId,
+        () => {
+          typeof success == "function" && success(result.data);
+        });
     },
     fail: function (res) { 
       typeof fail == "function" && fail(res.data);
@@ -101,7 +119,12 @@ function computeFee(customerId, carId, recordId, success, fail){
     },
     method: 'POST',
     success: function (res) {
-      typeof success == "function" && success(res.data);
+      var result = res;
+      normalUpdateCustomerStatus(
+        customerId,
+        () => {
+          typeof success == "function" && success(result.data);
+        });
     },
     fail: function (res) { 
       typeof fail == "function" && fail(res.data);
@@ -110,12 +133,85 @@ function computeFee(customerId, carId, recordId, success, fail){
 
 }
 
+function checkUsingMinutes(carId, success, fail) {
 
+  if (carId != null) {
+    wx.request({
+      url: config.PytheRestfulServerURL + '/use/car/time',
+      data: {
+        carId: carId
+      },
+      method: 'GET',
+      success: function (res) {
+        typeof success == "function" && success(res.data);
+      },
+      fail: function (res) {
+        typeof fail == "function" && fail(res.data);
+      }
+    })
+  }
+
+
+}
+
+function checkHoldingMinutes(customerId, success, fail) {
+
+  if (customerId != null) {
+    wx.request({
+      url: config.PytheRestfulServerURL + '/save/time',
+      data: {
+        customerId: customerId
+      },
+      method: 'GET',
+      success: function (res) {
+        typeof success == "function" && success(res.data);
+      },
+      fail: function (res) {
+        typeof fail == "function" && fail(res.data);
+      }
+    })
+  }
+
+
+}
+
+function normalUpdateCustomerStatus(customerId, success, fail)
+{
+  wx.request({
+    url: UPDATE_CUSTOMER_STATUS_URL,
+    data: {
+      customerId: wx.getStorageSync(user.CustomerID)
+    },
+    method: 'GET',
+    dataType: '',
+    success: function (res) {
+      console.log(res);
+      var info = res.data.data;
+
+      wx.setStorageSync(user.CustomerID, info.customerId);
+      wx.setStorageSync(user.Description, info.description);
+      wx.setStorageSync(user.Status, info.status);
+      wx.setStorageSync(user.UsingCar, info.carId);
+      wx.setStorageSync(user.RecordID, info.recordId);
+      wx.setStorageSync(user.UsingCarStatus, info.carStatus);
+
+      typeof success == "function" && success(res.data);
+    },
+    fail: function(res){
+      typeof fail == "function" && fail(res.data);
+    }
+  });
+}
 
 
 module.exports = {
   unlock: unlock,
   lock: lock,
   hold: hold,
-  computeFee: computeFee
+  computeFee: computeFee,
+
+  checkUsingMinutes: checkUsingMinutes,
+  checkHoldingMinutes: checkHoldingMinutes,
+
+  normalUpdateCustomerStatus: normalUpdateCustomerStatus
 }

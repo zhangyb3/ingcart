@@ -5,7 +5,7 @@
 </view>
 
 <import src="../pop/mask.wxml" />
-<template is="register_lock_mask" wx:if="{{alreadyRegister == 'no'}}"></template>
+<template is="register_lock_mask" wx:if="{{alreadyRegister == 'no' || selection_after_lock == true || select_hold_time == true}}"></template>
 
 <import src="../pop/using.wxml" />
 <template is="using_timer" wx:if="{{timing == true}}" data="{{usingMinutes}}"></template>
@@ -13,3 +13,9 @@
 
 <import src="../pop/holding.wxml" />
 <template is="holding_timer" wx:if="{{holding == true}}" data="{{holdingMinutes}}"></template>
+
+<import src="../pop/selection_after_lock.wxml" />
+<template is="selection_after_lock" wx:if="{{selection_after_lock == true}}" ></template>
+
+<import src="../pop/select_hold_time.wxml" />
+<template is="select_hold_time" wx:if="{{select_hold_time == true}}" ></template>
