@@ -6,7 +6,8 @@
     
     
     <view id="using_timer_container"  >
-      
+      <text id="time_num" >{{usingMinutes}}</text>
+      <text>用车中</text>
     </view>
     
 

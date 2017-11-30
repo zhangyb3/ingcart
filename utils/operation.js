@@ -26,18 +26,17 @@ function unlock(customerId, carId, success, fail){
           customerId: customerId,
           carId: carId,
           latitude: res.latitude,
-          longtitude: res.longitude
+          longitude: res.longitude
         },
         method: 'POST',
         success: function (res) {
-
+          typeof success == "function" && success(res.data);
         },
-        fail: function (res) { },
-        complete: function (res) { },
+        fail: function (res) { 
+          typeof fail == "function" && fail(res.data);
+        }
       });
-    },
-    fail: function(res) {},
-    complete: function(res) {},
+    }
   })
   
 
@@ -59,14 +58,13 @@ function lock(customerId, carId, recordId, success, fail){
         },
         method: 'POST',
         success: function (res) {
-
+          typeof success == "function" && success(res.data);
         },
-        fail: function (res) { },
-        complete: function (res) { },
+        fail: function (res) { 
+          typeof fail == "function" && fail(res.data);
+        }
       });
-    },
-    fail: function(res) {},
-    complete: function(res) {},
+    }
   })
   
 
@@ -83,10 +81,11 @@ function hold(customerId, carId, appointmentTime, success, fail){
     },
     method: 'POST',
     success: function (res) {
-
+      typeof success == "function" && success(res.data);
     },
-    fail: function (res) { },
-    complete: function (res) { },
+    fail: function (res) { 
+      typeof fail == "function" && fail(res.data);
+    }
   });
 
 }
@@ -102,10 +101,11 @@ function computeFee(customerId, carId, recordId, success, fail){
     },
     method: 'POST',
     success: function (res) {
-
+      typeof success == "function" && success(res.data);
     },
-    fail: function (res) { },
-    complete: function (res) { },
+    fail: function (res) { 
+      typeof fail == "function" && fail(res.data);
+    }
   });
 
 }

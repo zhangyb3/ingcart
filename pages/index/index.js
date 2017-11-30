@@ -15,6 +15,10 @@ Page({
     longitude: 0,
 
     timing: false,
+    usingMinutes: 0,
+
+    holding: false,
+    countingMinutes: 0,
 
   },
 
@@ -51,9 +55,7 @@ Page({
     //   },
     // });
 
-    this.setData({
-      timing: true,
-    });
+    
 
   },
 
@@ -104,6 +106,8 @@ Page({
   },
 // 地图控件点击事件
   bindcontroltap: function(e){
+
+
     // 判断点击的是哪个控件 e.controlId代表控件的id，在页面加载时的第3步设置的id
     switch(e.controlId){
       // 点击定位控件
@@ -120,7 +124,37 @@ Page({
               if (res.errMsg == 'scanCode:ok') {
                 var carId = res.result;
                 var customerId = wx.getStorageSync(user.CustomerID);
-                operation.unlock(customerId,carId);
+                var recordId = wx.getStorageSync(user.RecordID);
+
+                //开锁
+                operation.unlock(customerId,carId,
+                (result)=>{
+                  console.log(result);
+                  if(result.status == 200)
+                  {
+                    wx.setStorageSync(user.RecordID, result.data.recordId);
+                    wx.setStorageSync(user.UsingCar, carId);
+                    
+                    //成功即启动计时器
+                    that.setData({
+                      timing: true,
+                    });
+                    //每分钟刷新一下
+                    var myVar = setInterval(
+                      function () { refreshUsingMinutes(that) },
+                      1000 * 60);
+                  }
+                  
+
+                },
+                ()=>{});
+
+                // operation.lock(customerId, carId, recordId,
+                //   (result) => {
+                //     console.log(result);
+                    
+                //   },
+                //   () => { });
               
               }
 
@@ -169,27 +203,6 @@ Page({
       });
 
 
-
-      // mapCtx.includePoints({
-      //   padding: [10],
-      //   points: [{
-      //     latitude: latitude,
-      //     longitude: longitude
-      //   }]
-      // });
-      // mapCtx.translateMarker({
-      //   markerId: 0,
-      //   autoRotate: true,
-      //   duration: 1000,
-      //   destination: {
-      //     latitude: latitude,
-      //     longitude: longitude,
-      //   },
-      //   animationEnd() {
-      //     console.log('animation end')
-      //   }
-      // });
-
         this.setData({
           markers: this.data._markers
         })
@@ -233,7 +246,7 @@ function loginSystem(that) {
     }
   })
 
-
+  var that_ = that;
   //登录
   login.login(
     () => {
@@ -259,18 +272,62 @@ function loginSystem(that) {
           
           else {
             wx.setStorageSync('alreadyRegister', 'yes');
-            wx.setStorageSync(user.CustomerID, registerInfo.id);
+            wx.setStorageSync(user.CustomerID, registerInfo.customerId);
             wx.setStorageSync(user.Description, registerInfo.description);
             wx.setStorageSync(user.Status, registerInfo.status);
-            wx.setStorageSync(user.UsingCar, registerInfo.carid);
-            wx.setStorageSync(user.RecordID, registerInfo.recordid);
-            wx.setStorageSync(user.UsingCarStatus, registerInfo.carstatus);
+            wx.setStorageSync(user.UsingCar, registerInfo.carId);
+            wx.setStorageSync(user.RecordID, registerInfo.recordId);
+            wx.setStorageSync(user.UsingCarStatus, registerInfo.carStatus);
 
               wx.showToast({
                 title: '已登录',
                 duration: 1200
               });
 
+            
+
+            var that__ = that_;
+            if (wx.getStorageSync(user.UsingCar) != null)
+            {
+              //检查是否保留用车，显示
+              login.checkHoldingMinutes(
+                wx.getStorageSync(user.CustomerID),
+                (result) => {
+                  if(result.status == 200)
+                  {
+                    that.data.holdingMinutes = result.data.time;
+                    that.setData({
+                      holding: true,
+                      holdingMinutes: result.data.time,
+                    });
+
+                    var myVar = setInterval(
+                      function () { refreshHoldingMinutes(that__) },
+                      1000*60);
+                  }
+                },
+              );
+
+              //检查是否用车，显示
+              login.checkUsingMinutes(
+                wx.getStorageSync(user.UsingCar),
+                (result) => {
+                  if (result.status == 200) 
+                  {
+                    that.data.usingMinutes = result.data.time;
+                    that.setData({
+                      timing: true,
+                      usingMinutes: result.data.time,
+                    });
+
+                    var myVar = setInterval(
+                      function () { refreshUsingMinutes(that__) },
+                      1000*60);
+                  }
+                },
+              ); 
+            }
+             
             
           }
 
@@ -323,10 +380,10 @@ function refreshPage(the){
           id: 1,
           iconPath: '/images/location.png',
           position: {
-            left: 20,
-            top: res.windowHeight - 80,
-            width: 50,
-            height: 50
+            left: 15,
+            top: res.windowHeight - 60,
+            width: 40,
+            height: 40
           },
           clickable: true
         },
@@ -334,10 +391,10 @@ function refreshPage(the){
           id: 2,
           iconPath: '/images/use.png',
           position: {
-            left: res.windowWidth / 2 - 70,
+            left: res.windowWidth / 2 - 105,
             top: res.windowHeight - 72,
-            width: 140,
-            height: 34
+            width: 210,
+            height: 51
           },
           clickable: true
         },
@@ -345,10 +402,10 @@ function refreshPage(the){
           id: 3,
           iconPath: '/images/warn.png',
           position: {
-            left: 20,
-            top: res.windowHeight - 160,
-            width: 50,
-            height: 50
+            left: 15,
+            top: res.windowHeight - 100,
+            width: 40,
+            height: 40
           },
           clickable: true
         },
@@ -367,10 +424,10 @@ function refreshPage(the){
           id: 5,
           iconPath: '/images/avatar.png',
           position: {
-            left: res.windowWidth - 68,
-            top: res.windowHeight - 80,
-            width: 50,
-            height: 50
+            left: res.windowWidth - 50,
+            top: res.windowHeight - 60,
+            width: 40,
+            height: 40
           },
           clickable: true
         }]
@@ -414,5 +471,47 @@ function showNearbyCars(longitude,latitude,the){
     fail: function(res) {},
     complete: function(res) {},
   })
+
+}
+
+
+
+
+function refreshUsingMinutes(the){
+
+  var that = the;
+  login.checkUsingMinutes(
+    wx.getStorageSync(user.UsingCar),
+    (result) => {
+      if (result.status == 200) {
+        that.data.usingMinutes = result.data.time;
+        that.setData({
+          // timing: true,
+          usingMinutes: result.data.time,
+        });
+
+        
+      }
+    },
+  ); 
+
+}
+
+function refreshHoldingMinutes(the) {
+
+  var that = the;
+  login.checkHoldingMinutes(
+    wx.getStorageSync(user.CustomerID),
+    (result) => {
+      if (result.status == 200) {
+        that.data.holdingMinutes = result.data.time;
+        that.setData({
+          holding: true,
+          holdingMinutes: result.data.time,
+        });
+
+      }
+    },
+  );
 
 }

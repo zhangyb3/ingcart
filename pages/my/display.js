@@ -37,7 +37,12 @@ Page({
         var info = res.data.data;
         that.data.account = info;
 
-        
+        wx.setStorageSync(user.CustomerID, info.cuustommerId);
+        wx.setStorageSync(user.Description, info.description);
+        wx.setStorageSync(user.Status, info.status);
+        wx.setStorageSync(user.UsingCar, info.carId);
+        wx.setStorageSync(user.RecordID, info.recordId);
+        wx.setStorageSync(user.UsingCarStatus, info.carStatus);
       },
       fail: function(res) {},
       complete: function(res) {

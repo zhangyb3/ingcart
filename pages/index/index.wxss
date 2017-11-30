@@ -19,3 +19,5 @@
 @import "../pop/mask.wxss";
 
 @import "../pop/using.wxss";
+
+@import "../pop/holding.wxss";

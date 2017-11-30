@@ -1,0 +1,16 @@
+
+
+<template name="holding_timer">
+
+   
+    
+    
+    <view id="holding_timer_container"  >
+      <text id="time_num" >{{holdingMinutes}}</text>
+      <text>取消保留</text>
+    </view>
+    
+
+
+
+</template>
