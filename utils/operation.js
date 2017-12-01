@@ -143,7 +143,12 @@ function checkUsingMinutes(carId, success, fail) {
       },
       method: 'GET',
       success: function (res) {
-        typeof success == "function" && success(res.data);
+        var result = res;
+        normalUpdateCustomerStatus(
+          wx.getStorageSync(user.CustomerID),
+          () => {
+            typeof success == "function" && success(result.data);
+          });
       },
       fail: function (res) {
         typeof fail == "function" && fail(res.data);
@@ -156,7 +161,7 @@ function checkUsingMinutes(carId, success, fail) {
 
 function checkHoldingMinutes(customerId, success, fail) {
 
-  if (customerId != null) {
+  if (customerId != null && wx.getStorageSync(user.UsingCarStatus) == 2)  {
     wx.request({
       url: config.PytheRestfulServerURL + '/save/time',
       data: {
@@ -164,7 +169,12 @@ function checkHoldingMinutes(customerId, success, fail) {
       },
       method: 'GET',
       success: function (res) {
-        typeof success == "function" && success(res.data);
+        var result = res;
+        normalUpdateCustomerStatus(
+          customerId,
+          () => {
+            typeof success == "function" && success(result.data);
+          });
       },
       fail: function (res) {
         typeof fail == "function" && fail(res.data);
@@ -185,7 +195,7 @@ function normalUpdateCustomerStatus(customerId, success, fail)
     method: 'GET',
     dataType: '',
     success: function (res) {
-      console.log(res);
+      // console.log(res);
       var info = res.data.data;
 
       wx.setStorageSync(user.CustomerID, info.customerId);

@@ -7,8 +7,8 @@
   
   background-color: white;
     
-  height: 100px;
-  line-height: 100px;
+  height: 100rpx;
+  line-height: 100rpx;
 
   position: absolute;
   top: 0rpx;
@@ -17,28 +17,64 @@
   opacity: 1;
 
   text-align: center;
-  font-size: 28px;
+  font-size: 28rpx;
 
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-#holding_time_num{
-  font-size: 50px;
-  color: orange;
+#holding_hint_container{
+  
+  height: 100rpx;
+  line-height: 100rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40%;
 }
 
 #holding_hint{
-  font-size: 32px;
+  font-size: 30rpx;
   color: orangered;
 }
 
+#holding_time_num_container{
+  
+  height: 100rpx;
+  line-height: 100rpx;
+  align-items: center;
+  width: 40%;
+
+}
+
+#holding_time_num_text{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  margin-right: 30rpx;
+}
+
+#holding_time_num{
+  font-size: 50rpx;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  color: orange;
+}
+
+
+
 #cancel_holding_container{
   background-color: #f6f6f6;
+  height: 100rpx;
+  line-height: 100rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 20%;
 }
 
 #cancel_holding{
-  font-size: 32px;
+  font-size: 32rpx;
   color: orange;
 }

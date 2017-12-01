@@ -145,6 +145,16 @@ Page({
                 //         function () { refreshUsingMinutes(that) },
                 //         1000 * 60);
                 //     }
+                //     else
+                //     {
+                //       wx.showModal({
+                //         title: '状态 ' + result.status,
+                //         content: result.msg,
+                //         confirmText: '',
+                //         confirmColor: '',
+                
+                //       })
+                //     }
                     
                 //   },
                 //   ()=>{}
@@ -318,7 +328,8 @@ function loginSystem(that) {
                 operation.checkHoldingMinutes(
                   wx.getStorageSync(user.CustomerID),
                   (result) => {
-                    if (result.status == 200) {
+                    if (result.status == 200) 
+                    {
                       that.data.holdingMinutes = result.data.time;
                       that.setData({
                         holding: true,
@@ -328,6 +339,19 @@ function loginSystem(that) {
                       var myVar = setInterval(
                         function () { refreshHoldingMinutes(that__) },
                         1000 * 60);
+                    }
+                    else
+                    {
+                      that.setData({
+                        holding: false,
+                      });
+                      wx.showModal({
+                        title: '状态 ' + result.status,
+                        content: result.msg,
+                        confirmText: '',
+                        confirmColor: '',
+
+                      });
                     }
                   },
                 );
@@ -539,6 +563,19 @@ function refreshHoldingMinutes(the) {
         });
 
       }
+      else
+      {
+        that.setData({
+          holding: false,
+        });
+        wx.showModal({
+          title: '状态 ' + result.status,
+          content: result.msg,
+          confirmText: '',
+          confirmColor: '',
+
+        });
+      }
     },
   );
 
@@ -579,9 +616,15 @@ function selectHoldTime(appointmentTime,the){
     (result) => {
       console.log("select hold time: " + result.data);
       that.setData({
+        holding: true,
         selection_after_lock: false,
         select_hold_time: false,
       });
+      //启动周期检查
+      refreshHoldingMinutes(that);
+      var myVar = setInterval(
+        function () { refreshHoldingMinutes(that) },
+        1000 * 60);
     }
   );
 

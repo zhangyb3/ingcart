@@ -6,10 +6,18 @@
     
     
     <view id="holding_timer_container"  >
-      <text id="holding_hint">共享车保留预约中</text>
-      <text>剩余时间：</text>
-      <text id="holding_time_num" >{{holdingMinutes}}</text>
-      <text>分钟</text>
+      <view id="holding_hint_container">
+        <text id="holding_hint">共享车保留预约中</text>
+      </view>
+      
+      <view id="holding_time_num_container">
+        <view id="holding_time_num_text">
+          <text>剩余时间：</text>
+          <text id="holding_time_num" >{{holdingMinutes}}</text>
+          <text>分钟</text>
+        </view>      
+      </view>
+     
       <view id="cancel_holding_container">
         <text id="cancel_holding">取消保留</text>
       </view>
