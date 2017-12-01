@@ -67,4 +67,19 @@ page{
   text-align: right;
 }
 
+.history_record{
+  width: 50%;
+  text-align: left;
+}
+
+.record_quantity{
+  width: 20%;
+  text-align: right;
+}
+
+.record_operation{
+  width: 30%;
+  text-align: right;
+}
+
 @import "../section/line_item.wxss";

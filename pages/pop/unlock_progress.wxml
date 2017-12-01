@@ -1,0 +1,15 @@
+
+
+<template name="unlock_progress">
+
+   
+    <view class="unlock_progress_container"  >
+    
+      <progress id="unlock_progress_percent" percent="100" stroke-width="12" active color="orange" show-info/>
+    
+    </view>
+    
+
+
+
+</template>

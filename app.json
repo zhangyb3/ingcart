@@ -5,6 +5,7 @@
     "pages/scanresult/index",
     "pages/bill/list",
     "pages/my/display",
+    "pages/my/history",
     "pages/wallet/total",
     "pages/wallet/charge",
     "pages/register/register",

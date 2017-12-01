@@ -1,0 +1,19 @@
+
+.unlock_progress_container {
+    position: fixed;
+    background-color: white;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 11;
+    opacity: 1;
+}
+
+#unlock_progress_percent{
+
+  margin-top: 50%;
+  width: 80%;
+  margin-left: 10%;
+
+}

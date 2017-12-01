@@ -1,0 +1,50 @@
+
+#bill_notify_container{
+
+  position: relative;
+  width: 80%;
+  height: 50%;
+
+  border-radius: 10px;
+
+  background-color: white;
+  margin-top: 25%;
+  margin-left: 10%;
+
+  z-index: 20;
+  opacity: 1;
+
+
+  font-size: 36rpx;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+#bill_notify_text{
+
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+#thanks_text{
+  padding-top: 30px;
+  color: orange; 
+}
+
+#complain_hint{
+  
+  font-size: 28rpx;
+  color: lightgray;
+}
+
+#close_notify{
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  width: 15px;
+  height: 15px;
+}

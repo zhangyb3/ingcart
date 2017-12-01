@@ -5,7 +5,7 @@
 </view>
 
 <import src="../pop/mask.wxml" />
-<template is="register_lock_mask" wx:if="{{alreadyRegister == 'no' || selection_after_lock == true || select_hold_time == true}}"></template>
+<template is="register_lock_mask" wx:if="{{alreadyRegister == 'no' || selection_after_lock == true || select_hold_time == true || notify_bill == true}}"></template>
 
 <import src="../pop/using.wxml" />
 <template is="using_timer" wx:if="{{timing == true}}" data="{{usingMinutes}}"></template>
@@ -19,3 +19,9 @@
 
 <import src="../pop/select_hold_time.wxml" />
 <template is="select_hold_time" wx:if="{{select_hold_time == true}}" ></template>
+
+<import src="../pop/bill_notify.wxml" />
+<template is="bill_notify" wx:if="{{notify_bill == true}}" data="{{price,duration}}"></template>
+
+<import src="../pop/unlock_progress.wxml" />
+<template is="unlock_progress" wx:if="{{unlock_progress == true}}" ></template>

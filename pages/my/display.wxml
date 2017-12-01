@@ -36,9 +36,22 @@
           <text>></text>
         </view>
       </view>
-      
+      <view class="split_line"></view>   
     </view>
 
+    <view class="line_item_container" bindtap="toHistory">
+      <view class="line_item">
+        <view class="line_include_item_container history_record">
+          <text >历史行程</text>
+        </view>
+        <view class="line_include_item_container record_quantity">
+          <text></text>
+        </view>
+        <view class="line_include_item_container record_operation">
+          <text>></text>
+        </view>
+      </view>
+    </view>
 
     <!--<button bindtap="loginORlogout" class="switchID" >切换账号</button>-->
     

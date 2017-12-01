@@ -22,6 +22,7 @@ Page({
 
     selection_after_lock: false,
     select_hold_time: false,
+    notify_bill: false,
 
   },
 
@@ -130,6 +131,7 @@ Page({
                 var recordId = wx.getStorageSync(user.RecordID);
 
                 //开锁
+                // that.setData({unlock_progress: true});
                 // operation.unlock(customerId,carId,
                 //   (result)=>{
                 //     console.log(result);
@@ -139,6 +141,7 @@ Page({
                 //       //成功即启动计时器
                 //       that.setData({
                 //         timing: false,
+                //         unlock_progress: false,
                 //       });
                 //       //每分钟刷新一下
                 //       var myVar = setInterval(
@@ -244,6 +247,12 @@ Page({
 
     selectHoldTime(appointmentTime, this);
 
+  },
+
+  confirmBill:function(e){
+    this.setData({
+      notify_bill: false,
+    });
   },
 
 })
@@ -593,6 +602,9 @@ function lockToPay(the){
       that.setData({
         selection_after_lock: false,
         select_hold_time: false,
+        notify_bill: true,
+        price: result.data.price,
+        duration: result.data.time,
       });
     }
   );
