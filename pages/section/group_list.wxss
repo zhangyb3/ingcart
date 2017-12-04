@@ -1,0 +1,25 @@
+
+#group_list_container{
+
+
+
+}
+
+#record_date{
+
+  width: 100%;
+  padding-top: 20rpx;
+  padding-bottom: 20rpx;
+  color: lightgray;
+  font-size: 40rpx;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+}
+
+.group_split{
+
+  height: 10rpx;
+  background-color: lightgray;
+}
+
+@import "../section/history_record_list.wxss";

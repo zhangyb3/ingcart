@@ -1,1 +1,3 @@
-/* pages/my/history.wxss */
+
+
+@import "../section/group_list.wxss";

@@ -83,14 +83,15 @@ function lock(customerId, carId, recordId, success, fail){
 
 }
 
-function hold(customerId, carId, appointmentTime, success, fail){
+function hold(customerId, carId, appointmentTime, recordId, success, fail){
 
   wx.request({
     url: HOLD_URL,
     data: {
       customerId: customerId,
       carId: carId,
-      appointmentTime: appointmentTime
+      appointmentTime: appointmentTime,
+      recordId: recordId,
     },
     method: 'POST',
     success: function (res) {

@@ -1,0 +1,33 @@
+
+<import src="../section/history_record_list.wxml" />
+
+<template name="group_list">
+
+   
+
+    
+    <view id="group_list_container"  >
+      
+      <scroll-view  upper-threshold="0" lower-threshold="50" scroll-y="true" style="height:{{scrollHeight}}px;width:100%;" bindscrolltolower="onLoadMore" bindscrolltoupper="onRefresh">
+          
+
+          <block wx:for="{{history_date}}" wx:for-item="date" wx:for-index="date_key" wx:key="unique">
+            
+            <text id="record_date">·{{date}}</text>
+            
+              <template is="history_record_list" data="{{date,date_key,history_record}}"></template>
+            
+            <view class="group_split"></view>
+
+          </block>
+
+          
+
+      </scroll-view>
+
+    </view>
+    
+    
+
+
+</template>

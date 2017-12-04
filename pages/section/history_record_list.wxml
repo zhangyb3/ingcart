@@ -1,0 +1,32 @@
+
+
+<template name="history_record_list">
+
+            
+
+          <block wx:for="{{history_record[date_key]}}" wx:for-item="item" wx:for-index="index" wx:key="unique">
+            
+            <view id="record_item" class="line_item">
+
+                <view class="line_include_item_container hour_minute">
+                  <text>{{item.recordId}}</text>
+                </view>
+
+                <view class="line_include_item_container duration">
+                  <text></text>
+                </view>
+
+                <view class="line_include_item_container amount">
+                  <text>{{item.amount}}元</text>
+                </view>
+
+            </view>
+
+            
+            
+          </block>
+
+          
+
+
+</template>

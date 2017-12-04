@@ -87,4 +87,13 @@ Page({
     })
   },
 
+  toHistory: function() {
+    wx.navigateTo({
+      url: 'history',
+      success: function(res) {},
+      fail: function(res) {},
+      complete: function(res) {},
+    })
+  },
+
 })

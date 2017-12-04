@@ -2,7 +2,6 @@ var netUtil=require("../utils/netUtil.js");
 var config=require("../utils/config.js");
 var user=require("../utils/user.js");
 
-var wxTimer = require("../utils/wxTimer.js");
 
 var actions = netUtil.action;
 
@@ -97,65 +96,35 @@ function loadList(page,list_type,basic_url,urlDetail,page_size,setNetparams,getL
     
 
     page.onPullDownRefresh = function(){
-      if(page.data.requestingResultList == false){
+      
         if(list_type == 'index'){
-            page.data.infos=[];//知列表
-
-            /**
-             * 下拉时更新不同模式的知列表，requestSimpleList是异步加载，所以要有信号量判断是否已加载完成，否则无法使用另一种模式
-             */
-            // if(wx.getStorageSync('index_load_type') == 'one' && wx.getStorageSync('end_load') == 'yes')
-            // {
-            //     // page.data.urlDetail = page.data.urlDetail + '/two';
-            //     page.setNetparams.q = null;
-            //     page.setNetparams.gradeId = wx.getStorageSync(user.GradeID);
-            //     page.getListFromNetData = getListFromNetData;
-            //     page.data.basic_url = config.PytheRestfulServerURL;
-            //     page.data.urlDetail = '/index/defaultList/two';
-            //     wx.setStorageSync('end_load', 'no');
-            //     netUtil.requestSimpleList(page,list_type,1,netUtil.action.request_refresh);
-            //     wx.setStorageSync('index_load_type', 'two');
-            // }
-            // if(wx.getStorageSync('index_load_type') == 'two' && wx.getStorageSync('end_load') == 'yes')
-            // {
-            //     // var urlstr = page.data.urlDetail;
-            //     // urlstr = urlstr.slice(0,urlstr.length-4);
-            //     // page.data.urlDetail = urlstr;
-            //     page.setNetparams.q = null;
-            //     page.setNetparams.gradeId = wx.getStorageSync(user.GradeID);
-            //     page.getListFromNetData = getListFromNetData;
-            //     page.data.basic_url = config.PytheRestfulServerURL;
-            //     page.data.urlDetail = '/index/defaultList';
-            //     wx.setStorageSync('end_load', 'no');
-            //     netUtil.requestSimpleList(page,list_type,1,netUtil.action.request_refresh);
-            //     wx.setStorageSync('index_load_type', 'one');
-            // }
-
+            page.data.infos=[];
         }
         
-        
+        if (list_type == 'history_record') {
+          page.data.history_date = [];
+          page.data.history_record = {};
+        }
+
         else 
         {
             netUtil.requestSimpleList(page,list_type,1,netUtil.action.request_refresh);
         }
-        page.data.requestingResultList = true;
-      }
+        
     };
 
     page.onReachBottom = function(){
-      if(page.data.requestingResultList == false){
-        if(page.data.list_mode == 'subject_list')
-        {
-            wx.stopPullDownRefresh();
-        }
-        else if(page.data.list_mode == 'teacher_list')
-        {
-            netUtil.requestSimpleList(page,'index_search_teacher',page.data.currentPageIndex +1,netUtil.action.request_refresh);
-        }
-        
-        else if (page.data.list_mode == 'nearest_orgs') {
+
+      
+        if (page.data.list_mode == 'nearest_orgs') {
           
           page.data.urlDetail = "/nearestOrgs";
+          netUtil.requestSimpleList(page, 'nearest_orgs', page.data.currentPageIndex + 1, netUtil.action.request_loadmore);
+        }
+
+        if (list_type == 'history_record') {
+
+          page.data.urlDetail = "/user/trip";
           netUtil.requestSimpleList(page, 'nearest_orgs', page.data.currentPageIndex + 1, netUtil.action.request_loadmore);
         }
         
@@ -163,8 +132,7 @@ function loadList(page,list_type,basic_url,urlDetail,page_size,setNetparams,getL
         {
             netUtil.requestSimpleList(page,list_type,page.data.currentPageIndex +1,netUtil.action.request_loadmore);
         }
-        page.data.requestingResultList = true;
-      }
+        
     };
 
     page.onLoadMore = page.onReachBottom;
@@ -179,7 +147,7 @@ function loadList(page,list_type,basic_url,urlDetail,page_size,setNetparams,getL
     
     {
       netUtil.requestSimpleList(page, list_type, 1, netUtil.action.request_refresh);
-      page.data.requestingResultList = true;
+      
     }
     
     

@@ -625,6 +625,7 @@ function selectHoldTime(appointmentTime,the){
     wx.getStorageSync(user.CustomerID),
     wx.getStorageSync(user.UsingCar),
     appointmentTime,
+    wx.getStorageSync(user.RecordID),
     (result) => {
       console.log("select hold time: " + result.data);
       that.setData({

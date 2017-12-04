@@ -1,4 +1,4 @@
-var timer = require("../utils/wxTimer.js");
+
 
 var util = require("./util.js");
 
@@ -373,21 +373,35 @@ function requestSimpleList(that,list_type,pageIndex,action,requestMethod){
 
 
         var concatDatas = [];
-        for(var count = 0; count < currentDatas.length; count++)
+        if (list_type == 'history_record')
         {
-            // console.log(currentDatas[count]);
-            var temp = currentDatas[count];
-            
-            if(list_type == 'teacher')
-            {
-                var isClick = temp.isClick;
-                temp = JSON.parse(temp.question);
-                temp.isClick = isClick;
-            }
-           
+          that.data.history_date = currentDatas.historyDate;
+          // that.data.history_record = currentDatas.record;
+          for (var count = 0; count < currentDatas.historyDate.length; count++) {
+            var key = currentDatas.historyDate[count];
+            var temp = currentDatas.record[key];
             console.log(temp);
+
+
             concatDatas[count] = temp;
+          }
         }
+
+        // for(var count = 0; count < currentDatas.length; count++)
+        // {
+        //     console.log(currentDatas[count]);
+        //     var temp = currentDatas[count];
+        //     console.log(temp);
+        //     if(list_type == 'teacher')
+        //     {
+        //         var isClick = temp.isClick;
+        //         temp = JSON.parse(temp.question);
+        //         temp.isClick = isClick;
+        //     }
+           
+        //     console.log(temp);
+        //     concatDatas[count] = temp;
+        // }
 
         //数据的一些处理,包括了一维和二维数组的处理,全部都解析到单个item层次返回
         concatDatas.forEach(function(info){
@@ -425,12 +439,17 @@ function requestSimpleList(that,list_type,pageIndex,action,requestMethod){
             console.log('before setData----------'+that.data.infos);
             that.setData({infos:that.data.infos});
         }
-        if(list_type == 'teacher'){
-            //滑动列表结尾追加数据
-                        that.data.ask_teacher_list=that.data.ask_teacher_list.concat(concatDatas);
-            console.log('before setData----------'+that.data.ask_teacher_list);
-            that.setData({ask_teacher_list:that.data.ask_teacher_list});
+
+        if (list_type == 'history_record') {
+          //滑动列表结尾追加数据
+          that.data.history_record = that.data.history_record.concat(concatDatas);
+          console.log('before setData----------' + that.data.history_date);
+          that.setData({ 
+            history_record: that.data.history_record,
+            history_date: that.data.history_date,
+          });
         }
+        
         
 
     };

@@ -1,0 +1,32 @@
+
+#history_record_list_container{
+
+  
+
+}
+
+.hour_minute{
+
+  width: 30%;
+  font-size: 32rpx;
+  text-align: center;
+
+}
+
+.duration{
+
+  width: 20%;
+  font-size: 32rpx;
+  text-align: center;
+
+}
+
+.amount{
+
+  width: 50%;
+  font-size: 32rpx;
+  text-align: center;
+
+}
+
+@import "../section/line_item.wxss";
