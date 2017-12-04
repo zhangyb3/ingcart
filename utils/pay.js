@@ -1,6 +1,8 @@
 
 var config = require('./config')
 var user = require('./user')
+var util = require('./util')
+
 
 const ORDER_URL = `${config.PytheRestfulServerURL}/user/pay/information`;//下单
 
@@ -16,19 +18,21 @@ const CHARGE_CONFIRM_URL = `${config.PytheRestfulServerURL}/account/wxChargeConf
 function requestOrder(the, chargeFee,success,fail) {
   var sessionID = wx.getStorageSync(user.SessionID);
   var openID = wx.getStorageSync(user.OpenID);
+
+  var parameters = {
+    session_id: sessionID,
+    mch_id: config.MerchantID,
+    body: "ingcart_charge",
+    total_fee: 0.01,
+    notify_url: "https://xue.pythe.cn",
+    trade_type: "JSAPI",
+    openId: openID
+  };
+
+
   wx.request({
     url: CHARGE_ORDER_URL,
-    data: {
-
-      session_id: sessionID,
-      mch_id: config.MerchantID,
-      body: "ingcart_charge",
-      total_fee: 0.01,
-      notify_url: "https://xue.pythe.cn",
-      trade_type: "JSAPI",
-      openId: openID
-
-    },
+    data: util.encode(JSON.stringify(parameters)),
     method: 'POST',
     success: function (res) {
       typeof success == "function" && success(res.data);
