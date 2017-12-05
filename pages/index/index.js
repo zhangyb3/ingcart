@@ -236,6 +236,7 @@ Page({
   },
 
   lockToPay:function(e){
+    this.data.payFormId = e.detail.formId;
     lockToPay(this);
   },
   lockToHold:function(e){
@@ -597,6 +598,7 @@ function lockToPay(the){
     wx.getStorageSync(user.CustomerID),
     wx.getStorageSync(user.UsingCar),
     wx.getStorageSync(user.RecordID),
+    that.data.payFormId,
     (result)=>{
       console.log("compute fee: " + result.data);
       that.setData({

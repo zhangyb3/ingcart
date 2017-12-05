@@ -17,6 +17,9 @@ const COMPUTEFEE_URL = `${config.PytheRestfulServerURL}/use/computeFee`;
 //更新客户状态
 const UPDATE_CUSTOMER_STATUS_URL = `${config.PytheRestfulServerURL}/customer/select`;
 
+//服务通知支付状态
+const NOTIFY_PAY_INFO_URL = `${config.PytheRestfulServerURL}/message/notifyPay`;
+
 function unlock(customerId, carId, success, fail){
 
   wx.getLocation({
@@ -109,14 +112,15 @@ function hold(customerId, carId, appointmentTime, recordId, success, fail){
 
 }
 
-function computeFee(customerId, carId, recordId, success, fail){
+function computeFee(customerId, carId, recordId, formId, success, fail){
 
   wx.request({
     url: COMPUTEFEE_URL,
     data: {
       customerId: customerId,
       carId: carId,
-      recordId: recordId
+      recordId: recordId,
+      formId: formId
     },
     method: 'POST',
     success: function (res) {
@@ -214,6 +218,11 @@ function normalUpdateCustomerStatus(customerId, success, fail)
   });
 }
 
+function notifyPayInfo(){
+
+
+
+}
 
 module.exports = {
   unlock: unlock,
@@ -224,5 +233,7 @@ module.exports = {
   checkUsingMinutes: checkUsingMinutes,
   checkHoldingMinutes: checkHoldingMinutes,
 
-  normalUpdateCustomerStatus: normalUpdateCustomerStatus
+  normalUpdateCustomerStatus: normalUpdateCustomerStatus,
+
+  notifyPayInfo: notifyPayInfo
 }
