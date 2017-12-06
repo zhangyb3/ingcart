@@ -18,7 +18,7 @@
 }
 .btn-charge{
 	width: 90%;
-	background-color: #b9dd08;
+	background-color: orange;
 	margin: 40rpx auto 30rpx;
 	text-align: center;
 }

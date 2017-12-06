@@ -13,8 +13,8 @@
   ],
   "window":{
     "backgroundTextStyle":"light",
-    "navigationBarBackgroundColor": "yellow",
-    "navigationBarTitleText": "共享车",
-    "navigationBarTextStyle":"black"
+    "navigationBarBackgroundColor": "#000000",
+    "navigationBarTitleText": "婴咖",
+    "navigationBarTextStyle":"white"
   }
 }

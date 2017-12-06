@@ -375,7 +375,7 @@ function requestSimpleList(that,list_type,pageIndex,action,requestMethod){
         var concatDatas = [];
         if (list_type == 'history_record')
         {
-          that.data.history_date = currentDatas.historyDate;
+          that.data.history_date = that.data.history_date.concat(currentDatas.historyDate);
           // that.data.history_record = currentDatas.record;
           for (var count = 0; count < currentDatas.historyDate.length; count++) {
             var key = currentDatas.historyDate[count];

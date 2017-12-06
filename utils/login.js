@@ -171,7 +171,7 @@ var remoteLogin = (success, fail) => {
 
                             var pc = new WXBizDataCrypt(config.AppID,session_key)
                             var result = pc.decryptData(encryptedData,iv);
-                            console.log(result);
+                            console.log("!!!decode: " + JSON.stringify(result));
                             wx.setStorageSync(user.UnionID, result.unionId);
                             
                             typeof success == "function" && success();

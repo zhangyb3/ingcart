@@ -230,9 +230,7 @@ Page({
       });
 
 
-        this.setData({
-          markers: this.data._markers
-        })
+        
     }
   },
 
@@ -271,6 +269,10 @@ Page({
         holding: false,
       });
     });
+  },
+
+  onUnload:function(){
+    wx.clearStorageSync();
   }
 
 })
@@ -542,8 +544,14 @@ function showNearbyCars(longitude,latitude,the){
       }
       else
       {
+        var markers = result.data;
+        for (var k = 0; k < markers.length; k++) {
+          markers[k].iconPath = '/images/markers.png';
+          markers[k].width = 43;
+          markers[k].height = 47;
+        }
         that.setData({
-          markers: result.data,
+          markers: markers,
         });
       }
     },

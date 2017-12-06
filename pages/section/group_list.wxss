@@ -11,7 +11,7 @@
   padding-top: 20rpx;
   padding-bottom: 20rpx;
   color: lightgray;
-  font-size: 40rpx;
+  font-size: 32rpx;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 
 }

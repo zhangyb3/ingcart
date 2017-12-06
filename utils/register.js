@@ -90,15 +90,15 @@ function commitRegister(the)
             lock_register: false,
           });
         }
-        else if (res.data.data.id != null) {
+        else if (res.data.status == 200) {
           wx.setStorageSync(user.CustomerID, res.data.data.customerId);
 
           wx.setStorageSync(user.Description, res.data.data.description);
           wx.setStorageSync(user.Status, res.data.data.status);
 
-          wx.setStorageSync(user.UsingCar, registerInfo.carId);
-          wx.setStorageSync(user.RecordID, registerInfo.recordId);
-          wx.setStorageSync(user.UsingCarStatus, registerInfo.carStatus);
+          wx.setStorageSync(user.UsingCar, res.data.data.carId);
+          wx.setStorageSync(user.RecordID, res.data.data.recordId);
+          wx.setStorageSync(user.UsingCarStatus, res.data.data.carStatus);
 
           //判断注册是否成功，成功则返回index页面
           wx.setStorageSync('alreadyRegister', 'yes');
