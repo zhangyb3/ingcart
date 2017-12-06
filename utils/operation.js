@@ -20,6 +20,9 @@ const UPDATE_CUSTOMER_STATUS_URL = `${config.PytheRestfulServerURL}/customer/sel
 //服务通知支付状态
 const NOTIFY_PAY_INFO_URL = `${config.PytheRestfulServerURL}/message/notifyPay`;
 
+//取消预约
+const CANCEL_HOLDING_URL = `${config.PytheRestfulServerURL}/cancel/appointment`;
+
 function unlock(customerId, carId, success, fail){
 
   wx.getLocation({
@@ -190,6 +193,32 @@ function checkHoldingMinutes(customerId, success, fail) {
 
 }
 
+
+function cancelHolding(customerId, success, fail){
+
+  wx.request({
+    url: CANCEL_HOLDING_URL,
+    data: {
+      customerId: customerId,
+    },
+    method: 'GET',
+    dataType: '',
+    success: function(res) {
+      var result = res;
+      normalUpdateCustomerStatus(
+        customerId,
+        () => {
+          typeof success == "function" && success(result.data);
+        });
+    },
+    fail: function(res) {
+      typeof fail == "function" && fail(res.data);
+    }
+  });
+
+}
+
+
 function normalUpdateCustomerStatus(customerId, success, fail)
 {
   wx.request({
@@ -218,6 +247,8 @@ function normalUpdateCustomerStatus(customerId, success, fail)
   });
 }
 
+
+
 function notifyPayInfo(){
 
 
@@ -232,7 +263,7 @@ module.exports = {
 
   checkUsingMinutes: checkUsingMinutes,
   checkHoldingMinutes: checkHoldingMinutes,
-
+  cancelHolding: cancelHolding,
   normalUpdateCustomerStatus: normalUpdateCustomerStatus,
 
   notifyPayInfo: notifyPayInfo

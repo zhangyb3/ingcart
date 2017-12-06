@@ -18,8 +18,8 @@
         </view>      
       </view>
      
-      <view id="cancel_holding_container">
-        <text id="cancel_holding">取消保留</text>
+      <view id="cancel_holding_container" bindtap="cancelHolding">
+        <text id="cancel_holding" >取消保留</text>
       </view>
       
     </view>

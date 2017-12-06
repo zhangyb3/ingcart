@@ -164,6 +164,10 @@ Page({
                 // );
 
                 //关锁
+                wx.showLoading({
+                  title: '关锁中···',
+                  mask: true,
+                })
                 operation.lock(customerId, carId, recordId,
                   (result) => {
                     console.log(result);
@@ -172,9 +176,11 @@ Page({
                         selection_after_lock: true,
                       });
                     }
-
+                    wx.hideLoading();
                   },
-                  () => { }
+                  () => { 
+                    wx.hideLoading();
+                  }
                 );
               
               }
@@ -255,6 +261,17 @@ Page({
       notify_bill: false,
     });
   },
+
+  cancelHolding:function(e){
+    var that = this;
+    operation.cancelHolding(wx.getStorageSync(user.CustomerID),
+    (res)=>{
+      
+      that.setData({
+        holding: false,
+      });
+    });
+  }
 
 })
 
@@ -622,6 +639,10 @@ function lockToHold(the) {
 
 function selectHoldTime(appointmentTime,the){
 
+  wx.showLoading({
+    title: '',
+    mask: true,
+  });
   var that = the;
   operation.hold(
     wx.getStorageSync(user.CustomerID),
@@ -640,6 +661,8 @@ function selectHoldTime(appointmentTime,the){
       var myVar = setInterval(
         function () { refreshHoldingMinutes(that) },
         1000 * 60);
+
+      wx.hideLoading();
     }
   );
 

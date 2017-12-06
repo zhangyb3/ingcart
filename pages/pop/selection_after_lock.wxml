@@ -12,11 +12,13 @@
 
       <view class="selections">
 
-        <form bindsubmit="lockToPay" report-submit='true' >
-        <button class="compute_fee selection" form-type="submit">结束计费</button>
+        <form class="selection" bindsubmit="lockToPay" report-submit='true' >
+          <button class="compute_fee" form-type="submit">结束计费</button>
         </form>
 
-        <button class="hold_car selection" bindtap="lockToHold">保留用车</button>
+        <form class="selection" bindsubmit="lockToHold" report-submit='true' >
+          <button class="hold_car" form-type="submit">保留用车</button>
+        </form>
 
       </view>
 
