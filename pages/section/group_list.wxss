@@ -1,15 +1,17 @@
 
-#group_list_container{
 
+#record_date_container{
 
-
+  height: 50rpx;
+  line-height: 50rpx;
+  padding-top: 20rpx;
+  padding-bottom: 20rpx;
 }
 
 #record_date{
 
   width: 100%;
-  padding-top: 20rpx;
-  padding-bottom: 20rpx;
+  
   color: lightgray;
   font-size: 32rpx;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -17,7 +19,8 @@
 }
 
 .group_split{
-
+  width: 95%;
+  margin-left: 5%;
   height: 10rpx;
   background-color: lightgray;
 }

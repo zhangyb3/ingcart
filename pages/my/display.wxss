@@ -1,12 +1,12 @@
 /* pages/my/index.wxss */
 
 page{
-  background-color: lightgray;
+  background-color: #ffffff;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .user-info{
-	background-color: lightgray;
+	background-color: #f6f6f6;
 	padding-top: 50rpx;
 }
 .user-info image{
@@ -14,7 +14,7 @@ page{
 	width: 150rpx;
 	height: 150rpx;
 	border-radius: 50%;
-	margin: 0 auto 40rpx;
+	margin: 0 auto ;
 	box-shadow: 0 0 20rpx rgba(0,0,0,.2)
 }
 .user-info text{
@@ -22,7 +22,7 @@ page{
 	display: block;
 	text-align: center;
 	padding: 20rpx 0;
-	margin-bottom: 20rpx;
+	/*margin-bottom: 20rpx;*/
 }
 .switchID{
 	position: absolute;
@@ -40,6 +40,8 @@ page{
 .account_amount{
   width: 20%;
   text-align: right;
+  display: float;
+  /*flex-direction: row;*/
 }
 
 .account_operation{
@@ -60,6 +62,8 @@ page{
 .card_quantity{
   width: 20%;
   text-align: right;
+  display: float;
+  /*flex-direction: row;*/
 }
 
 .card_operation{
@@ -80,6 +84,11 @@ page{
 .record_operation{
   width: 30%;
   text-align: right;
+}
+
+#operation{
+  width: 45rpx;
+  height: 45rpx;
 }
 
 @import "../section/line_item.wxss";

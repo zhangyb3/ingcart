@@ -24,21 +24,26 @@
 
 }
 
-#bill_notify_text{
 
-  padding-top: 10px;
-  padding-bottom: 10px;
+#arrearage_image{
+
+  margin-top: 40px;
+  margin-bottom: 40px;
+  width: 78px;
+  height: 50px;
+
 }
 
-#thanks_text{
-  padding-top: 30px;
-  color: orange; 
+#arrearage_text{
+  margin-top: 20rpx;
+  margin-bottom: 20rpx;
 }
 
-#complain_hint{
-  
-  font-size: 28rpx;
-  color: lightgray;
+#to_charge_button{
+  height: 50rpx;
+  width: 60%;
+  background-color: orange;
+  color: white;
 }
 
 #close_notify{

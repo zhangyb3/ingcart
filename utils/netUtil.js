@@ -315,6 +315,8 @@ function request(requestConfig){
            wx.setStorageSync('end_load', 'yes');
             // that.setData({hidden:true,toast:true});
            requestConfig.page.data.requestingResultList = false;
+
+           wx.hideLoading();
         }
     })
 }
@@ -375,16 +377,38 @@ function requestSimpleList(that,list_type,pageIndex,action,requestMethod){
         var concatDatas = [];
         if (list_type == 'history_record')
         {
-          that.data.history_date = that.data.history_date.concat(currentDatas.historyDate);
-          // that.data.history_record = currentDatas.record;
-          for (var count = 0; count < currentDatas.historyDate.length; count++) {
-            var key = currentDatas.historyDate[count];
-            var temp = currentDatas.record[key];
-            console.log(temp);
+          //第一次加载或者刚好每日数据切割与分页吻合
+          if (that.data.history_date.length == 0 || that.data.history_date[that.data.history_date.length - 1] != currentDatas.historyDate[0])
+          {
+            that.data.history_date = that.data.history_date.concat(currentDatas.historyDate);
+            // that.data.history_record = currentDatas.record;
+            for (var count = 0; count < currentDatas.historyDate.length; count++) {
+              var key = currentDatas.historyDate[count];
+              var temp = currentDatas.record[key];
+              console.log(temp);
 
 
-            concatDatas[count] = temp;
+              concatDatas[count] = temp;
+            }
+           
           }
+          else 
+          {
+            //拼接相同日期的纪录
+            var duplicateDate = currentDatas.historyDate.shift();
+            that.data.history_date = that.data.history_date.concat(currentDatas.historyDate);
+            var restRecord = currentDatas.record[duplicateDate];
+            Array.prototype.push.apply(that.data.history_record[that.data.history_date.length - 1], restRecord);
+            for (var count = 0; count < currentDatas.historyDate.length; count++) {
+              var key = currentDatas.historyDate[count];
+              var temp = currentDatas.record[key];
+              console.log(temp);
+
+
+              concatDatas[count] = temp;
+            }
+          }
+          
         }
 
         // for(var count = 0; count < currentDatas.length; count++)
@@ -477,7 +501,7 @@ function requestSimpleList(that,list_type,pageIndex,action,requestMethod){
                             
                 that.setData({ask_teacher_list:[]});
             }
-            
+           
             if (that.hasSuccessed){
                 //showSuccessToast(that,"没有新内容");
             }else {

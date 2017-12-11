@@ -9,31 +9,31 @@
 
     <view class="choose_grids">
       <view class="choose_item" wx:if="{{selectAmount != 10}}" bindtap="selectChargeAmount" data-charge_amount="10">
-        <image class="charge_image" src="../../images/10.jpg"></image>
+        <image class="charge_image" src="../../images/10.png"></image>
       </view>
       <view class="choose_item" wx:if="{{selectAmount == 10}}">
-        <image class="charge_image" src="../../images/10_selected.jpg"></image>
+        <image class="charge_image" src="../../images/10_selected.png"></image>
       </view>
       <view class="choose_item" wx:if="{{selectAmount != 20}}" bindtap="selectChargeAmount" data-charge_amount="20">
-        <image class="charge_image" src="../../images/20.jpg"></image>
+        <image class="charge_image" src="../../images/20.png"></image>
       </view>
       <view class="choose_item" wx:if="{{selectAmount == 20}}">
-        <image class="charge_image" src="../../images/20_selected.jpg"></image>
+        <image class="charge_image" src="../../images/20_selected.png"></image>
       </view>
       <view class="choose_item" wx:if="{{selectAmount != 50}}" bindtap="selectChargeAmount" data-charge_amount="50">  
-        <image class="charge_image" src="../../images/50.jpg"></image>
+        <image class="charge_image" src="../../images/50.png"></image>
       </view>
       <view class="choose_item" wx:if="{{selectAmount == 50}}">  
-        <image class="charge_image" src="../../images/50_selected.jpg"></image>
+        <image class="charge_image" src="../../images/50_selected.png"></image>
       </view>
       <view class="choose_item" wx:if="{{selectAmount != 100}}" bindtap="selectChargeAmount" data-charge_amount="100">
-        <image class="charge_image" src="../../images/100.jpg"></image>
+        <image class="charge_image" src="../../images/100.png"></image>
       </view>
       <view class="choose_item" wx:if="{{selectAmount == 100}}">  
-        <image class="charge_image" src="../../images/100_selected.jpg"></image>
+        <image class="charge_image" src="../../images/100_selected.png"></image>
       </view>
     </view>
 
-    <button bindtap="charge" class="btn-charge">充值</button>
+    <button bindtap="charge" class="btn-charge charge_button">充值</button>
 
 </view>

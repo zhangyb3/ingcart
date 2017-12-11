@@ -115,6 +115,10 @@ function loadList(page,list_type,basic_url,urlDetail,page_size,setNetparams,getL
 
     page.onReachBottom = function(){
 
+      wx.showLoading({
+        title: 'loading...',
+        mask: true,
+      })
       
         if (page.data.list_mode == 'nearest_orgs') {
           
@@ -125,7 +129,7 @@ function loadList(page,list_type,basic_url,urlDetail,page_size,setNetparams,getL
         if (list_type == 'history_record') {
 
           page.data.urlDetail = "/user/trip";
-          netUtil.requestSimpleList(page, 'nearest_orgs', page.data.currentPageIndex + 1, netUtil.action.request_loadmore);
+          netUtil.requestSimpleList(page, 'history_record', page.data.currentPageIndex + 1, netUtil.action.request_loadmore);
         }
         
         else

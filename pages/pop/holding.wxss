@@ -7,8 +7,8 @@
   
   background-color: white;
     
-  height: 100rpx;
-  line-height: 100rpx;
+  height: 150rpx;
+  line-height: 150rpx;
 
   position: absolute;
   top: 0rpx;
@@ -26,8 +26,8 @@
 
 #holding_hint_container{
   
-  height: 100rpx;
-  line-height: 100rpx;
+  height: 150rpx;
+  line-height: 150rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,15 +36,15 @@
 
 #holding_hint{
   font-size: 30rpx;
-  color: orangered;
+  color: orange;
 }
 
 #holding_time_num_container{
   
-  height: 100rpx;
-  line-height: 100rpx;
+  height: 150rpx;
+  line-height: 150rpx;
   align-items: center;
-  width: 40%;
+  width: 30%;
 
 }
 
@@ -60,18 +60,20 @@
   font-size: 50rpx;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   color: orange;
+  margin-left: 10rpx;
+  margin-right: 10rpx;
 }
 
 
 
 #cancel_holding_container{
   background-color: #f6f6f6;
-  height: 100rpx;
-  line-height: 100rpx;
+  height: 150rpx;
+  line-height: 150rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 20%;
+  width: 30%;
 }
 
 #cancel_holding{

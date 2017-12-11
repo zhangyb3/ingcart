@@ -29,3 +29,7 @@
   width: 300rpx;
   height: 100rpx;
 }
+
+.charge_button{
+  color: white;
+}

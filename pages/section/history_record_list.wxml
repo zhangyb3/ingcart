@@ -9,11 +9,11 @@
             <view id="record_item" class="line_item">
 
                 <view class="line_include_item_container hour_minute">
-                  <text>{{item.recordId}}</text>
+                  <text>{{item.duration}}</text>
                 </view>
 
                 <view class="line_include_item_container duration">
-                  <text></text>
+                  <text>{{item.minute}}分钟</text>
                 </view>
 
                 <view class="line_include_item_container amount">

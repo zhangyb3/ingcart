@@ -59,7 +59,9 @@ Page({
     //   },
     // });
 
-    
+    wx.showShareMenu({
+      withShareTicket: true
+    });
 
   },
 
@@ -131,37 +133,45 @@ Page({
                 var recordId = wx.getStorageSync(user.RecordID);
 
                 //开锁
-                // that.setData({unlock_progress: true});
-                // operation.unlock(customerId,carId,
-                //   (result)=>{
-                //     console.log(result);
-                //     if(result.status == 200)
-                //     {
+                that.setData({unlock_progress: true});
+                operation.unlock(customerId,carId,
+                  (result)=>{
+                    console.log(result);
+                    if(result.status == 200)
+                    {
                       
-                //       //成功即启动计时器
-                //       that.setData({
-                //         timing: false,
-                //         unlock_progress: false,
-                //       });
-                //       //每分钟刷新一下
-                //       var myVar = setInterval(
-                //         function () { refreshUsingMinutes(that) },
-                //         1000 * 60);
-                //     }
-                //     else
-                //     {
-                //       wx.showModal({
-                //         title: '状态 ' + result.status,
-                //         content: result.msg,
-                //         confirmText: '',
-                //         confirmColor: '',
-                
-                //       })
-                //     }
+                      //成功即启动计时器
+                      that.setData({
+                        // timing: true,
+                        unlock_progress: false,
+                      });
+                      //每分钟刷新一下
+                      var myVar = setInterval(
+                        function () { refreshUsingMinutes(that) },
+                        1000 * 60);
+                    }
+                    else
+                    {
+                      if(result.status == 300)
+                      {
+                        that.setData({
+                          notify_arrearage: true,
+                          arrearage_amount: result.data,
+                        });
+                      }
+                      else{
+                        that.setData({
+                          unlock_progress: false,
+                          unlock_status: true,
+                          unlock_status_image: '/images/unlock_' + result.status + '.png',
+                        });
+                      }
+                      
+                    }
                     
-                //   },
-                //   ()=>{}
-                // );
+                  },
+                  ()=>{}
+                );
 
                 //关锁
                 wx.showLoading({
@@ -263,12 +273,34 @@ Page({
   cancelHolding:function(e){
     var that = this;
     operation.cancelHolding(wx.getStorageSync(user.CustomerID),
-    (res)=>{
+    (result)=>{
       
       that.setData({
         holding: false,
+        notify_bill: true,
+        price: result.data.price,
+        duration: result.data.time,
       });
+
     });
+  },
+
+  disappearUnlockStatus:function(e){
+    this.setData({
+      unlock_status: false,
+    });
+  },
+
+  toCharge:function(e){
+    this.setData({
+      notify_arrearage: false,
+    });
+    wx.navigateTo({
+      url: '../../wallet/charge',
+      success: function(res) {},
+      fail: function(res) {},
+      complete: function(res) {},
+    })
   },
 
   onUnload:function(){
@@ -373,14 +405,17 @@ function loginSystem(that) {
                     {
                       that.setData({
                         holding: false,
+                        notify_bill: true,
+                        price: result.data.price,
+                        duration: result.data.time,
                       });
-                      wx.showModal({
-                        title: '状态 ' + result.status,
-                        content: result.msg,
-                        confirmText: '',
-                        confirmColor: '',
+                      // wx.showModal({
+                      //   title: '状态 ' + result.status,
+                      //   content: result.msg,
+                      //   confirmText: '',
+                      //   confirmColor: '',
 
-                      });
+                      // });
                     }
                   },
                 );
@@ -395,7 +430,7 @@ function loginSystem(that) {
                     if (result.status == 200) {
                       that.data.usingMinutes = result.data.time;
                       that.setData({
-                        timing: false,
+                        // timing: true,
                         usingMinutes: result.data.time,
                       });
 
@@ -602,14 +637,17 @@ function refreshHoldingMinutes(the) {
       {
         that.setData({
           holding: false,
+          notify_bill: true,
+          price: result.data.price,
+          duration: result.data.time,
         });
-        wx.showModal({
-          title: '状态 ' + result.status,
-          content: result.msg,
-          confirmText: '',
-          confirmColor: '',
+        // wx.showModal({
+        //   title: '状态 ' + result.status,
+        //   content: result.msg,
+        //   confirmText: '',
+        //   confirmColor: '',
 
-        });
+        // });
       }
     },
   );

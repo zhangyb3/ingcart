@@ -10,7 +10,7 @@
         <text id="using_time_num" >{{usingMinutes}}</text>
       </view>
       
-      <text>用车中</text>
+      <text>正在使用中</text>
     </view>
     
 

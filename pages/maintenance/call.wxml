@@ -5,13 +5,13 @@
 
     <view class="maintenance_car_id_container" >
       <view class="maintenance_scan_image_container" bindtap="scanFaultCar">
-        <image id="maintenance_scan_image" src="../../images/uses.png"></image>
+        <image id="maintenance_scan_image" src="../../images/scan_call.png"></image>
       </view>
       <view class="maintenance_scan_car_id_container">
         <view class="maintenance_car_id">
-          <input class="maintenance_car_id_input" value="{{maintenanceCarId}}" bindinput="carIdInput"/>
+          <input class="maintenance_car_id_input" placeholder="扫码或手动输入车号" value="{{maintenanceCarId}}" bindinput="carIdInput"/>
         </view>
-        <view class="maintenance_scan_operation" bindtap="scanFaultCar">轻触左边按钮重新扫码或上方手动输入车号</view>
+        <!--<view class="maintenance_scan_operation" bindtap="scanFaultCar">轻触左边按钮扫码或上方手动输入车号</view>-->
       </view>
     </view>
 
@@ -20,14 +20,15 @@
         <checkbox-group bindchange="checkboxChange" class="choose-grids">
             <block wx:for="{{checkboxItemsValue}}" wx:key="{{item}}">
                 <view class="grid">
-                    <checkbox value="{{item.value}}" checked="{{item.checked}}" color="{{item.color}}" />{{item.value}}
+                    <checkbox value="{{item.value}}" checked="{{item.checked}}" color="{{item.color}}"  style="zoom:80%;"/>{{item.value}}
                 </view>
+                <view class="fill" style="width:25%;"></view>
             </block>
         </checkbox-group>        
     </view>
 
-     <view class="text_edit_textarea_container"  style="width:90%;margin-left:5%;">
-        <textarea class="text_edit_textarea" bindinput="getTextInput" maxlength="{{maxLength}}"  value='{{original}}' auto-height='true' placeholder="备注" placeholder-style="font-size: 12px;color:gray;" style="margin-left: 5%;padding-top: 20rpx;padding-bottom: 20rpx;"/>
+     <view class="text_edit_textarea_container"  style="width:90%;margin-left:5%;min-height:200rpx;">
+        <textarea class="text_edit_textarea" bindinput="getTextInput" maxlength="140"  value='{{original}}' auto-height='true' placeholder="备注" placeholder-style="font-size: 12px;color:gray;" style="margin-left: 5%;padding-top: 20rpx;padding-bottom: 20rpx;"/>
     </view>
 
     <view style="height:20rpx;"></view>

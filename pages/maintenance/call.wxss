@@ -3,9 +3,11 @@
   padding-top: 40rpx;
   width: 90%;
   margin-left: 5%;
-  font-size: 40rpx;
+  margin-bottom: 20rpx;
+  font-size: rpx;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  font-weight: bold;
+  /*font-weight: bold;*/
+  /*text-align: center;*/
 }
 
 .maintenance_car_id_container{
@@ -18,38 +20,58 @@
 }
 
 #maintenance_scan_image{
-  width: 80rpx;
-  height: 80rpx;
+  width: 100rpx;
+  height: 100rpx;
   padding: 20rpx;
+}
+
+.maintenance_scan_car_id_container{
+  /*align-items: center;
+  width: 60%;
+  margin-left: 20%;
+ 
+  padding-top: 20rpx;
+  padding-bottom: 20rpx;
+  border: 1px solid gray;*/
 }
 
 .maintenance_car_id{
   padding: 10rpx;
   font-size: 36rpx;
+  text-align: center;
 }
 
 .maintenance_scan_operation{
   padding: 10rpx;
   font-size: 28rpx;
+  text-align: center;
 }
 
 .choose{
 	background-color: #fff;
+  width:  90%;
+  margin-left: 5%;
 }
 .choose-grids{
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-around;
-	padding: 50rpx;
+	justify-content: space-between;
+
+  padding-top: 40rpx;
+  padding-bottom: 40rpx;
+	/*padding: 50rpx;*/
 }
 .choose-grids .grid{
-	width: 45%;
+	width: 25%;
 	height: 50rpx;
 	padding-top: 10rpx;
   padding-bottom: 10rpx;
-	font-size: 28rpx;
+	font-size: 30rpx;
 	line-height: 50rpx;
-	
+  color: #4c4c4c;
+  /*display: flex;
+  flex-direction: row;*/
+	align-items: center;
 	
 }
 .choose-grids .grid:first-child,
@@ -110,6 +132,7 @@
 
 .submit-btn{
   background-color: orange;
+  color: white;
 }
 
 .submit-btn:active{

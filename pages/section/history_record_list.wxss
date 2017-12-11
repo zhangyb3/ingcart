@@ -19,7 +19,7 @@
 
 .duration{
 
-  width: 20%;
+  width: 30%;
   font-size: 36rpx;
   text-align: center;
 
@@ -27,7 +27,7 @@
 
 .amount{
 
-  width: 40%;
+  width: 30%;
   font-size: 36rpx;
   text-align: center;
 

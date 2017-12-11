@@ -1,0 +1,35 @@
+
+.unlock_status_container {
+    position: fixed;
+    background-color: lightgray;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 11;
+    opacity: 0.5;
+
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.unlock_status_hint{
+
+  position: fixed;
+  
+  z-index: 12;
+  opacity: 1;
+
+
+  margin-top: 50%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+.unlock_status_image{
+  width: 280px;
+  height: 72px;
+}

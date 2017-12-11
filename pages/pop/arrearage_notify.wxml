@@ -1,0 +1,25 @@
+
+
+<template name="arrearage_notify">
+
+   
+  <view class="pop_container">
+    
+    <view id="bill_notify_container"  >
+      
+      <image id="close_notify" src="../../images/close.png"  bindtap="confirmArrearage" />
+      <view class="" style="height:30px;"></view>
+      
+       <image id="arrearage" src="../../images/lock.png"></image>
+
+       <text id="arrearage_text">剩余金额：{{arrearage_amount}}元</text>
+
+       <button id="to_charge_button" bindtap="toCharge">前往充值</button>
+
+    </view>
+    
+    
+
+  </view>
+
+</template>

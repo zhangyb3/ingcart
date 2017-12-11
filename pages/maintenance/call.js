@@ -21,49 +21,45 @@ Page({
     checkboxItemsValue: [
       {
         checked: false,
-        value: "私锁私用",
+        value: "锁",
         faultType: 1,
       },
       {
         checked: false,
-        value: "车牌缺损",
+        value: "车轮",
         faultType: 2,
       },
       {
         checked: false,
-        value: "轮胎坏了",
+        value: "座椅",
         faultType: 3,
       },
       {
         checked: false,
-        value: "车锁坏了",
+        value: "刹车",
         faultType: 4,
       },
       {
         checked: false,
-        value: "违规乱停",
+        value: "二维码",
         faultType: 5,
       },
       {
         checked: false,
-        value: "密码不对",
+        value: "雨蓬",
         faultType: 6,
       },
       {
         checked: false,
-        value: "刹车坏了",
+        value: "其它",
         faultType: 7,
       },
-      {
-        checked: false,
-        value: "其他故障",
-        faultType: 8,
-      }
+      
     ],
 
    
     wordsCountdown: 140,
-    maintenanceCarId: 'xxxxxxxxx',
+    maintenanceCarId: null,
     faultDescription: null,
   },
 
@@ -204,46 +200,42 @@ function switchFaultType(selectFaults, the){
   {
     switch (selectFaults[i])
     {
-      case "私锁私用":
+      case "锁":
         {
           selectFaults[i] = 1;
           break;
         };
-      case "车牌缺损":
+      case "车轮":
         {
           selectFaults[i] = 2;
           break;
         };
-      case "轮胎坏了":
+      case "座椅":
         {
           selectFaults[i] = 3;
           break;
         };
-      case "车锁坏了":
+      case "刹车":
         {
           selectFaults[i] = 4;
           break;
         };
-      case "违规乱停":
+      case "二维码":
         {
           selectFaults[i] = 5;
           break;
         };
-      case "密码不对":
+      case "雨蓬":
         {
           selectFaults[i] = 6;
           break;
         };
-      case "刹车坏了":
+      case "其它":
         {
           selectFaults[i] = 7;
           break;
         };
-      case "其他故障":
-        {
-          selectFaults[i] = 8;
-          break;
-        };
+      
     }
   }
 

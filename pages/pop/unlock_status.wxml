@@ -1,0 +1,19 @@
+
+
+<template name="unlock_status">
+
+   
+    <view class="unlock_status_container" bindtap="disappearUnlockStatus" >
+    
+      
+      <view class="unlock_status_hint" >
+        <image class="unlock_status_image" src="{{unlock_status_image}}"></image>
+      </view>
+     
+    
+    </view>
+    
+
+
+
+</template>

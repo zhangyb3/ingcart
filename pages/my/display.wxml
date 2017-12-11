@@ -1,4 +1,4 @@
-<!--pages/my/index.wxml-->
+
 <view class="container">
     <view class="user-info">
     <block wx:if="{{avatarUrl != null}}">
@@ -15,10 +15,11 @@
           <text>余额</text>
         </view>
         <view class="line_include_item_container account_amount">
-          <text>{{account.amount}}元</text>
+          <text style="color:orange;">{{account.amount}}</text>
+          <text>元</text>
         </view>
         <view class="line_include_item_container account_operation">
-          <image src="../../images/to_charge.jpg"></image>
+          <image src="../../images/to_charge.png"></image>
         </view>
       </view>
       <view class="split_line"></view>
@@ -30,10 +31,11 @@
           <text >卡券</text>
         </view>
         <view class="line_include_item_container card_quantity">
-          <text>{{cardQuantity}}张</text>
+          <text style="color:orange;">{{cardQuantity}}</text>
+          <text>张</text>
         </view>
         <view class="line_include_item_container card_operation">
-          <text>></text>
+          <image id="operation" src="../../images/more.png"></image>
         </view>
       </view>
       <view class="split_line"></view>   
@@ -48,9 +50,10 @@
           <text></text>
         </view>
         <view class="line_include_item_container record_operation">
-          <text>></text>
+          <image id="operation" src="../../images/more.png"></image>
         </view>
       </view>
+      <view class="split_line"></view>
     </view>
 
     <!--<button bindtap="loginORlogout" class="switchID" >切换账号</button>-->

@@ -53,8 +53,10 @@
 
 .compute_fee{
   background-color: orange;
+  color: white;
 }
 
 .hold_car{
   background-color: lightgreen;
+  color: white;
 }
