@@ -7,13 +7,13 @@
         <input bindinput="bindInput" />
     </view>-->
 
+    <view class="choose_banner">
+      <image id="select_charge" src="../../images/select_charge.png"></image>
+      <text>选择金额</text>
+    </view>
+
     <view class="choose_grids">
-      <view class="choose_item" wx:if="{{selectAmount != 10}}" bindtap="selectChargeAmount" data-charge_amount="10">
-        <image class="charge_image" src="../../images/10.png"></image>
-      </view>
-      <view class="choose_item" wx:if="{{selectAmount == 10}}">
-        <image class="charge_image" src="../../images/10_selected.png"></image>
-      </view>
+      
       <view class="choose_item" wx:if="{{selectAmount != 20}}" bindtap="selectChargeAmount" data-charge_amount="20">
         <image class="charge_image" src="../../images/20.png"></image>
       </view>
@@ -32,8 +32,29 @@
       <view class="choose_item" wx:if="{{selectAmount == 100}}">  
         <image class="charge_image" src="../../images/100_selected.png"></image>
       </view>
+      <view class="choose_item" wx:if="{{selectAmount != 200}}" bindtap="selectChargeAmount" data-charge_amount="200">
+        <image class="charge_image" src="../../images/200.png"></image>
+      </view>
+      <view class="choose_item" wx:if="{{selectAmount == 200}}">  
+        <image class="charge_image" src="../../images/200_selected.png"></image>
+      </view>
     </view>
 
-    <button bindtap="charge" class="btn-charge charge_button">充值</button>
+
+    <view class="choose_banner">
+      <image id="hot_charge" src="../../images/hot_charge.png"></image>
+      <text>车套限时优惠</text>
+    </view>
+
+    <view class="choose_grids">
+      <view class="choose_item" wx:if="{{selectHotCharge != 38}}" bindtap="selectHotCharge" data-hot_charge_amount="38">
+        <image class="charge_image" src="../../images/38hot.png"></image>
+      </view>
+      <view class="choose_item" wx:if="{{selectHotCharge == 38}}">  
+        <image class="charge_image" src="../../images/38hot_selected.png"></image>
+      </view>
+    </view>
+
+    <!--<button bindtap="charge" class="btn-charge charge_button">充值</button>-->
 
 </view>

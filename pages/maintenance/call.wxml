@@ -22,18 +22,18 @@
                 <view class="grid">
                     <checkbox value="{{item.value}}" checked="{{item.checked}}" color="{{item.color}}"  style="zoom:80%;"/>{{item.value}}
                 </view>
-                <view class="fill" style="width:25%;"></view>
+                <!--<view class="fill" style="width:25%;"></view>-->
             </block>
         </checkbox-group>        
     </view>
 
-     <view class="text_edit_textarea_container"  style="width:90%;margin-left:5%;min-height:200rpx;">
+     <view class="text_edit_textarea_container"  style="width:80%;margin-left:10%;min-height:200rpx;">
         <textarea class="text_edit_textarea" bindinput="getTextInput" maxlength="140"  value='{{original}}' auto-height='true' placeholder="备注" placeholder-style="font-size: 12px;color:gray;" style="margin-left: 5%;padding-top: 20rpx;padding-bottom: 20rpx;"/>
     </view>
 
     <view style="height:20rpx;"></view>
 
-    <view class="words_countdown_container"  style="width:90%;margin-left:5%;">
+    <view class="words_countdown_container"  style="width:80%;margin-left:10%;">
         <view class="words_countdown_text">还可输入{{wordsCountdown}}字</view>
     </view>
 
@@ -43,7 +43,7 @@
     <view class="action">
         
        
-        <view class="action-submit">
+        <view class="action-submit" >
             <button class="submit-btn"  loading="{{loading}}" bindtap="submitFaults" >提交</button>
         </view>
     </view>

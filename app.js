@@ -22,12 +22,19 @@ App({
     wx.setStorageSync('alreadyRegister', 'no');
     wx.setStorageSync('logoutSystem', 'yes');
 
-    wx.setStorageSync('last_latitude', 'undefined');
-    wx.setStorageSync('last_longtitude', 'undefined');
+   
 
-    
-    
+    wx.getLocation({
+      type: "gcj02",
+      success: (res) => {
+        wx.setStorageSync('last_latitude', res.latitude);
+        wx.setStorageSync('last_longtitude', res.longitude);
+      }
+    });
 
+    wx.openBluetoothAdapter({
+      success: function(res) {},
+    })
 
   },
   getUserInfo: function (cb) {

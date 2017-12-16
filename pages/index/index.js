@@ -23,6 +23,10 @@ Page({
     selection_after_lock: false,
     select_hold_time: false,
     notify_bill: false,
+    notify_arrearage: false,
+    unlock_progress: false,
+    unlock_status: false,
+    show_store_detail: false,
 
   },
 
@@ -134,7 +138,7 @@ Page({
 
                 //开锁
                 that.setData({unlock_progress: true});
-                operation.unlock(customerId,carId,
+                operation.unlock(that, customerId,carId,
                   (result)=>{
                     console.log(result);
                     if(result.status == 200)
@@ -174,24 +178,24 @@ Page({
                 );
 
                 //关锁
-                wx.showLoading({
-                  title: '关锁中···',
-                  mask: true,
-                })
-                operation.lock(customerId, carId, recordId,
-                  (result) => {
-                    console.log(result);
-                    if (result.status == 200) {
-                      that.setData({
-                        selection_after_lock: true,
-                      });
-                    }
-                    wx.hideLoading();
-                  },
-                  () => { 
-                    wx.hideLoading();
-                  }
-                );
+                // wx.showLoading({
+                //   title: '关锁中···',
+                //   mask: true,
+                // })
+                // operation.lock(customerId, carId, recordId,
+                //   (result) => {
+                //     console.log(result);
+                //     if (result.status == 200) {
+                //       that.setData({
+                //         selection_after_lock: true,
+                //       });
+                //     }
+                //     wx.hideLoading();
+                //   },
+                //   () => { 
+                //     wx.hideLoading();
+                //   }
+                // );
               
               }
 
@@ -303,7 +307,62 @@ Page({
     })
   },
 
+  markerTap:function(e){
+    var markerId = e.markerId;
+    var marker = null;
+    for(var count = 0; count < this.data.markers.length; count++)
+    {
+      //找到点击的标记
+      if(this.data.markers[count].id == markerId)
+      {
+        marker = this.data.markers[count];
+        break;
+      }
+    }
+
+    //请求详情
+    if(marker.type == 0)
+    {
+      //无操作
+    }
+    if(marker.type == 1)
+    {
+      var that = this;
+      //显示店面详情
+      wx.request({
+        url: config.PytheRestfulServerURL + '/store/location',
+        data: {
+          storeId: marker.id
+        },
+        method: 'GET',
+        success: function(res) {
+          that.setData({
+            show_store_detail: true,
+            check_store: res.data.data,
+          });
+        },
+        fail: function(res) {},
+        complete: function(res) {},
+      })
+    }
+  },
+
+
+  returnToIndexPage:function(e){
+    this.setData({
+      show_store_detail: false,
+    });
+  },
+
+
   onUnload:function(){
+
+    wx.closeBluetoothAdapter({
+      success: function(res) {},
+      fail: function(res) {},
+      complete: function(res) {},
+    })
+
     wx.clearStorageSync();
   }
 
@@ -580,8 +639,15 @@ function showNearbyCars(longitude,latitude,the){
       else
       {
         var markers = result.data;
-        for (var k = 0; k < markers.length; k++) {
-          markers[k].iconPath = '/images/markers.png';
+        for (var k = 0; k < markers.length; k++) 
+        {
+          if (markers[k].type == 0)
+          {
+            markers[k].iconPath = '/images/car.png';
+          }
+          if (markers[k].type == 1) {
+            markers[k].iconPath = '/images/store.png';
+          }
           markers[k].width = 43;
           markers[k].height = 47;
         }

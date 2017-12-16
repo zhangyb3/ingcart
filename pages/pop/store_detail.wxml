@@ -1,0 +1,38 @@
+
+
+<template name="store_detail">
+
+   <view class="pop_container " bindtap="returnToIndexPage">
+    
+    
+    <view id="store_detail_container"  >
+      
+      <view id="store_image_container">
+        <image src="../../images/hot_charge.png"></image>
+      </view>
+
+      <view id="store_description">
+
+        <view id="store_name">
+          {{check_store.name}}
+        </view>
+
+        <view id="business_hours" class="row_display">
+          <image src="../../images/business_hours.png"></image>
+          <text>8:00~22:00</text>
+        </view>
+
+        <view id="store_address" class="row_display">
+          <image src="../../images/address.png"></image>
+          <text>{{check_store.locationName}}</text>
+        </view>
+
+      </view>
+      
+
+    </view>
+    
+
+  </view>
+
+</template>

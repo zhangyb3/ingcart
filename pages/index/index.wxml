@@ -1,11 +1,11 @@
 <!--index.wxml-->
 <view class="container">
-  <map id="ingcartMap" latitude="{{latitude}}" longitude="{{longitude}}" scale="{{scale}}" bindregionchange="changeRegion" polyline="{{polyline}}" markers="{{markers}}" controls="{{controls}}" bindmarkertap="bindmarkertap"  bindcontroltap="bindcontroltap" show-location/>
+  <map id="ingcartMap" latitude="{{latitude}}" longitude="{{longitude}}" scale="{{scale}}" bindregionchange="changeRegion" polyline="{{polyline}}" markers="{{markers}}" controls="{{controls}}" bindmarkertap="markerTap"  bindcontroltap="bindcontroltap" show-location/>
 
 </view>
 
 <import src="../pop/mask.wxml" />
-<template is="register_lock_mask" wx:if="{{alreadyRegister == 'no' || selection_after_lock == true || select_hold_time == true || notify_bill == true || arrearage_bill == true}}"></template>
+<template is="register_lock_mask" wx:if="{{alreadyRegister == 'no' || selection_after_lock == true || select_hold_time == true || notify_bill == true || arrearage_bill == true }}"></template>
 
 <import src="../pop/using.wxml" />
 <template is="using_timer" wx:if="{{timing == true}}" data="{{usingMinutes}}"></template>
@@ -31,3 +31,6 @@
 
 <import src="../pop/unlock_status.wxml" />
 <template is="unlock_status" wx:if="{{unlock_status == true}}" data="{{unlock_status_image}}" ></template>
+
+<import src="../pop/store_detail.wxml" />
+<template is="store_detail" wx:if="{{show_store_detail == true}}" data="{{check_store}}" ></template>

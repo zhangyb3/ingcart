@@ -1,8 +1,8 @@
 
 .call_maintenance{
   padding-top: 40rpx;
-  width: 90%;
-  margin-left: 5%;
+  width: 80%;
+  margin-left: 10%;
   margin-bottom: 20rpx;
   font-size: rpx;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -11,8 +11,8 @@
 }
 
 .maintenance_car_id_container{
-  width: 90%;
-  margin-left: 5%;
+  width: 80%;
+  margin-left: 10%;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -49,8 +49,8 @@
 
 .choose{
 	background-color: #fff;
-  width:  90%;
-  margin-left: 5%;
+  width:  80%;
+  margin-left: 10%;
 }
 .choose-grids{
 	display: flex;
@@ -62,7 +62,7 @@
 	/*padding: 50rpx;*/
 }
 .choose-grids .grid{
-	width: 25%;
+	width: 50%;
 	height: 50rpx;
 	padding-top: 10rpx;
   padding-bottom: 10rpx;
@@ -114,7 +114,7 @@
 	background-color: #fff;
 }
 .action .action-input input{
-	width: 90%;
+	width: 80%;
 	padding-top: 40rpx;
 	padding-bottom: 40rpx;
 }

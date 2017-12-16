@@ -43,3 +43,5 @@
 @import "../pop/unlock_progress.wxss";
 
 @import "../pop/unlock_status.wxss";
+
+@import "../pop/store_detail.wxss";

@@ -1,0 +1,71 @@
+
+#store_detail_container{
+
+  position: fixed;
+  width: 90%;
+  margin-left: 5%;
+  bottom: 25%;
+
+  border-radius: 10px;
+
+  background-color: white;
+  
+
+
+  z-index: 20;
+  opacity: 1;
+
+  font-size: 32rpx;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  box-shadow: 0 0 20rpx rgba(0,0,0,.2)
+
+}
+
+#store_image_container image{
+
+  width: 120rpx;
+  height: 120rpx;
+  padding: 30rpx;
+
+}
+
+#store_description{
+
+  font-size: 32rpx;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+}
+
+#store_name{
+
+  font-size: 40rpx;
+  font-weight: bold;
+
+}
+
+#business_hours image{
+
+  width: 30rpx;
+  height: 30rpx;
+  padding: 10rpx;
+
+}
+
+
+#store_address image{
+  
+  width: 25rpx;
+  height: 30rpx;
+  padding: 10rpx;
+
+}
+
+.row_display{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

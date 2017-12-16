@@ -23,7 +23,7 @@ function requestOrder(the, chargeFee,success,fail) {
     session_id: sessionID,
     mch_id: config.MerchantID,
     body: "ingcart_charge",
-    total_fee: 0.01,
+    total_fee: chargeFee,
     notify_url: "https://xue.pythe.cn",
     trade_type: "JSAPI",
     openId: openID
