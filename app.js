@@ -19,6 +19,13 @@ App({
       // Do something when catch error
     }
 
+    wx.getSystemInfo({
+      success: (res) => {
+        
+        wx.setStorageSync('windowHeight', res.windowHeight);
+      }
+    });
+
     wx.setStorageSync('alreadyRegister', 'no');
     wx.setStorageSync('logoutSystem', 'yes');
 
@@ -32,9 +39,7 @@ App({
       }
     });
 
-    wx.openBluetoothAdapter({
-      success: function(res) {},
-    })
+    
 
   },
   getUserInfo: function (cb) {

@@ -1,36 +1,65 @@
 <!--index.wxml-->
 <view class="container">
-  <map id="ingcartMap" latitude="{{latitude}}" longitude="{{longitude}}" scale="{{scale}}" bindregionchange="changeRegion" polyline="{{polyline}}" markers="{{markers}}" controls="{{controls}}" bindmarkertap="markerTap"  bindcontroltap="bindcontroltap" show-location/>
+  <map id="ingcartMap" 
+  latitude="{{latitude}}" 
+  longitude="{{longitude}}" 
+  scale="{{scale}}" 
+  bindregionchange="changeRegion" 
+  polyline="{{polyline}}" 
+  markers="{{markers}}" 
+  controls="{{controls}}" 
+  bindmarkertap="markerTap"  
+  bindcontroltap="bindcontroltap" 
+  style="height:{{mapHeight}}px;" 
+  show-location>
+
+
+    <!-- <cover-view>
+
+      <import src="../pop/mask.wxml" />
+      <template is="register_lock_mask" wx:if="{{alreadyRegister == 'no' || selection_after_lock == true || select_hold_time == true || notify_bill == true || arrearage_bill == true }}"></template>
+
+      <import src="../pop/using.wxml" />
+      <template is="using_timer" wx:if="{{timing == true}}" data="{{usingMinutes}}"></template>
+
+
+      <import src="../pop/holding.wxml" />
+      <template is="holding_timer" wx:if="{{holding == true}}" data="{{holdingMinutes}}"></template>
+
+      <import src="../pop/selection_after_lock.wxml" />
+      <template is="selection_after_lock" wx:if="{{selection_after_lock == true}}" ></template>
+
+      <import src="../pop/select_hold_time.wxml" />
+      <template is="select_hold_time" wx:if="{{select_hold_time == true}}" ></template>
+
+      <import src="../pop/bill_notify.wxml" />
+      <template is="bill_notify" wx:if="{{notify_bill == true}}" data="{{price,duration}}"></template>
+
+      <import src="../pop/arrearage_notify.wxml" />
+      <template is="arrearage_notify" wx:if="{{notify_arrearage == true}}" data="{{arrearage_amount}}"></template>
+
+      <import src="../pop/unlock_progress.wxml" />
+      <template is="unlock_progress" wx:if="{{unlock_progress == true}}" ></template> 
+
+      <import src="../pop/unlock_status.wxml" />
+      <template is="unlock_status" wx:if="{{unlock_status == true}}" data="{{unlock_status_image}}" ></template>
+
+      <import src="../pop/store_detail.wxml" />
+      <template is="store_detail" wx:if="{{show_store_detail == true}}" data="{{check_store}}" ></template> 
+    
+    </cover-view> -->
+
+      
+
+  </map>
+
+  <!-- <canvas style='width:300px;height:200px;' canvas_id="fuck" id="canvas_test">
+    <view>fuck</view>
+  </canvas> -->
+  
+  <view id="info_show" wx:if="{{show_info == true}}" bindtap="disappearInfoShow">
+  
+  </view>
 
 </view>
 
-<import src="../pop/mask.wxml" />
-<template is="register_lock_mask" wx:if="{{alreadyRegister == 'no' || selection_after_lock == true || select_hold_time == true || notify_bill == true || arrearage_bill == true }}"></template>
-
-<import src="../pop/using.wxml" />
-<template is="using_timer" wx:if="{{timing == true}}" data="{{usingMinutes}}"></template>
-
-
-<import src="../pop/holding.wxml" />
-<template is="holding_timer" wx:if="{{holding == true}}" data="{{holdingMinutes}}"></template>
-
-<import src="../pop/selection_after_lock.wxml" />
-<template is="selection_after_lock" wx:if="{{selection_after_lock == true}}" ></template>
-
-<import src="../pop/select_hold_time.wxml" />
-<template is="select_hold_time" wx:if="{{select_hold_time == true}}" ></template>
-
-<import src="../pop/bill_notify.wxml" />
-<template is="bill_notify" wx:if="{{notify_bill == true}}" data="{{price,duration}}"></template>
-
-<import src="../pop/arrearage_notify.wxml" />
-<template is="arrearage_notify" wx:if="{{notify_arrearage == true}}" data="{{arrearage_amount}}"></template>
-
-<import src="../pop/unlock_progress.wxml" />
-<template is="unlock_progress" wx:if="{{unlock_progress == true}}" ></template>
-
-<import src="../pop/unlock_status.wxml" />
-<template is="unlock_status" wx:if="{{unlock_status == true}}" data="{{unlock_status_image}}" ></template>
-
-<import src="../pop/store_detail.wxml" />
-<template is="store_detail" wx:if="{{show_store_detail == true}}" data="{{check_store}}" ></template>

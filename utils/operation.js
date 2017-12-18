@@ -185,42 +185,46 @@ function unlock(the, customerId, carId, success, fail){
                       console.log('correct token: ' + tokenFrameHexStr.substring(0, 32));
                       wx.setStorageSync("token", tokenFrameHexStr.substring(6, 14));
 
+                      //更新状态
+                      wx.getLocation({
+                        type: 'gcj02',
+                        success: function (res) {
+                          wx.request({
+                            url: UNLOCK_URL,
+                            data: {
+                              customerId: customerId,
+                              carId: carId,
+                              latitude: res.latitude,
+                              longitude: res.longitude
+                            },
+                            method: 'POST',
+                            success: function (res) {
+                              wx.showLoading({
+                                title: res.data,
+                                mask: true,
+                                success: function(res) {},
+                                fail: function(res) {},
+                                complete: function(res) {},
+                              })
+                              normalUpdateCustomerStatus(
+                                customerId,
+                                () => {
+                                  typeof success == "function" && success(res);
+                                });
 
+                            },
+                            fail: function (res) {
+                              typeof fail == "function" && fail(res);
+                            }
+                          });
+                        }
+                      });
 
                       //后台用token+密码组成加密帧
                       getUnlockFrame(
                         carId,
                         wx.getStorageSync('token'),
                         (encryptedFrameStr) => {
-
-                          //更新状态
-                          wx.getLocation({
-                            type: 'gcj02',
-                            success: function (res) {
-                              wx.request({
-                                url: UNLOCK_URL,
-                                data: {
-                                  customerId: customerId,
-                                  carId: carId,
-                                  latitude: res.latitude,
-                                  longitude: res.longitude
-                                },
-                                method: 'POST',
-                                success: function (res) {
-                                  
-                                  normalUpdateCustomerStatus(
-                                    customerId,
-                                    () => {
-                                      typeof success == "function" && success(res);
-                                    });
-
-                                },
-                                fail: function (res) {
-                                  typeof fail == "function" && fail(res);
-                                }
-                              });
-                            }
-                          });
 
 
                           wx.writeBLECharacteristicValue({

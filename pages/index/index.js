@@ -33,19 +33,13 @@ Page({
 // 页面加载
   onLoad: function (options) {
 
+    this.setData({
+      mapHeight: wx.getStorageSync('windowHeight'),
+    });
+
     wx.openBluetoothAdapter({
-      success: function (res) {
-        console.log(res.errMsg)
-        // success  
-        wx.showToast({
-          title: "初始化蓝牙适配器成功",
-          duration: 2000
-        })
-      },
-      complete: function (res) {
-        console.log(res);
-      }
-    })  
+      success: function (res) { },
+    });
 
     // var testData = 'code';
     // var publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDTu5u08Wel08uWM02GYYRlFXfmEHH7DAbSWufUdU8NlZrE/4BAOwqPMu/vMLdCi4GRHDSmWhoqjC5/7oKoALl6nFCAObtSl6RiWdc8KvcN1D45PASs8M/YPY+oa8iNYZA/drtgXEw4NniC0EB47miGVL4POyLOE3dJlk4LD/AjtQIDAQAB";
@@ -135,7 +129,7 @@ Page({
                 var carId = res.result;
                 var customerId = wx.getStorageSync(user.CustomerID);
                 var recordId = wx.getStorageSync(user.RecordID);
-
+                
                 //开锁
                 that.setData({unlock_progress: true});
                 operation.unlock(that, customerId,carId,
@@ -308,6 +302,10 @@ Page({
   },
 
   markerTap:function(e){
+    this.setData({
+      show_info: true,
+      mapHeight: wx.getStorageSync('windowHeight') - 100,
+    });
     var markerId = e.markerId;
     var marker = null;
     for(var count = 0; count < this.data.markers.length; count++)
@@ -354,6 +352,13 @@ Page({
     });
   },
 
+  disappearInfoShow:function(e){
+    this.setData({
+			mapHeight: wx.getStorageSync('windowHeight'),
+			show_info: false,
+		});
+		refreshPage(this);
+  },
 
   onUnload:function(){
 
