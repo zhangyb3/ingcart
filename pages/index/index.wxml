@@ -1,5 +1,12 @@
 <!--index.wxml-->
 <view class="container">
+
+
+	<import src="../pop/holding.wxml" />
+  <template is="holding_timer" wx:if="{{holding == true}}" data="{{holdingMinutes}}"></template>
+
+
+
   <map id="ingcartMap" 
   latitude="{{latitude}}" 
   longitude="{{longitude}}" 
@@ -11,6 +18,7 @@
   bindmarkertap="markerTap"  
   bindcontroltap="bindcontroltap" 
   style="height:{{mapHeight}}px;" 
+	bindtap='disappearStoreDetail'
   show-location>
 
 
@@ -57,9 +65,13 @@
     <view>fuck</view>
   </canvas> -->
   
-  <view id="info_show" wx:if="{{show_info == true}}" bindtap="disappearInfoShow">
-  
+  <view id="info_show" wx:if="{{show_store_detail == true}}" bindtap="disappearStoreDetail">
+		<import src="../pop/store_detail.wxml" />
+    <template is="store_detail"  data="{{check_store}}" ></template> 
   </view>
+
+	<import src="../pop/using.wxml" />
+  <template is="using_timer" wx:if="{{timing == true}}" data="{{usingMinutes}}"></template>
 
 </view>
 

@@ -4,7 +4,7 @@
   position: fixed;
   width: 90%;
   margin-left: 5%;
-  bottom: 25%;
+  /* bottom: 25%; */
 
   border-radius: 10px;
 
@@ -21,7 +21,7 @@
   flex-direction: row;
   align-items: center;
 
-  box-shadow: 0 0 20rpx rgba(0,0,0,.2)
+  /* box-shadow: 0 0 20rpx rgba(0,0,0,.2) */
 
 }
 

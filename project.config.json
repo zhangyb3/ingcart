@@ -22,7 +22,14 @@
 		},
 		"miniprogram": {
 			"current": -1,
-			"list": []
+			"list": [
+				{
+					"id": 0,
+					"name": "processing",
+					"pathName": "pages/index/processing",
+					"query": "from=index&carId=C8:FD:19:92:17:29&operation=unlock"
+				}
+			]
 		}
 	}
 }

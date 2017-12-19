@@ -21,7 +21,7 @@ App({
 
     wx.getSystemInfo({
       success: (res) => {
-        
+				wx.setStorageSync('windowWidth', res.windowWidth);
         wx.setStorageSync('windowHeight', res.windowHeight);
       }
     });

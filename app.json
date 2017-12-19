@@ -1,6 +1,7 @@
 {
   "pages":[
     "pages/index/index",
+		"pages/index/processing",
     "pages/maintenance/call",
     "pages/scanresult/index",
     "pages/bill/list",

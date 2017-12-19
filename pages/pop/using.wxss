@@ -12,7 +12,7 @@
   position: absolute;
   bottom: 0rpx;
   width: 100%;
-  z-index: 5;
+  /* z-index: 5; */
   opacity: 1;
 
   text-align: center;

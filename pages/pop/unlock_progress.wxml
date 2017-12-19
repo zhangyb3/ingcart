@@ -3,17 +3,17 @@
 <template name="unlock_progress">
 
    
-    <cover-view class="unlock_progress_container"  >
+    <view class="unlock_progress_container"  >
     
-      <cover-view class="cart_gif_container">
-        <cover-image class="cart_gif" src="../../images/cart.gif"></cover-image>
-      </cover-view>
+      <view class="cart_gif_container">
+        <image class="cart_gif" src="../../images/cart.gif"></image>
+      </view>
 
-      <!--<progress id="unlock_progress_percent" percent="99" stroke-width="12" active color="orange" show-info/>-->
+      <progress id="unlock_progress_percent" percent="99" stroke-width="12" active color="orange" show-info/>
 
-      <cover-view class="progress_hint">耐心等待，正在开锁···</cover-view>
+      <view class="progress_hint">耐心等待，正在开锁···</view>
     
-    </cover-view>
+    </view>
     
 
 

@@ -31,31 +31,24 @@ Page({
   },
 
 // 页面加载
-  onLoad: function (options) {
+  onLoad: function (parameters) {
 
+		
     this.setData({
       mapHeight: wx.getStorageSync('windowHeight'),
     });
+
+		var fromPage = parameters.from;
+		if (fromPage == 'processing') {
+			checkUsingCarStatus(this);
+		}
+
 
     wx.openBluetoothAdapter({
       success: function (res) { },
     });
 
-    // var testData = 'code';
-    // var publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDTu5u08Wel08uWM02GYYRlFXfmEHH7DAbSWufUdU8NlZrE/4BAOwqPMu/vMLdCi4GRHDSmWhoqjC5/7oKoALl6nFCAObtSl6RiWdc8KvcN1D45PASs8M/YPY+oa8iNYZA/drtgXEw4NniC0EB47miGVL4POyLOE3dJlk4LD/AjtQIDAQAB";
-    // var encrypt = new JSEncrypt();
-    // encrypt.setPublicKey(publicKey);
-    // var data = encrypt.encrypt(testData);
-    // wx.request({
-    //   url: config.PytheRestfulServerURL + '/decode',
-    //   data: data,
-    //   method: 'GET',
-    //   success: function(res) {},
-    //   fail: function(res) {},
-    //   complete: function(res) {
-    //     console.log(res);
-    //   },
-    // });
+  
 
     wx.showShareMenu({
       withShareTicket: true
@@ -68,6 +61,8 @@ Page({
 
     //检查用户是否已经注册，未注册则自动跳转到注册页面
     var that = this;
+
+		checkUsingCarStatus(that);
 
     if (wx.getStorageSync('alreadyRegister') == 'no' && wx.getStorageSync('logoutSystem') == 'no') {
       wx.navigateTo({
@@ -101,12 +96,16 @@ Page({
       });
     }
 
+		
+
     //刷新页面
     refreshPage(this);
 
     // 创建地图上下文，移动当前位置到地图中心
     this.mapCtx = wx.createMapContext("ingcartMap");
     this.movetoPosition()
+
+		
   },
 // 地图控件点击事件
   bindcontroltap: function(e){
@@ -131,45 +130,52 @@ Page({
                 var recordId = wx.getStorageSync(user.RecordID);
                 
                 //开锁
-                that.setData({unlock_progress: true});
-                operation.unlock(that, customerId,carId,
-                  (result)=>{
-                    console.log(result);
-                    if(result.status == 200)
-                    {
+								wx.navigateTo({
+									url: 'processing?from=index&carId=' + carId + '&operation=unlock',
+									success: function(res) {},
+									fail: function(res) {},
+									complete: function(res) {},
+								})
+                
+                // operation.unlock(that, customerId,carId,
+                //   (result)=>{
+                //     console.log(result);
+                //     if(result.status == 200)
+                //     {
                       
-                      //成功即启动计时器
-                      that.setData({
-                        // timing: true,
-                        unlock_progress: false,
-                      });
-                      //每分钟刷新一下
-                      var myVar = setInterval(
-                        function () { refreshUsingMinutes(that) },
-                        1000 * 60);
-                    }
-                    else
-                    {
-                      if(result.status == 300)
-                      {
-                        that.setData({
-                          notify_arrearage: true,
-                          arrearage_amount: result.data,
-                        });
-                      }
-                      else{
-                        that.setData({
-                          unlock_progress: false,
-                          unlock_status: true,
-                          unlock_status_image: '/images/unlock_' + result.status + '.png',
-                        });
-                      }
+                //       //成功即启动计时器
+                //       that.setData({
+                //         // timing: true,
+                        
+                //       });
+											
+                //       //每分钟刷新一下
+                //       var myVar = setInterval(
+                //         function () { refreshUsingMinutes(that) },
+                //         1000 * 60);
+                //     }
+                //     else
+                //     {
+                //       if(result.status == 300)
+                //       {
+                //         that.setData({
+                //           notify_arrearage: true,
+                //           arrearage_amount: result.data,
+                //         });
+                //       }
+                //       else{
+                //         that.setData({
+                //           unlock_progress: false,
+                //           unlock_status: true,
+                //           unlock_status_image: '/images/unlock_' + result.status + '.png',
+                //         });
+                //       }
                       
-                    }
+                //     }
                     
-                  },
-                  ()=>{}
-                );
+                //   },
+                //   ()=>{}
+                // );
 
                 //关锁
                 // wx.showLoading({
@@ -247,26 +253,7 @@ Page({
     this.mapCtx.moveToLocation();
   },
 
-  lockToPay:function(e){
-    this.data.payFormId = e.detail.formId;
-    lockToPay(this);
-  },
-  lockToHold:function(e){
-    lockToHold(this);
-  },
 
-  selectHoldTime:function(res){
-    var appointmentTime = res.currentTarget.dataset.appointment_time;
-
-    selectHoldTime(appointmentTime, this);
-
-  },
-
-  confirmBill:function(e){
-    this.setData({
-      notify_bill: false,
-    });
-  },
 
   cancelHolding:function(e){
     var that = this;
@@ -278,6 +265,7 @@ Page({
         notify_bill: true,
         price: result.data.price,
         duration: result.data.time,
+				mapHeight: wx.getStorageSync('windowHeight'),
       });
 
     });
@@ -302,10 +290,7 @@ Page({
   },
 
   markerTap:function(e){
-    this.setData({
-      show_info: true,
-      mapHeight: wx.getStorageSync('windowHeight') - 100,
-    });
+    
     var markerId = e.markerId;
     var marker = null;
     for(var count = 0; count < this.data.markers.length; count++)
@@ -337,6 +322,7 @@ Page({
           that.setData({
             show_store_detail: true,
             check_store: res.data.data,
+						mapHeight: wx.getStorageSync('windowHeight') - 100,
           });
         },
         fail: function(res) {},
@@ -352,12 +338,12 @@ Page({
     });
   },
 
-  disappearInfoShow:function(e){
+  disappearStoreDetail:function(e){
     this.setData({
 			mapHeight: wx.getStorageSync('windowHeight'),
-			show_info: false,
+			show_store_detail: false,
 		});
-		refreshPage(this);
+		showControls(this);
   },
 
   onUnload:function(){
@@ -442,73 +428,7 @@ function loginSystem(that) {
                 duration: 1200
               });
 
-            
-
-            var that__ = that_;
-            if (wx.getStorageSync(user.UsingCar) != null)
-            {
-              if (wx.getStorageSync(user.UsingCarStatus) == 2)
-              {
-                //检查是否保留用车，显示
-                operation.checkHoldingMinutes(
-                  wx.getStorageSync(user.CustomerID),
-                  (result) => {
-                    if (result.status == 200) 
-                    {
-                      that.data.holdingMinutes = result.data.time;
-                      that.setData({
-                        holding: true,
-                        holdingMinutes: result.data.time,
-                      });
-
-                      var myVar = setInterval(
-                        function () { refreshHoldingMinutes(that__) },
-                        1000 * 60);
-                    }
-                    else
-                    {
-                      that.setData({
-                        holding: false,
-                        notify_bill: true,
-                        price: result.data.price,
-                        duration: result.data.time,
-                      });
-                      // wx.showModal({
-                      //   title: '状态 ' + result.status,
-                      //   content: result.msg,
-                      //   confirmText: '',
-                      //   confirmColor: '',
-
-                      // });
-                    }
-                  },
-                );
-              }
-              
-              if (wx.getStorageSync(user.UsingCarStatus) == 1)
-              {
-                //检查是否用车，显示
-                operation.checkUsingMinutes(
-                  wx.getStorageSync(user.UsingCar),
-                  (result) => {
-                    if (result.status == 200) {
-                      that.data.usingMinutes = result.data.time;
-                      that.setData({
-                        // timing: true,
-                        usingMinutes: result.data.time,
-                      });
-
-                      var myVar = setInterval(
-                        function () { refreshUsingMinutes(that__) },
-                        1000 * 60);
-                    }
-                  },
-                ); 
-              }
-              
-            }
-             
-            
+						checkUsingCarStatus(that);
           }
 
 
@@ -553,70 +473,71 @@ function refreshPage(the){
   });
 
   // 3.设置地图控件的位置及大小，通过设备宽高定位
-  wx.getSystemInfo({
-    success: (res) => {
-      that.setData({
-        controls: [{
-          id: 1,
-          iconPath: '/images/location.png',
-          position: {
-            left: 15,
-            top: res.windowHeight - 60,
-            width: 40,
-            height: 40
-          },
-          clickable: true
-        },
-        {
-          id: 2,
-          iconPath: '/images/use.png',
-          position: {
-            left: res.windowWidth / 2 - 105,
-            top: res.windowHeight - 72,
-            width: 210,
-            height: 51
-          },
-          clickable: true
-        },
-        {
-          id: 3,
-          iconPath: '/images/warn.png',
-          position: {
-            left: 15,
-            top: res.windowHeight - 100,
-            width: 40,
-            height: 40
-          },
-          clickable: true
-        },
-        {
-          id: 4,
-          iconPath: '/images/marker.png',
-          position: {
-            left: res.windowWidth / 2 - 18,
-            top: res.windowHeight / 2 - 36,
-            width: 36,
-            height: 36
-          },
-          clickable: true
-        },
-        {
-          id: 5,
-          iconPath: '/images/avatar.png',
-          position: {
-            left: res.windowWidth - 50,
-            top: res.windowHeight - 60,
-            width: 40,
-            height: 40
-          },
-          clickable: true
-        }]
-      })
-    }
-  });
+  showControls(that);
 
   
 
+}
+
+function showControls(the){
+	var that = the;
+	that.setData({
+		controls: [{
+			id: 1,
+			iconPath: '/images/location.png',
+			position: {
+				left: 15,
+				top: wx.getStorageSync('windowHeight') - 60,
+				width: 40,
+				height: 40
+			},
+			clickable: true
+		},
+		{
+			id: 2,
+			iconPath: '/images/use.png',
+			position: {
+				left: wx.getStorageSync('windowWidth') / 2 - 105,
+				top: wx.getStorageSync('windowHeight') - 72,
+				width: 210,
+				height: 51
+			},
+			clickable: true
+		},
+		{
+			id: 3,
+			iconPath: '/images/warn.png',
+			position: {
+				left: 15,
+				top: wx.getStorageSync('windowHeight') - 100,
+				width: 40,
+				height: 40
+			},
+			clickable: true
+		},
+		{
+			id: 4,
+			iconPath: '/images/marker.png',
+			position: {
+				left: wx.getStorageSync('windowWidth') / 2 - 18,
+				top: wx.getStorageSync('windowHeight') / 2 - 36,
+				width: 36,
+				height: 36
+			},
+			clickable: true
+		},
+		{
+			id: 5,
+			iconPath: '/images/avatar.png',
+			position: {
+				left: wx.getStorageSync('windowWidth') - 50,
+				top: wx.getStorageSync('windowHeight') - 60,
+				width: 40,
+				height: 40
+			},
+			clickable: true
+		}]
+	});
 }
 
 function showNearbyCars(longitude,latitude,the){
@@ -634,12 +555,12 @@ function showNearbyCars(longitude,latitude,the){
       var result = res.data;
       if(result.status == 300)
       {
-        wx.showToast({
-          title: result.msg,
-          icon: "loading",
-          duration: 500,
-          mask: false,
-        })
+        // wx.showToast({
+        //   title: result.msg,
+        //   icon: "loading",
+        //   duration: 500,
+        //   mask: false,
+        // })
       }
       else
       {
@@ -679,12 +600,14 @@ function refreshUsingMinutes(the){
       if (result.status == 200) {
         that.data.usingMinutes = result.data.time;
         that.setData({
-          // timing: true,
+          timing: true,
           usingMinutes: result.data.time,
+					mapHeight: wx.getStorageSync('windowHeight') - 180,
         });
 
         
       }
+			
     },
   ); 
 
@@ -701,6 +624,7 @@ function refreshHoldingMinutes(the) {
         that.setData({
           holding: true,
           holdingMinutes: result.data.time,
+					mapHeight: wx.getStorageSync('windowHeight') - 80,
         });
 
       }
@@ -711,6 +635,7 @@ function refreshHoldingMinutes(the) {
           notify_bill: true,
           price: result.data.price,
           duration: result.data.time,
+					mapHeight: wx.getStorageSync('windowHeight'),
         });
         // wx.showModal({
         //   title: '状态 ' + result.status,
@@ -725,62 +650,114 @@ function refreshHoldingMinutes(the) {
 
 }
 
-function lockToPay(the){
 
-  var that = the;
-  operation.computeFee(
-    wx.getStorageSync(user.CustomerID),
-    wx.getStorageSync(user.UsingCar),
-    wx.getStorageSync(user.RecordID),
-    that.data.payFormId,
-    (result)=>{
-      console.log("compute fee: " + result.data);
-      that.setData({
-        selection_after_lock: false,
-        select_hold_time: false,
-        notify_bill: true,
-        price: result.data.price,
-        duration: result.data.time,
-      });
-    }
-  );
-}
 
-function lockToHold(the) {
+function checkUsingCarStatus(the)
+{
+	var that = the;
+	//检查用车状态
+	if (wx.getStorageSync(user.UsingCar) != null) {
 
-  the.setData({
-    selection_after_lock: false,
-    select_hold_time: true,
-  });
-}
+		if (wx.getStorageSync(user.UsingCarStatus) == 2) {
+			//检查是否保留用车，显示
+			operation.checkHoldingMinutes(
+				wx.getStorageSync(user.CustomerID),
+				(result) => {
+					if (result.status == 200) {
+						that.data.holdingMinutes = result.data.time;
+						that.setData({
+							holding: true,
+							holdingMinutes: result.data.time,
+							mapHeight: wx.getStorageSync('windowHeight') - 80,
+						});
 
-function selectHoldTime(appointmentTime,the){
+						var myVar = setInterval(
+							function () { refreshHoldingMinutes(that) },
+							1000 * 60);
+					}
+					else {
+						that.setData({
+							holding: false,
+							notify_bill: true,
+							price: result.data.price,
+							duration: result.data.time,
+							mapHeight: wx.getStorageSync('windowHeight'),
+						});
 
-  wx.showLoading({
-    title: '',
-    mask: true,
-  });
-  var that = the;
-  operation.hold(
-    wx.getStorageSync(user.CustomerID),
-    wx.getStorageSync(user.UsingCar),
-    appointmentTime,
-    wx.getStorageSync(user.RecordID),
-    (result) => {
-      console.log("select hold time: " + result.data);
-      that.setData({
-        holding: true,
-        selection_after_lock: false,
-        select_hold_time: false,
-      });
-      //启动周期检查
-      refreshHoldingMinutes(that);
-      var myVar = setInterval(
-        function () { refreshHoldingMinutes(that) },
-        1000 * 60);
+					}
+				},
+			);
+		}
 
-      wx.hideLoading();
-    }
-  );
+		else if (wx.getStorageSync(user.UsingCarStatus) == 1) {
 
+			//监听蓝牙状态
+			wx.onBLECharacteristicValueChange(function (res) {
+
+				console.log(`characteristic ${res.characteristicId} has changed, now is ${res.value}`);
+				console.log(operation.ab2hex(res.value) + " arraybuffer length: " + res.value.byteLength);//坑，非16字节标准数据
+
+
+				var encryptedTokenFrame = res.value.slice(0, 16);
+
+
+				//解密载有令牌的通信帧
+				operation.decryptFrame(
+					wx.arrayBufferToBase64(encryptedTokenFrame),
+					(res) => {
+						console.log('decrypt token frame: ', res);
+						var tokenFrameHexStr = (operation.ab2hex(wx.base64ToArrayBuffer(res)));
+						console.log('token: ' + tokenFrameHexStr.substring(0, 32) + ' ,head: ' + tokenFrameHexStr.slice(0, 2));
+						
+
+
+						if (tokenFrameHexStr.slice(0, 8) == '05080100') {
+
+							//检测到关锁成功信号
+
+							wx.navigateTo({
+								url: '/pages/index/processing?operation=lock',
+								success: function (res) { },
+								fail: function (res) { },
+								complete: function (res) { },
+							})
+
+						}
+
+					}
+				);
+
+
+			});
+
+			
+			//检查是否用车，显示
+			operation.checkUsingMinutes(
+				wx.getStorageSync(user.UsingCar),
+				(result) => {
+					if (result.status == 200) {
+						that.data.usingMinutes = result.data.time;
+						that.setData({
+							timing: true,
+							usingMinutes: result.data.time,
+							mapHeight: wx.getStorageSync('windowHeight') - 180,
+						});
+
+						var myVar = setInterval(
+							function () { refreshUsingMinutes(that) },
+							1000 * 60);
+					}
+				},
+			);
+		}
+		else {
+			that.setData({
+				timing: false,
+				holding: false,
+				mapHeight: wx.getStorageSync('windowHeight'),
+			});
+
+		}
+
+	}
 }

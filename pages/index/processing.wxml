@@ -1,0 +1,21 @@
+<view>
+
+	<import src="../pop/selection_after_lock.wxml" />
+  <template is="selection_after_lock" wx:if="{{selection_after_lock == true}}" ></template>
+
+	<import src="../pop/select_hold_time.wxml" />
+  <template is="select_hold_time" wx:if="{{select_hold_time == true}}" ></template>
+
+	<import src="../pop/bill_notify.wxml" />
+  <template is="bill_notify" wx:if="{{notify_bill == true}}" data="{{price,duration}}"></template>
+
+	<import src="../pop/unlock_progress.wxml" />
+	<template is="unlock_progress" wx:if="{{unlock_progress == true}}" ></template> 
+
+	<import src="../pop/arrearage_notify.wxml" />
+  <template is="arrearage_notify" wx:if="{{notify_arrearage == true}}" data="{{arrearage_amount}}"></template>
+
+	<import src="../pop/unlock_status.wxml" />
+  <template is="unlock_status" wx:if="{{unlock_status == true}}" data="{{unlock_status_image}}" ></template>
+
+</view>

@@ -2,7 +2,7 @@
 
 <template name="store_detail">
 
-   <view class="pop_container " bindtap="returnToIndexPage">
+   <!-- <view class="pop_container " bindtap="returnToIndexPage"> -->
     
     
     <view id="store_detail_container"  >
@@ -30,7 +30,7 @@
       </view>
       
 
-    </view>
+    <!-- </view> -->
     
 
   </view>

@@ -2,11 +2,13 @@
 .container{
   
   width: 100%;
+	display: flex;
+	flex-direction: column;
   
 }
 
  #ingcartMap{
-  position: absolute;
+  
   
   width: 100%;
 

@@ -6,7 +6,7 @@
     
     
     <view id="using_timer_container"  >
-      <view id="using_timer_view" style="background-image:url(../../images/using_timer_image.png)">
+      <view id="using_timer_view" style="background-image:url(https://file.pythe.cn/image/using_timer_image.png)">
         <text id="using_time_num" >{{usingMinutes}}</text>
       </view>
       
