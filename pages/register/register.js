@@ -35,7 +35,11 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-  
+
+		var myVar = setInterval(
+			function () { checkCustomerRegister(this) },
+			1000 * 60);
+
   },
 
   //注册
@@ -129,4 +133,14 @@ function countdown(that) {
     countdown(that);
   }
     , 1000)
+}
+
+function checkCustomerRegister(the){
+	var that = the;
+	if(wx.getStorageSync(user.CustomerID) > 0)
+	{
+		wx.navigateBack({
+			delta: 1,
+		})
+	}
 }

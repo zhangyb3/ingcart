@@ -1,0 +1,61 @@
+
+#hint_detail_container{
+
+  /* position: fixed; */
+  /* width: 90%; */
+  /* margin-left: 5%; */
+  /* bottom: 25%; */
+	height: 50px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+  
+
+  background-color: white;
+  
+
+
+  /* z-index: 20; */
+  opacity: 1;
+
+  font-size: 32rpx;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  /* box-shadow: 0 0 20rpx rgba(0,0,0,.2) */
+
+}
+
+#avatar_container{
+	height: 50px;
+}
+
+#avatar_container image{
+
+  width: 30px;
+  height: 30px;
+  padding: 10px;
+	border-radius: 50%;
+}
+
+#hint_description{
+	color: gray; 
+  font-size: 28rpx;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+}
+
+#business_hint_text{
+	height: 25px;
+	line-height: 25px;
+
+}
+
+
+
+.row_display{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}

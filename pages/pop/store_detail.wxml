@@ -4,7 +4,8 @@
 
    <!-- <view class="pop_container " bindtap="returnToIndexPage"> -->
     
-    
+    <view style="height:20rpx;"></view>
+
     <view id="store_detail_container"  >
       
       <view id="store_image_container">
@@ -16,6 +17,8 @@
         <view id="store_name">
           {{check_store.name}}
         </view>
+
+				<view style='height:20rpx;'></view>
 
         <view id="business_hours" class="row_display">
           <image src="../../images/business_hours.png"></image>
@@ -30,9 +33,9 @@
       </view>
       
 
-    <!-- </view> -->
+     </view> 
     
 
-  </view>
+  <!-- </view> -->
 
 </template>

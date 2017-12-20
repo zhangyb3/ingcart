@@ -12,7 +12,7 @@
   
 
 
-  z-index: 20;
+  /* z-index: 20; */
   opacity: 1;
 
   font-size: 32rpx;
@@ -34,16 +34,16 @@
 }
 
 #store_description{
-
-  font-size: 32rpx;
+	color: lightgray;
+  font-size: 28rpx;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-
+	margin-left: 30rpx;
 }
 
 #store_name{
-
+	color: black;
   font-size: 40rpx;
-  font-weight: bold;
+  /* font-weight: bold; */
 
 }
 

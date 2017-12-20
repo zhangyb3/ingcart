@@ -28,15 +28,19 @@ Page({
     unlock_status: false,
     show_store_detail: false,
 
+		unitpriceText:'用车一小时收费10元，请注意使用时长',
+		securityHint: '出于对儿童的安全健康考虑，建议您搭配车套使用',
+		avatar: wx.getStorageSync('avatarUrl'),
+
+		//计时中标记不可点击
+		markerClickable: true,
   },
 
 // 页面加载
   onLoad: function (parameters) {
 
 		
-    this.setData({
-      mapHeight: wx.getStorageSync('windowHeight'),
-    });
+   
 
 		var fromPage = parameters.from;
 		if (fromPage == 'processing') {
@@ -44,11 +48,8 @@ Page({
 		}
 
 
-    wx.openBluetoothAdapter({
-      success: function (res) { },
-    });
-
-  
+		
+		// checkBluetooth(this);
 
     wx.showShareMenu({
       withShareTicket: true
@@ -58,6 +59,8 @@ Page({
 
 // 页面显示
   onShow: function(){
+
+		
 
     //检查用户是否已经注册，未注册则自动跳转到注册页面
     var that = this;
@@ -105,6 +108,14 @@ Page({
     this.mapCtx = wx.createMapContext("ingcartMap");
     this.movetoPosition()
 
+		wx.getSystemInfo({
+			success: (res) => {
+				this.setData({
+					mapHeight: wx.getStorageSync('windowHeight') - 60,
+					holding: false,
+				});
+			}
+		});
 		
   },
 // 地图控件点击事件
@@ -125,7 +136,8 @@ Page({
             success: function(res) {
               console.log(res);
               if (res.errMsg == 'scanCode:ok') {
-                var carId = res.result;
+								var parameters = operation.urlProcess(res.result);console.log(parameters);
+                var carId = parameters.carId;
                 var customerId = wx.getStorageSync(user.CustomerID);
                 var recordId = wx.getStorageSync(user.RecordID);
                 
@@ -265,7 +277,7 @@ Page({
         notify_bill: true,
         price: result.data.price,
         duration: result.data.time,
-				mapHeight: wx.getStorageSync('windowHeight'),
+				mapHeight: wx.getStorageSync('windowHeight') -60,
       });
 
     });
@@ -308,7 +320,7 @@ Page({
     {
       //无操作
     }
-    if(marker.type == 1)
+    if(marker.type == 1 && this.data.markerClickable == true)
     {
       var that = this;
       //显示店面详情
@@ -321,8 +333,9 @@ Page({
         success: function(res) {
           that.setData({
             show_store_detail: true,
+						holding: false,
             check_store: res.data.data,
-						mapHeight: wx.getStorageSync('windowHeight') - 100,
+						mapHeight: wx.getStorageSync('windowHeight') - 100 -60,
           });
         },
         fail: function(res) {},
@@ -340,8 +353,9 @@ Page({
 
   disappearStoreDetail:function(e){
     this.setData({
-			mapHeight: wx.getStorageSync('windowHeight'),
+			mapHeight: wx.getStorageSync('windowHeight') - 60,
 			show_store_detail: false,
+			holding: false,
 		});
 		showControls(this);
   },
@@ -373,6 +387,10 @@ function loginSystem(that) {
           wx.setStorageSync('avatarUrl', rawData.avatarUrl);
           // wx.setStorageSync('userNickName', rawData.nickName);
           wx.setStorageSync('wxNickName', rawData.nickName);
+
+					// that.setData({
+					// 	avatar: wx.getStorageSync('avatarUrl'),
+					// });
         },
         fail: function () {
           // fail
@@ -487,7 +505,7 @@ function showControls(the){
 			iconPath: '/images/location.png',
 			position: {
 				left: 15,
-				top: wx.getStorageSync('windowHeight') - 60,
+				top: wx.getStorageSync('windowHeight') - 60 -60,
 				width: 40,
 				height: 40
 			},
@@ -498,7 +516,7 @@ function showControls(the){
 			iconPath: '/images/use.png',
 			position: {
 				left: wx.getStorageSync('windowWidth') / 2 - 105,
-				top: wx.getStorageSync('windowHeight') - 72,
+				top: wx.getStorageSync('windowHeight') - 72 -60,
 				width: 210,
 				height: 51
 			},
@@ -509,7 +527,7 @@ function showControls(the){
 			iconPath: '/images/warn.png',
 			position: {
 				left: 15,
-				top: wx.getStorageSync('windowHeight') - 100,
+				top: wx.getStorageSync('windowHeight') - 100 -60,
 				width: 40,
 				height: 40
 			},
@@ -520,7 +538,7 @@ function showControls(the){
 			iconPath: '/images/marker.png',
 			position: {
 				left: wx.getStorageSync('windowWidth') / 2 - 18,
-				top: wx.getStorageSync('windowHeight') / 2 - 36,
+				top: wx.getStorageSync('windowHeight') / 2 - 36 -60,
 				width: 36,
 				height: 36
 			},
@@ -531,7 +549,7 @@ function showControls(the){
 			iconPath: '/images/avatar.png',
 			position: {
 				left: wx.getStorageSync('windowWidth') - 50,
-				top: wx.getStorageSync('windowHeight') - 60,
+				top: wx.getStorageSync('windowHeight') - 60 -60,
 				width: 40,
 				height: 40
 			},
@@ -601,10 +619,12 @@ function refreshUsingMinutes(the){
         that.data.usingMinutes = result.data.time;
         that.setData({
           timing: true,
+					holding: false,
           usingMinutes: result.data.time,
-					mapHeight: wx.getStorageSync('windowHeight') - 180,
+					mapHeight: wx.getStorageSync('windowHeight') - 180 -60,
         });
-
+				//此时图标不可点
+				that.data.markerClickable = false;
         
       }
 			
@@ -626,7 +646,8 @@ function refreshHoldingMinutes(the) {
           holdingMinutes: result.data.time,
 					mapHeight: wx.getStorageSync('windowHeight') - 80,
         });
-
+				//此时图标不可点
+				that.data.markerClickable = false;
       }
       else
       {
@@ -635,8 +656,10 @@ function refreshHoldingMinutes(the) {
           notify_bill: true,
           price: result.data.price,
           duration: result.data.time,
-					mapHeight: wx.getStorageSync('windowHeight'),
+					mapHeight: wx.getStorageSync('windowHeight') -60,
         });
+				//此时图标可点
+				that.data.markerClickable = true;
         // wx.showModal({
         //   title: '状态 ' + result.status,
         //   content: result.msg,
@@ -670,7 +693,8 @@ function checkUsingCarStatus(the)
 							holdingMinutes: result.data.time,
 							mapHeight: wx.getStorageSync('windowHeight') - 80,
 						});
-
+						//此时图标不可点
+						that.data.markerClickable = false;
 						var myVar = setInterval(
 							function () { refreshHoldingMinutes(that) },
 							1000 * 60);
@@ -681,9 +705,10 @@ function checkUsingCarStatus(the)
 							notify_bill: true,
 							price: result.data.price,
 							duration: result.data.time,
-							mapHeight: wx.getStorageSync('windowHeight'),
+							mapHeight: wx.getStorageSync('windowHeight') -60,
 						});
-
+						//此时图标不可点
+						that.data.markerClickable = false;
 					}
 				},
 			);
@@ -739,10 +764,12 @@ function checkUsingCarStatus(the)
 						that.data.usingMinutes = result.data.time;
 						that.setData({
 							timing: true,
+							holding: false,
 							usingMinutes: result.data.time,
-							mapHeight: wx.getStorageSync('windowHeight') - 180,
+							mapHeight: wx.getStorageSync('windowHeight') - 180 -60,
 						});
-
+						//此时图标不可点
+						that.data.markerClickable = false;
 						var myVar = setInterval(
 							function () { refreshUsingMinutes(that) },
 							1000 * 60);
@@ -754,10 +781,34 @@ function checkUsingCarStatus(the)
 			that.setData({
 				timing: false,
 				holding: false,
-				mapHeight: wx.getStorageSync('windowHeight'),
+				mapHeight: wx.getStorageSync('windowHeight') -60,
 			});
-
+			//此时图标可点
+			that.data.markerClickable = true;
 		}
 
 	}
 }
+
+function checkBluetooth(the){
+	var that = the;
+	wx.openBluetoothAdapter({
+		success: function (res) { },
+		fail: function (res) {
+			wx.showModal({
+				title: '蓝牙功能未启用',
+				content: '请先开启手机蓝牙功能以便您使用',
+				success: function (res) {
+					return;
+				 },
+				fail: function (res) { },
+				complete: function (res) { 
+					checkBluetooth(that);
+				},
+			})
+		},
+		complete: function (res) { },
+	});
+
+}
+

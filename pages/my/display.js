@@ -24,6 +24,8 @@ Page({
 
   onShow:function(){
 
+		
+
     var that = this;
     wx.request({
       url: config.PytheRestfulServerURL + '/customer/select',

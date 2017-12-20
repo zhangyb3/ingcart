@@ -23,6 +23,8 @@ App({
       success: (res) => {
 				wx.setStorageSync('windowWidth', res.windowWidth);
         wx.setStorageSync('windowHeight', res.windowHeight);
+				wx.setStorageSync('platform', res.platform);
+				console.log('platform',res.platform);
       }
     });
 

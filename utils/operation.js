@@ -115,7 +115,12 @@ function getUnlockFrame(carId, token, success, fail) {
     },
     method: 'POST',
     success: function(res) {
-      typeof success == "function" && success(res.data.data);
+			// if(res.data.status == 200)
+			{
+				console.log(res);
+				typeof success == "function" && success(res.data.data);
+			}
+      
     },
     fail: function(res) {
       typeof fail == "function" && fail(res.data.data);
@@ -331,9 +336,23 @@ function unlock(the, customerId, carId, success, fail){
 						else {
 							that.setData({
 								unlock_progress: false,
-								unlock_status: true,
-								unlock_status_image: '/images/unlock_' + result.status + '.png',
+								// unlock_status: true,
+								// unlock_status_image: '/images/unlock_' + result.status + '.png',
 							});
+
+							wx.showModal({
+								title: String(result.status),
+								content: result.msg,
+								confirmText: '',
+								confirmColor: '',
+								success: function(res) {
+									wx.navigateBack({
+										delta: 1,
+									})
+								},
+								fail: function(res) {},
+								complete: function(res) {},
+							})
 						}
 
 					}
@@ -583,6 +602,27 @@ function ab2hex(buffer) {
   return hexArr.join('');
 }
 
+function urlProcess(urlStr) 
+{
+	var p = {};
+	var name, value;
+	var str = urlStr; //取得整个地址栏
+	var num = str.indexOf("?")
+	str = str.substr(num + 1); //取得所有参数   stringvar.substr(start [, length ]
+
+	var arr = str.split("&"); //各个参数放到数组里
+
+	for (var i = 0; i < arr.length; i++) {
+		num = arr[i].indexOf("=");
+		if (num > 0) {
+			name = arr[i].substring(0, num);
+			value = arr[i].substr(num + 1);
+			p[name] = value;
+		}
+	}
+	return p;
+} 
+
 module.exports = {
 
 	UNLOCK_URL: UNLOCK_URL,
@@ -603,5 +643,6 @@ module.exports = {
   encryptFrame: encryptFrame,
   decryptFrame: decryptFrame,
 	ab2hex: ab2hex,
+	urlProcess: urlProcess,
 
 }

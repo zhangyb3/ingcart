@@ -1,0 +1,40 @@
+
+
+<template name="business_hint">
+
+   
+    
+  <!-- <view class="pop_container " bindtap="returnToIndexPage"> -->
+    
+    
+    <view id="hint_detail_container"  >
+      
+      <view id="avatar_container">
+        <image src="{{avatar}}"></image>
+      </view>
+
+      <view id="hint_description">
+
+        <view id="business_hint_text" class="row_display">
+          
+          <text>{{unitpriceText}}</text>
+        </view>
+
+        <view id="business_hint_text" class="row_display">
+          
+          <text>{{securityHint}}</text>
+        </view>
+
+        
+
+      </view>
+      
+
+     </view> 
+    
+
+  <!-- </view> -->
+
+
+
+</template>

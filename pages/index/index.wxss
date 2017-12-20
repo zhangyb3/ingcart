@@ -45,6 +45,8 @@
 
 @import "../pop/store_detail.wxss";
 
+@import "../pop/business_hint.wxss";
+
 #info_show{
   background-color: white;
   position: fixed;
