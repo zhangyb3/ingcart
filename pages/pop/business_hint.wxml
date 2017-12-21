@@ -10,7 +10,7 @@
     <view id="hint_detail_container"  >
       
       <view id="avatar_container">
-        <image src="{{avatar}}"></image>
+        <image src="../../images/hint_icon.png"></image>
       </view>
 
       <view id="hint_description">

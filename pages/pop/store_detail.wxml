@@ -9,7 +9,7 @@
     <view id="store_detail_container"  >
       
       <view id="store_image_container">
-        <image src="../../images/hot_charge.png"></image>
+        <image src="../../images/store_detail.png"></image>
       </view>
 
       <view id="store_description">

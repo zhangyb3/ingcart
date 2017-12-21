@@ -1,7 +1,7 @@
 
 var config = require("../../utils/config.js");
 var user = require("../../utils/user.js");
-
+var login = require("../../utils/login.js");
 var operation = require("../../utils/operation.js");
 
 Page({
@@ -107,6 +107,29 @@ Page({
 
 		}
 
+		//从外部扫描进来
+		if (this.data.operation == 'unlock' && this.data.fromPage == 'weixin')
+		{
+			var that = this;
+			operation.loginSystem(
+				this,
+				()=>{
+					//登录成功去开锁
+					operation.unlock(
+						that,
+						wx.getStorageSync(user.CustomerID),
+						that.data.carId,
+						(result) => {
+
+
+
+						},
+					);
+				}
+			);
+
+		}
+
 		//检测到关锁
 		if (this.data.operation == 'lock')
 		{
@@ -167,7 +190,7 @@ Page({
 		this.setData({
 			notify_bill: false,
 		});
-		wx.navigateTo({
+		wx.redirectTo({
 			url: '/pages/index/index?from=processing',
 			success: function (res) { },
 			fail: function (res) { },
@@ -259,7 +282,7 @@ function selectHoldTime(appointmentTime, the) {
 				mapHeight: wx.getStorageSync('windowHeight') - 80,
 			});
 			
-			wx.navigateTo({
+			wx.redirectTo({
 				url: '/pages/index/index?from=processing',
 				success: function (res) { },
 				fail: function (res) { },

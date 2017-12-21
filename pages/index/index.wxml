@@ -5,10 +5,10 @@
 	<import src="../pop/holding.wxml" />
   <template is="holding_timer" wx:if="{{holding == true}}" data="{{holdingMinutes}}"></template>
 
-	<!-- <import src="../pop/business_hint.wxml" />
-  <template is="business_hint" wx:if="{{holding == false}}" data="{{avatar,unitpriceText,securityHint}}"></template> -->
+	 <import src="../pop/business_hint.wxml" />
+  <template is="business_hint" wx:if="{{holding == false}}" data="{{avatar,unitpriceText,securityHint}}"></template> 
 
-		<view id="hint_detail_container"  wx:if="{{holding == false}}" >
+		<!-- <view id="hint_detail_container"  wx:if="{{holding == false}}" >
       
       <view id="avatar_container">
         <image src="{{avatar}}"></image>
@@ -31,7 +31,7 @@
       </view>
       
 
-    </view> 
+    </view>  -->
 
   <map id="ingcartMap" 
   latitude="{{latitude}}" 

@@ -1,6 +1,7 @@
 
 var config = require("../../utils/config.js");
 var user = require("../../utils/user.js");
+var operation = require("../../utils/operation.js");
 
 Page({
   data:{
@@ -116,9 +117,10 @@ Page({
         console.log(res);
         if(res.errMsg == 'scanCode:ok')
         {
-          that.data.maintenanceCarId = res.result;
+					var parameters = operation.urlProcess(res.result);
+          that.data.maintenanceCarId = parameters.carId;
           that.setData({
-            maintenanceCarId: res.result,
+						maintenanceCarId: parameters.carId,
           })
         }
       },

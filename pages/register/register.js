@@ -38,7 +38,7 @@ Page({
 
 		var myVar = setInterval(
 			function () { checkCustomerRegister(this) },
-			1000 * 60);
+			1000 * 5);
 
   },
 
