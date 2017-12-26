@@ -27,7 +27,7 @@ Page({
     unlock_status: false,
     show_store_detail: false,
 
-		unitpriceText:'用车一小时收费10元，请注意使用时长',
+		unitpriceText:'用车每半小时收费5元，请注意使用时长',
 		securityHint: '出于对儿童的安全健康考虑，建议您搭配车套使用',
 		avatar: wx.getStorageSync('avatarUrl'),
 
@@ -38,25 +38,18 @@ Page({
 // 页面加载
   onLoad: function (parameters) {
 
+		
 
 		var fromPage = parameters.from;
 		if (fromPage == 'processing') {
 			checkUsingCarStatus(this);
 		}
-
 		
 
 		checkBluetooth(this);
 
-		wx.getSystemInfo({
-			success: (res) => {
-				this.setData({
-					mapHeight: wx.getStorageSync('windowHeight') - 60,
-					holding: false,
-				});
-			}
-		});
-
+		showControls(this);
+		
     wx.showShareMenu({
       withShareTicket: true
     });
@@ -88,6 +81,108 @@ Page({
 				this,
 				()=>{
 					checkUsingCarStatus(that);
+
+					wx.closeBluetoothAdapter({
+						success: function(res) {
+							wx.openBluetoothAdapter({
+								success: function(res) {
+
+								
+									if (wx.getStorageSync(user.UsingCarStatus) == 1 || wx.getStorageSync(user.UsingCarStatus) == 2) {
+										wx.showLoading({
+											title: '请稍候',
+											mask: true,
+											success: function (res) { },
+											fail: function (res) { },
+											complete: function (res) { },
+										});
+										//根据系统不同处理
+										if (wx.getStorageSync('platform') == 'android') {
+											operation.connectDevice(that, wx.getStorageSync(user.UsingCar),
+												(tokenFrameHexStr) => {
+													wx.hideLoading();
+													if (tokenFrameHexStr.slice(0, 8) == '05080100') {
+
+
+														//检测到关锁成功信号
+
+
+														wx.navigateTo({
+															url: 'processing?operation=lock',
+															success: function (res) { },
+															fail: function (res) { },
+															complete: function (res) { },
+														})
+
+
+
+
+													}
+
+												},
+											);
+										}
+										else {
+											//ios情况下，先搜索已经发现的设备，再搜索没发现的，找到符合的设备就去连接
+											wx.startBluetoothDevicesDiscovery({
+												services: ['FEE7'],
+												allowDuplicatesKey: true,
+												interval: 0,
+												success: function(res) {
+													wx.onBluetoothDeviceFound(function(res){
+														if (res.devices[0].deviceId == wx.getStorageSync(user.UsingCarDevice))
+														{
+															wx.stopBluetoothDevicesDiscovery({
+																success: function(res) {
+
+																	operation.connectDevice(that,
+																		wx.getStorageSync(user.UsingCarDevice),
+																		(tokenFrameHexStr) => {
+																			wx.hideLoading();
+																			if (tokenFrameHexStr.slice(0, 8) == '05080100') {
+
+
+																				//检测到关锁成功信号
+
+
+																				wx.navigateTo({
+																					url: 'processing?operation=lock',
+																					success: function (res) { },
+																					fail: function (res) { },
+																					complete: function (res) { },
+																				})
+
+
+
+
+																			}
+
+																		},
+																	);
+																},
+																fail: function(res) {},
+																complete: function(res) {},
+															})
+														}
+													})
+												},
+												fail: function(res) {},
+												complete: function(res) {},
+											})
+											
+										}
+									
+									}
+
+								},
+								fail: function(res) {},
+								complete: function(res) {},
+							})
+						},
+						fail: function(res) {},
+						complete: function(res) {},
+					})
+					
 				}
 			);
       
@@ -124,7 +219,7 @@ Page({
 		wx.getSystemInfo({
 			success: (res) => {
 				this.setData({
-					mapHeight: wx.getStorageSync('windowHeight') - 60,
+					mapHeight: res.windowHeight - 60,
 					holding: false,
 				});
 			}
@@ -144,35 +239,65 @@ Page({
       case 2: 
         {
           var that = this;
-					if(wx.getStorageSync(user.UsingCar) == null){
+					if (wx.getStorageSync(user.UsingCar) == null || wx.getStorageSync(user.UsingCarStatus) == 2){
+			
 						wx.scanCode({
 							onlyFromCamera: true,
 							success: function (res) {
-								console.log(res);
+								
 								if (res.errMsg == 'scanCode:ok') {
 									var parameters = operation.urlProcess(res.result); console.log(parameters);
 									var carId = parameters.carId;
 									var customerId = wx.getStorageSync(user.CustomerID);
 									var recordId = wx.getStorageSync(user.RecordID);
+									
+									//据说每次都要先关闭再打开适配器清理缓存,试一下
+									wx.closeBluetoothAdapter({
+										success: function(res) {
 
-									//开锁
-									wx.startBluetoothDevicesDiscovery({
-										services: ['FEE7'],
-										allowDuplicatesKey: true,
-										interval: 0,
-										success: function (res) {
+											wx.openBluetoothAdapter({
+												success: function (res) {
 
-										},
-										fail: function (res) { },
-										complete: function (res) {
-											wx.navigateTo({
-												url: 'processing?from=index&carId=' + carId + '&operation=unlock',
-												success: function (res) { },
-												fail: function (res) { },
+													//开锁
+													wx.startBluetoothDevicesDiscovery({
+														services: ['FEE7'],
+														allowDuplicatesKey: true,
+														interval: 0,
+														success: function (res) {
+															
+															wx.navigateTo({
+																url: 'processing?from=index&carId=' + carId + '&operation=unlock',
+																success: function (res) { },
+																fail: function (res) { 
+																	
+																},
+																complete: function (res) { },
+															});
+
+														},
+														fail: function (res) { 
+															
+														},
+														complete: function (res) {
+
+														},
+													});
+
+												},
+												fail: function (res) { 
+													
+												},
 												complete: function (res) { },
 											});
+
+										},
+										fail: function (res) { 
+											
+										},
+										complete: function(res) {
 										},
 									})
+									
 
 
 									// operation.unlock(that, customerId,carId,
@@ -609,11 +734,13 @@ function refreshHoldingMinutes(the) {
 
 
 
-function checkUsingCarStatus(the)
+function checkUsingCarStatus(the, success, fail)
 {
 	var that = the;
 	//检查用车状态
 	if (wx.getStorageSync(user.UsingCar) != null) {
+
+		
 
 		if (wx.getStorageSync(user.UsingCarStatus) == 2) {
 			//检查是否保留用车，显示
@@ -673,9 +800,10 @@ function checkUsingCarStatus(the)
 						if (tokenFrameHexStr.slice(0, 8) == '05080100') {
 
 							//检测到关锁成功信号
+							
 
 							wx.navigateTo({
-								url: '/pages/index/processing?operation=lock',
+								url: 'processing?operation=lock',
 								success: function (res) { },
 								fail: function (res) { },
 								complete: function (res) { },
@@ -726,16 +854,26 @@ function checkUsingCarStatus(the)
 
 function checkBluetooth(the){
 	var that = the;
+	wx.showLoading({
+		title: '请稍候',
+		mask: true,
+		success: function(res) {},
+		fail: function(res) {},
+		complete: function(res) {},
+	})
 	wx.openBluetoothAdapter({
-		success: function (res) { 
+		success: function (res) 
+		{ 
+			
 			
 		},
 		fail: function (res) {
+			wx.hideLoading();
 			wx.showModal({
 				title: '蓝牙功能未启用',
 				content: '请先开启手机蓝牙功能以便您使用',
 				success: function (res) {
-					return;
+					
 				 },
 				fail: function (res) { },
 				complete: function (res) { 
@@ -743,7 +881,9 @@ function checkBluetooth(the){
 				},
 			})
 		},
-		complete: function (res) { },
+		complete: function (res) {
+			wx.hideLoading();
+		 },
 	});
 
 }

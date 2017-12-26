@@ -4,12 +4,17 @@
     <view class="action">
         
         <view class="action-input">
-            <input class="phone_number_input" bindinput="phoneNumberInput" type="number" placeholder="请输入手机号码" />
-
+						<view class="phone_number_input_container" >
+							<text class="phone_number_input_hint">手机号：</text>
+							<input class="phone_number_input" bindinput="phoneNumberInput" type="number" placeholder="请输入手机号码" />
+						</view>
+           
             <view class="verification_container">
+							<text class="phone_number_input_hint">验证码：</text>
               <input class="verification_code_input" bindinput="verificationCodeInput" type="number" placeholder="验证码" />
               <view class="verification_button">
-                <button disabled="{{lock_countdown}}" class="send_verification_code_button" bindtap="sendVerificationCode">{{countdownText}}</button>
+                <view disabled="{{lock_countdown}}" class="send_verification_code_button" bindtap="sendVerificationCode">{{countdownText}}</view>
+								<view class="countdown_mask" wx:if="{{send_verification_code == false}}"></view>
               </view>
             </view>  
 

@@ -20,5 +20,6 @@ module.exports = {
     Latitude: 'Latitude',
     RecordID: 'RecordID',
     UsingCar: "UsingCar",
-    UsingCarStatus: "UsingCarStatus"
+    UsingCarStatus: "UsingCarStatus",
+		UsingCarDevice: "UsingCarDevice"
 }

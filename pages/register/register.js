@@ -15,6 +15,7 @@ Page({
   
     countdownText: '发送验证码',
     second: 60,
+		send_verification_code: true,
   },
 
   /**
@@ -36,9 +37,9 @@ Page({
    */
   onShow: function () {
 
-		var myVar = setInterval(
-			function () { checkCustomerRegister(this) },
-			1000 * 5);
+		// var myVar = setInterval(
+		// 	function () { checkCustomerRegister(this) },
+		// 	1000 * 5);
 
   },
 
@@ -64,6 +65,7 @@ Page({
       that.setData({
         countdownText: "重发验证码",
         lock_countdown: false,
+				send_verification_code: true,
       });
     }
   },
@@ -119,6 +121,7 @@ function countdown(that) {
     that.setData({
       countdownText: "重发验证码",
       lock_countdown: false,
+			send_verification_code: true,
     });
     return;
   }
@@ -129,6 +132,7 @@ function countdown(that) {
       countdownText: second + '秒后可重发',
       second: second - 1,
       lock_countdown: true,
+			send_verification_code: false,
     });
     countdown(that);
   }
@@ -139,8 +143,11 @@ function checkCustomerRegister(the){
 	var that = the;
 	if(wx.getStorageSync(user.CustomerID) > 0)
 	{
-		wx.navigateBack({
-			delta: 1,
+		wx.redirectTo({
+			url: '../index/index',
+			success: function(res) {},
+			fail: function(res) {},
+			complete: function(res) {},
 		})
 	}
 }

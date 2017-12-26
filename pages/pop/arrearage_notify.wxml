@@ -7,10 +7,10 @@
     
     <view id="bill_notify_container"  >
       
-      <image id="close_notify" src="../../images/close.png"  bindtap="confirmArrearage" />
-      <view class="" style="height:30px;"></view>
+      <!-- <image id="close_notify" src="../../images/close.png"  bindtap="confirmArrearage" /> -->
       
-       <image id="arrearage" src="../../images/lock.png"></image>
+      
+       <image id="arrearage_image" src="../../images/lock.png"></image>
 
        <text id="arrearage_text">剩余金额：{{arrearage_amount}}元</text>
 

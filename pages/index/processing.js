@@ -20,7 +20,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (parameters) {
-  
+		console.log(parameters);
 		this.data.fromPage = parameters.from;
 		this.data.operation = parameters.operation;
 		this.data.carId = parameters.carId;
@@ -46,70 +46,27 @@ Page({
 			var that = this;
 			that.setData({
 				unlock_progress: true,
-			});
-			//更新状态
-			// wx.getLocation({
-			// 	type: 'gcj02',
-			// 	success: function (res) {
+			});					
+
+			operation.unlock(
+				that,
+				wx.getStorageSync(user.CustomerID),
+				that.data.carId,
+				(result)=>{
+
 					
-			// 		wx.request({
-			// 			url: operation.UNLOCK_URL,
-			// 			data: {
-			// 				customerId: wx.getStorageSync(user.CustomerID),
-			// 				carId: that.data.carId,
-			// 				latitude: res.latitude,
-			// 				longitude: res.longitude
-			// 			},
-			// 			method: 'POST',
-			// 			success: function (res) {
-			// 				var result = res.data;
-			// 				if (result.status == 200) {
 
+				},
+			);
 								
 
-								operation.unlock(
-									that,
-									wx.getStorageSync(user.CustomerID),
-									that.data.carId,
-									(result)=>{
-
-										
-
-									},
-								);
-								
-			// 				}
-			// 				else {
-			// 					if (result.status == 300) {
-			// 						that_.setData({
-			// 							notify_arrearage: true,
-			// 							arrearage_amount: result.data,
-			// 						});
-			// 					}
-			// 					else {
-			// 						that_.setData({
-			// 							unlock_progress: false,
-			// 							unlock_status: true,
-			// 							unlock_status_image: '/images/unlock_' + result.status + '.png',
-			// 						});
-			// 					}
-
-			// 				}
-
-
-			// 			},
-			// 			fail: function (res) {
-			// 				typeof fail == "function" && fail(res);
-			// 			}
-			// 		});
-			// 	}
-			// });
 
 		}
 
 		//从外部扫描进来
 		if (this.data.operation == 'unlock' && this.data.fromPage == 'weixin')
 		{
+			console.log('from weixin');
 			var that = this;
 			operation.loginSystem(
 				this,
@@ -125,6 +82,25 @@ Page({
 
 						},
 					);
+				},
+				()=>{
+					//分情况，从外部扫码进来就转接，内部扫码进来就返回上一页
+					// if(that.data.fromPage == 'index')
+					// {
+					// 	wx.navigateBack({
+					// 		delta: 1,
+					// 	})
+					// }
+					// else
+					{
+						wx.redirectTo({
+							url: 'index',
+							success: function (res) { },
+							fail: function (res) { },
+							complete: function (res) { },
+						});
+					}
+
 				}
 			);
 
@@ -150,18 +126,44 @@ Page({
 					});
 
 					wx.hideLoading();
+
+					var closeDevice;
+					if (wx.getStorageSync('platform') == 'ios')
+					{
+						closeDevice = wx.getStorageSync('DeviceID');
+					}
+					else
+					{
+						closeDevice = wx.getStorageSync(user.UsingCar);
+					}
 					wx.closeBLEConnection({
-						deviceId: wx.getStorageSync(user.UsingCar),
-						success: function (res) { },
+						deviceId: closeDevice,
+						success: function (res) {
+							wx.setStorageSync('ServiceId', null);
+							wx.setStorageSync('characteristicIdToRead', null);
+							wx.setStorageSync('characteristicIdToWrite', null);
+						 },
 						fail: function (res) { },
 						complete: function (res) { },
 					})
 				},
 				() => {
 					wx.hideLoading();
+
+					var closeDevice;
+					if (wx.getStorageSync('platform') == 'ios') {
+						closeDevice = wx.getStorageSync('DeviceID');
+					}
+					else {
+						closeDevice = wx.getStorageSync(user.UsingCar);
+					}
 					wx.closeBLEConnection({
-						deviceId: '',
-						success: function (res) { },
+						deviceId: closeDevice,
+						success: function (res) { 
+							wx.setStorageSync('ServiceId', null);
+							wx.setStorageSync('characteristicIdToRead', null);
+							wx.setStorageSync('characteristicIdToWrite', null);
+						},
 						fail: function (res) { },
 						complete: function (res) { },
 					})
@@ -171,8 +173,27 @@ Page({
 
   },
 
+	toCharge: function (e) {
+		this.setData({
+			notify_arrearage: false,
+		});
+		wx.redirectTo({
+			url: '../wallet/charge',
+			success: function (res) { },
+			fail: function (res) { },
+			complete: function (res) { },
+		})
+	},
+
 	lockToPay: function (e) {
 		this.data.payFormId = e.detail.formId;
+		wx.showLoading({
+			title: '请稍候',
+			mask: true,
+			success: function(res) {},
+			fail: function(res) {},
+			complete: function(res) {},
+		});
 		lockToPay(this);
 	},
 	lockToHold: function (e) {
@@ -181,21 +202,31 @@ Page({
 
 	selectHoldTime: function (res) {
 		var appointmentTime = res.currentTarget.dataset.appointment_time;
-
+		wx.showLoading({
+			title: '请稍候',
+			mask: true,
+			success: function(res) {},
+			fail: function(res) {},
+			complete: function(res) {},
+		})
 		selectHoldTime(appointmentTime, this);
 
 	},
 
 	confirmBill: function (e) {
-		this.setData({
-			notify_bill: false,
-		});
-		wx.redirectTo({
-			url: '/pages/index/index?from=processing',
-			success: function (res) { },
-			fail: function (res) { },
-			complete: function (res) { },
-		})
+		
+		{
+			wx.navigateBack({
+				delta: 1,
+			})
+			// wx.redirectTo({
+			// 	url: '/pages/index/index?from=processing',
+			// 	success: function (res) { },
+			// 	fail: function (res) { },
+			// 	complete: function (res) { },
+			// })
+		}
+		
 	},
 
   /**
@@ -252,6 +283,10 @@ function lockToPay(the) {
 				price: result.data.price,
 				duration: result.data.time,
 			});
+			wx.hideLoading();
+		},
+		()=>{
+			wx.hideLoading();
 		}
 	);
 }
@@ -281,13 +316,23 @@ function selectHoldTime(appointmentTime, the) {
 				select_hold_time: false,
 				mapHeight: wx.getStorageSync('windowHeight') - 80,
 			});
+			wx.hideLoading();
 			
-			wx.redirectTo({
-				url: '/pages/index/index?from=processing',
-				success: function (res) { },
-				fail: function (res) { },
-				complete: function (res) { },
-			})
+			{
+				wx.navigateBack({
+					delta: 1,
+				})
+				// wx.redirectTo({
+				// 	url: '/pages/index/index?from=processing',
+				// 	success: function (res) { },
+				// 	fail: function (res) { },
+				// 	complete: function (res) { },
+				// });
+			}
+		
+		},
+		()=>{
+			wx.hideLoading();
 		}
 	);
 

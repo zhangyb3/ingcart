@@ -25,7 +25,7 @@
       <view class="split_line"></view>
     </view>
 
-    <view class="line_item_container" bindtap="toCard">
+    <!-- <view class="line_item_container" bindtap="toCard">
       <view class="line_item">
         <view class="line_include_item_container card_name">
           <text >卡券</text>
@@ -39,7 +39,7 @@
         </view>
       </view>
       <view class="split_line"></view>   
-    </view>
+    </view> -->
 
     <view class="line_item_container" bindtap="toHistory">
       <view class="line_item">

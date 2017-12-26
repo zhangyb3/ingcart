@@ -395,10 +395,12 @@ function requestSimpleList(that,list_type,pageIndex,action,requestMethod){
           else 
           {
             //拼接相同日期的纪录
+						var originalDateLength = that.data.history_date.length;
             var duplicateDate = currentDatas.historyDate.shift();
             that.data.history_date = that.data.history_date.concat(currentDatas.historyDate);
             var restRecord = currentDatas.record[duplicateDate];
-            Array.prototype.push.apply(that.data.history_record[that.data.history_date.length - 1], restRecord);
+						
+						Array.prototype.push.apply(that.data.history_record[originalDateLength - 1], restRecord);
             for (var count = 0; count < currentDatas.historyDate.length; count++) {
               var key = currentDatas.historyDate[count];
               var temp = currentDatas.record[key];

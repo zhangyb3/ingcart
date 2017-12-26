@@ -3,7 +3,7 @@
 
   position: relative;
   width: 80%;
-  height: 50%;
+  height: 100%;
 
   border-radius: 10px;
 
@@ -27,8 +27,8 @@
 
 #arrearage_image{
 
-  margin-top: 40px;
-  margin-bottom: 40px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   width: 78px;
   height: 50px;
 
@@ -40,7 +40,7 @@
 }
 
 #to_charge_button{
-  height: 50rpx;
+  height: 50px;
   width: 60%;
   background-color: orange;
   color: white;

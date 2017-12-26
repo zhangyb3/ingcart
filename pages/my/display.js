@@ -19,6 +19,8 @@ Page({
     wx.setNavigationBarTitle({
       title: '个人中心'
     })
+
+		
    
   },
 
