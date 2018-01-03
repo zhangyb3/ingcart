@@ -14,7 +14,8 @@
           <block wx:for="{{history_date}}" wx:for-item="date" wx:for-index="date_key" wx:key="unique">
             
             <view id="record_date_container">
-              <text id="record_date">·{{date}}</text>
+              
+							<text id="record_date">•{{date}}</text>
             </view>
 
             <template is="history_record_list" data="{{date,date_key,history_record}}"></template>

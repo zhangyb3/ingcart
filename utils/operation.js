@@ -4,6 +4,12 @@ var user = require('./user')
 var login = require('./login')
 var register = require('./register')
 
+//二维码ID换MAC
+const QR_TO_MAC_URL = `${config.PytheRestfulServerURL}/use/QR2MAC`;
+
+//开锁前检查
+const UNLOCK_PREPARE_URL = `${config.PytheRestfulServerURL}/unlock/prepare`;
+
 //开锁
 const UNLOCK_URL = `${config.PytheRestfulServerURL}/use/unlock`;
 
@@ -134,110 +140,159 @@ function getUnlockFrame(carId, token, success, fail) {
 
 function unlock(the, customerId, carId, success, fail){
 
-
   var that = the;
 
-	wx.getLocation({
-		type: 'gcj02',
+	//设置5秒检查时间，到时如果仍未开锁则清除缓存重新执行该函数
+	setTimeout(
+		function () { 
+			
+			if(wx.getStorageSync(user.UsingCar) != 1)
+			{
+				wx.closeBLEConnection({
+					deviceId: wx.getStorageSync('DeviceID'),
+					success: function(res) {
+
+						wx.closeBluetoothAdapter({
+							success: function (res) {
+
+								wx.openBluetoothAdapter({
+									success: function (res) {
+
+										unlock(that, customerId, carId);
+
+									},
+									fail: function (res) { },
+									complete: function (res) { },
+								})
+
+							},
+							fail: function (res) { },
+							complete: function (res) { },
+						});
+
+					},
+					fail: function(res) {},
+					complete: function(res) {},
+				})
+				
+
+			}
+			
+		
+		},
+		1000 * 10
+	);
+			
+	wx.request({
+		url: UNLOCK_PREPARE_URL,
+		data: {
+			customerId: wx.getStorageSync(user.CustomerID),
+			carId: carId,
+		
+		},
+		method: 'GET',
 		success: function (res) {
-			console.log('strange', wx.getStorageSync(user.CustomerID));
-			wx.request({
-				url: UNLOCK_URL,
-				data: {
-					customerId: wx.getStorageSync(user.CustomerID),
-					carId: carId,
-					latitude: res.latitude,
-					longitude: res.longitude
-				},
-				method: 'POST',
-				success: function (res) {
-					var result = res.data;
-					if (result.status == 200) {
+			var result = res.data;
+			if (result.status == 200) 
+			{
+				//通过检查，可以开锁
 
-						var deviceId;
-						//android、ios分情况处理
-						if(wx.getStorageSync('platform') == 'android')
-						{
-							deviceId = carId;
-							//直接开锁
-							unlockOperation(that, deviceId, carId);
-							
-						}
-						if (wx.getStorageSync('platform') == 'ios') 
-						{
-							
-							//找出跟MAC对应的deviceId
-							wx.onBluetoothDeviceFound(function(res){
-								
-									console.log('deviceId: ', res.devices[0]);
-									var macBuff = wx.base64ToArrayBuffer(res.devices[0].advertisData).slice(2, 8);
-									console.log('MAC: ', parseMAC(macBuff));
-									var macAddress = parseMAC(macBuff);
-									if (macAddress == carId) 
-									{
-										deviceId = res.devices[0].deviceId;
-										wx.setStorageSync('DeviceID', deviceId);
-										wx.stopBluetoothDevicesDiscovery({
-											success: function(res) {
-
-												//找到目标，停止查找，开锁
-												unlockOperation(that, deviceId, carId);
-												
-											},
-											fail: function(res) {},
-											complete: function(res) {},
-										})
-									}
-								
-							});
-						}
-
-
-
-
-
-					}
-					else {
-						if (result.status == 300) {
-							that.setData({
-								unlock_progress: false,
-								notify_arrearage: true,
-								arrearage_amount: result.data,
-							});
-						}
-						else {
-							that.setData({
-								unlock_progress: false,
-								// unlock_status: true,
-								// unlock_status_image: '/images/unlock_' + result.status + '.png',
-							});
-
-							wx.showModal({
-								title: String(result.status),
-								content: result.msg,
-								confirmText: '',
-								confirmColor: '',
-								success: function(res) {
-									wx.navigateBack({
-										delta: 1,
-									})
-								},
-								fail: function(res) {},
-								complete: function(res) {},
-							})
-						}
-
-					}
-
-
-				},
-				fail: function (res) {
-					typeof fail == "function" && fail(res);
+				var deviceId;
+				//android、ios分情况处理
+				if(wx.getStorageSync('platform') == 'android')
+				{
+					deviceId = carId;
+					//直接开锁
+					unlockOperation(that, deviceId, carId,
+						(res)=>{
+							typeof success == "function" && success(res.data);
+						},
+						
+					);
+					
 				}
-			});
+				if (wx.getStorageSync('platform') == 'ios') 
+				{
+					
+					//找出跟MAC对应的deviceId
+					wx.onBluetoothDeviceFound(function(res){
+						
+							console.log('deviceId: ', res.devices[0]);
+							var macBuff = wx.base64ToArrayBuffer(res.devices[0].advertisData).slice(2, 8);
+							console.log('MAC: ', parseMAC(macBuff));
+							var macAddress = parseMAC(macBuff);
+							if (macAddress == carId) 
+							{
+								deviceId = res.devices[0].deviceId;
+								wx.setStorageSync('DeviceID', deviceId);
+								wx.stopBluetoothDevicesDiscovery({
+									success: function(res) {
+
+										//找到目标，停止查找，开锁
+										unlockOperation(that, deviceId, carId,
+											(res) => {
+												typeof success == "function" && success(res.data);
+											},
+											
+										);
+										
+									},
+									fail: function(res) {},
+									complete: function(res) {},
+								})
+							}
+						
+					});
+				}
+
+
+
+
+
+			}
+			else {
+				if (result.status == 300) {
+					that.setData({
+						unlock_progress: false,
+						notify_arrearage: true,
+						arrearage_amount: result.data,
+					});
+				}
+				else {
+					that.setData({
+						unlock_progress: false,
+						// unlock_status: true,
+						// unlock_status_image: '/images/unlock_' + result.status + '.png',
+					});
+
+					wx.showModal({
+						title: '提示',
+						content: result.msg,
+						showCancel: false,
+						confirmText: '我知道了',
+						confirmColor: '',
+						success: function(res) {
+							wx.navigateBack({
+								delta: 1,
+							})
+						},
+						fail: function(res) {},
+						complete: function(res) {},
+					})
+				}
+
+			}
+
+
+		},
+		fail: function (res) {
+			typeof fail == "function" && fail(res);
+			
+		},
+		complete: function(res){
+			
 		}
 	});
-
 
 }
 
@@ -253,11 +308,11 @@ function connectDevice(the,deviceId, success, fail){
 				success: function (res) {
 					console.log(res);
 
-					wx.setStorageSync('ServiceId', res.services[0].uuid);
+					wx.setStorageSync('ServiceID', res.services[0].uuid);
 
 					wx.getBLEDeviceCharacteristics({
 						deviceId: deviceId,
-						serviceId: wx.getStorageSync('ServiceId'),
+						serviceId: wx.getStorageSync('ServiceID'),
 						success: function (res) {
 							console.log(res);
 							wx.setStorageSync('characteristicIdToWrite', res.characteristics[0].uuid);
@@ -267,11 +322,12 @@ function connectDevice(the,deviceId, success, fail){
 							//启用特征值订阅，监控串口
 							wx.notifyBLECharacteristicValueChange({
 								deviceId: deviceId,
-								serviceId: wx.getStorageSync('ServiceId'),
+								serviceId: wx.getStorageSync('ServiceID'),
 								characteristicId: wx.getStorageSync('characteristicIdToRead'),
 								state: true,
 								success: function (res) {
 									console.log(res);
+									
 								},
 								fail: function (res) { },
 								complete: function (res) { },
@@ -283,7 +339,7 @@ function connectDevice(the,deviceId, success, fail){
 
 									wx.writeBLECharacteristicValue({
 										deviceId: deviceId,
-										serviceId: wx.getStorageSync('ServiceId'),
+										serviceId: wx.getStorageSync('ServiceID'),
 										characteristicId: wx.getStorageSync('characteristicIdToWrite'),
 										value: wx.base64ToArrayBuffer(encryptedFrameStr),
 
@@ -335,7 +391,7 @@ function connectDevice(the,deviceId, success, fail){
 	});
 }
 
-function unlockOperation(the, deviceId, carId){
+function unlockOperation(the, deviceId, carId, success, fail, complete){
 	var that = the;
 	wx.createBLEConnection({
 		deviceId: deviceId,
@@ -347,11 +403,11 @@ function unlockOperation(the, deviceId, carId){
 				success: function (res) {
 					console.log(res);
 
-					wx.setStorageSync('ServiceId', res.services[0].uuid);
+					wx.setStorageSync('ServiceID', res.services[0].uuid);
 
 					wx.getBLEDeviceCharacteristics({
 						deviceId: deviceId,
-						serviceId: wx.getStorageSync('ServiceId'),
+						serviceId: wx.getStorageSync('ServiceID'),
 						success: function (res) {
 							console.log(res);
 							wx.setStorageSync('characteristicIdToWrite', res.characteristics[0].uuid);
@@ -361,13 +417,15 @@ function unlockOperation(the, deviceId, carId){
 							//启用特征值订阅，监控串口
 							wx.notifyBLECharacteristicValueChange({
 								deviceId: deviceId,
-								serviceId: wx.getStorageSync('ServiceId'),
+								serviceId: wx.getStorageSync('ServiceID'),
 								characteristicId: wx.getStorageSync('characteristicIdToRead'),
 								state: true,
 								success: function (res) {
 									console.log(res);
 								},
-								fail: function (res) { },
+								fail: function (res) { 
+									typeof fail == "function" && fail('fallback');
+								},
 								complete: function (res) { },
 							});
 
@@ -377,13 +435,22 @@ function unlockOperation(the, deviceId, carId){
 
 									wx.writeBLECharacteristicValue({
 										deviceId: deviceId,
-										serviceId: wx.getStorageSync('ServiceId'),
+										serviceId: wx.getStorageSync('ServiceID'),
 										characteristicId: wx.getStorageSync('characteristicIdToWrite'),
 										value: wx.base64ToArrayBuffer(encryptedFrameStr),
-
+										success: function (res) {
+											console.log(res);
+										},
+										fail: function (res) {
+											console.log(res);
+										},
+										complete: function (res) {
+											console.log(res);
+										},
 									});
 								},
 							);
+							
 
 							wx.onBLECharacteristicValueChange(function (res) {
 
@@ -402,7 +469,8 @@ function unlockOperation(the, deviceId, carId){
 										var tokenFrameHexStr = (ab2hex(wx.base64ToArrayBuffer(res)));
 										console.log('token: ' + tokenFrameHexStr.substring(0, 32) + ' ,head: ' + tokenFrameHexStr.slice(0, 2));
 										//如果通信帧符合，取出token备用
-										if (tokenFrameHexStr.slice(0, 4) == '0602') {
+										if (tokenFrameHexStr.slice(0, 4) == '0602' ) 
+										{
 											console.log('correct token: ' + tokenFrameHexStr.substring(0, 32));
 											wx.setStorageSync("token", tokenFrameHexStr.substring(6, 14));
 
@@ -430,7 +498,7 @@ function unlockOperation(the, deviceId, carId){
 
 													wx.writeBLECharacteristicValue({
 														deviceId: deviceId,
-														serviceId: wx.getStorageSync('ServiceId'),
+														serviceId: wx.getStorageSync('ServiceID'),
 														characteristicId: wx.getStorageSync('characteristicIdToWrite'),
 														value: wx.base64ToArrayBuffer(encryptedFrameStr),
 														success: function (res) {
@@ -447,49 +515,89 @@ function unlockOperation(the, deviceId, carId){
 
 										}
 
-										if (tokenFrameHexStr.slice(0, 8) == '05020100') {
+
+
+										if (tokenFrameHexStr.slice(0, 8) == '05020100') 
+										{
 											//开锁成功
 											that.setData({
 												unlock_progress: false,
 											});
-											normalUpdateCustomerStatus(
-												wx.getStorageSync(user.CustomerID),
-												() => {
+											
+											//更新开锁状态
+											wx.getLocation({
+												type: 'gcj02',
+												altitude: true,
+												success: function(res) {
 
-													wx.redirectTo({
-														url: 'index?from=processing',
-														success: function(res) {},
-														fail: function(res) {},
-														complete: function(res) {},
-													})
+													wx.request({
+														url: UNLOCK_URL,
+														data: {
+															carId: carId,
+															customerId: wx.getStorageSync(user.CustomerID),
+															longitude: res.longitude,
+															latitude: res.latitude,
+														},
+														method: 'POST',
+														success: function (res) { 
 
-												});
-											typeof success == "function" && success('unlock');
+															normalUpdateCustomerStatus(
+																wx.getStorageSync(user.CustomerID),
+																() => {
+
+																	wx.closeBLEConnection({
+																		deviceId: deviceId,
+																		success: function(res) {
+
+																			wx.closeBluetoothAdapter({
+																				success: function(res) {
+
+																					if (wx.getStorageSync('from') == 'weixin') {
+																						wx.reLaunch({
+																							url: 'index',
+																							success: function (res) { },
+																							fail: function (res) { },
+																							complete: function (res) { },
+																						})
+																					}
+																					else {
+																						wx.navigateBack({
+																							delta: 1,
+																						})
+																					}
+
+																				},
+																				fail: function(res) {},
+																				complete: function(res) {},
+																			})
+																		},
+																		fail: function(res) {},
+																		complete: function(res) {},
+																	})
+
+																
+																});
+
+															typeof success == "function" && success('unlock');
+
+														},
+														fail: function (res) { },
+														complete: function (res) { },
+													});
+
+												},
+												fail: function(res) {},
+												complete: function(res) {},
+											})
+											
+											
 										}
 										if (tokenFrameHexStr.slice(0, 8) == '05020101') {
 											//开锁失败
 
 										}
 
-										if (tokenFrameHexStr.slice(0, 8) == '05080100') {
-
-
-											//检测到关锁成功信号
-
-
-											wx.navigateTo({
-												url: '/pages/index/processing?operation=lock',
-												success: function (res) { },
-												fail: function (res) { },
-												complete: function (res) { },
-											})
-
-
-
-
-										}
-
-
+										
 
 									}
 								);
@@ -497,22 +605,27 @@ function unlockOperation(the, deviceId, carId){
 
 							});
 
-
+							
+							
 
 
 						},
-						fail: function (res) { },
+						fail: function (res) { 
+							typeof fail == "function" && fail('fallback');
+						},
 						complete: function (res) { },
 					})
 
 				},
-				fail: function (res) { },
+				fail: function (res) { 
+					typeof fail == "function" && fail('fallback');
+				},
 				complete: function (res) { },
 			})
 
 		},
 		fail: function (res) {
-			console.log(res);
+			typeof fail == "function" && fail('fallback');
 		},
 		complete: function (res) { },
 	});
@@ -520,18 +633,7 @@ function unlockOperation(the, deviceId, carId){
 
 function lock(customerId, carId, recordId, success, fail){
 
-	wx.closeBLEConnection({
-		deviceId: wx.getStorageSync(user.UsingCarDevice),
-		success: function(res) {
-			wx.closeBluetoothAdapter({
-				success: function(res) {},
-				fail: function(res) {},
-				complete: function(res) {},
-			})
-		},
-		fail: function(res) {},
-		complete: function(res) {},
-	})
+	
 
   wx.getLocation({
     type: 'gcj02',
@@ -794,6 +896,7 @@ function parseMAC(buffer) {
 }
 
 function loginSystem(the, success, fail) {
+	
 	var that = the;
 	wx.login({
 		success: function (res) {
@@ -893,6 +996,24 @@ function loginSystem(the, success, fail) {
 	return 'finish';
 }
 
+function qr2mac(qrId, success, fail){
+
+	wx.request({
+		url: QR_TO_MAC_URL,
+		data: {
+			qrId: qrId,
+		},
+		method: 'POST',
+		success: function(res) {
+			typeof success == "function" && success(res.data.data);
+		},
+		fail: function(res) {
+			typeof fail == "function" && fail(res.data.data);
+		},
+		complete: function(res) {},
+	})
+}
+
 module.exports = {
 
 	UNLOCK_URL: UNLOCK_URL,
@@ -919,5 +1040,6 @@ module.exports = {
 	connectDevice: connectDevice,
 
 	loginSystem: loginSystem,
+	qr2mac: qr2mac,
 
 }

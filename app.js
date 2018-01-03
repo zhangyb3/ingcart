@@ -29,7 +29,7 @@ App({
     });
 
     wx.setStorageSync('alreadyRegister', 'no');
-    wx.setStorageSync('logoutSystem', 'yes');
+    // wx.setStorageSync('logoutSystem', 'yes');
 
    
 

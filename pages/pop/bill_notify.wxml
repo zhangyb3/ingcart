@@ -7,7 +7,7 @@
     
     <view id="bill_notify_container"  >
       
-      <image id="close_notify" src="../../images/close.png"  bindtap="confirmBill" />
+       <image id="close_notify" src="../../images/close.png"  bindtap="confirmBill" /> 
       <view class="" style="height:30px;"></view>
       
       <text id="bill_notify_text">本次行程用时{{duration}}分钟</text>

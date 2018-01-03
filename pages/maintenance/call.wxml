@@ -9,7 +9,7 @@
       </view>
       <view class="maintenance_scan_car_id_container">
         <view class="maintenance_car_id">
-          <input class="maintenance_car_id_input" placeholder="扫码或手动输入车号" value="{{maintenanceCarId}}" bindinput="carIdInput"/>
+          <input class="maintenance_car_id_input" placeholder="扫码或手动输入车号" value="{{maintenanceQRId}}" bindinput="carIdInput"/>
         </view>
         <!--<view class="maintenance_scan_operation" bindtap="scanFaultCar">轻触左边按钮扫码或上方手动输入车号</view>-->
       </view>

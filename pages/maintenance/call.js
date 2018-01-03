@@ -60,7 +60,7 @@ Page({
 
    
     wordsCountdown: 140,
-    maintenanceCarId: null,
+    maintenanceQRId: null,
     faultDescription: null,
   },
 
@@ -88,7 +88,7 @@ Page({
   carIdInput: function(e){
     this.setData({
       
-      maintenanceCarId: e.detail.value,
+      maintenanceQRId: e.detail.value,
     })
   },
 
@@ -118,9 +118,10 @@ Page({
         if(res.errMsg == 'scanCode:ok')
         {
 					var parameters = operation.urlProcess(res.result);
-          that.data.maintenanceCarId = parameters.carId;
+					
+          that.data.maintenanceQRId = parameters.id;
           that.setData({
-						maintenanceCarId: parameters.carId,
+						maintenanceQRId: parameters.id,
           })
         }
       },
@@ -141,7 +142,7 @@ Page({
         wx.setStorageSync(user.Latitude, res.latitude);
         wx.setStorageSync(user.Longitude, res.longitude);
 
-        if (that.data.faults.length > 0) {
+				if (that.data.faults.length > 0 && that.data.maintenanceQRId != null) {
 
           // switchFaultType(that.data.faults, that);
 
@@ -149,41 +150,87 @@ Page({
             url: config.PytheRestfulServerURL + '/use/callRepair',
             data: {
               customerId: wx.getStorageSync(user.CustomerID),
-              type: that.data.faults[0],
-              carId: that.data.maintenanceCarId,
+              type: that.data.faults,
+              qrId: that.data.maintenanceQRId,
               longitude: wx.getStorageSync(user.Longitude),
               latitude: wx.getStorageSync(user.Latitude),
-              description: "haha"
+              annotation: "haha"
             },
             method: 'POST',
             success: function (res) {
               console.log(res);
-              wx.showToast({
-                title: res.data.data,
-                duration: 1500,
-                success: function (res) { },
-                fail: function (res) { },
-                complete: function (res) { },
-              })
+							if (res.data.status == 400) {
+								wx.showModal({
+									title: "提示",
+									content: res.data.msg,
+									showCancel: false,
+									confirmText: '我知道了',
+									success: function (res) { },
+									fail: function (res) { },
+									complete: function (res) { },
+								})
+							}
+							else
+							{
+								wx.showToast({
+									title: res.data.data,
+									duration: 1500,
+									success: function (res) {
+									},
+									fail: function (res) { },
+									complete: function (res) { 
+
+									},
+								});
+								wx.navigateBack({
+									delta: 1,
+								});
+							}
+              
             }
           })
-        } else {
-          wx.showModal({
-            title: "请填写反馈信息",
-            content: '客服热线0755-29648606',
-            confirmText: "确定",
-            cancelText: "取消",
-            success: (res) => {
-              if (res.confirm) {
-                // 继续填
-              } else {
-                console.log("back")
-                wx.navigateBack({
-                  delta: 1 // 回退前 delta(默认为1) 页面
-                })
-              }
-            }
-          })
+        } 
+				else 
+				{
+					if (that.data.maintenanceQRId == null)
+					{
+						wx.showModal({
+							title: "提示",
+							content: '尚未输入车号',
+							showCancel: false,
+							confirmText: '我知道了',
+							success: (res) => {
+								if (res.confirm) {
+									// 继续填
+								} else {
+									console.log("back")
+									wx.navigateBack({
+										delta: 1 // 回退前 delta(默认为1) 页面
+									})
+								}
+							}
+						})
+					}
+					else
+					{
+						wx.showModal({
+							title: "请填写反馈信息",
+							content: '客服热线0755-29648606',
+							showCancel: false,
+							confirmText: '我知道了',
+							success: (res) => {
+								if (res.confirm) {
+									// 继续填
+								} else {
+									console.log("back")
+									wx.navigateBack({
+										delta: 1 // 回退前 delta(默认为1) 页面
+									})
+								}
+							}
+						});
+					}
+          
         }
 
       },

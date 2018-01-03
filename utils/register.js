@@ -17,6 +17,7 @@ var checkRegister = (success,fail) => {
         // SessionID: wx.getStorageSync(user.SessionID),
         openId : wx.getStorageSync(user.OpenID),
         unionId: wx.getStorageSync(user.UnionID),
+				type: 0,//小程序注册类型为0
       },
       method: 'POST', 
       success: function(res){
@@ -70,6 +71,7 @@ function commitRegister(the)
         
         openId: wx.getStorageSync(user.OpenID),
         unionId: wx.getStorageSync(user.UnionID),
+				type: 0,//小程序注册类型为0
       },
       method: 'POST',
       success: function (res) {

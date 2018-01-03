@@ -16,8 +16,8 @@
           <button class="compute_fee" form-type="submit">结束计费</button>
         </form>
 
-        <form class="selection" bindsubmit="lockToHold" report-submit='true' >
-          <button class="hold_car" form-type="submit">保留用车</button>
+        <form class="selection"   >
+          <button class="hold_car" bindtap="lockToHold">保留用车</button>
         </form>
 
       </view>

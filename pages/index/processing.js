@@ -24,7 +24,10 @@ Page({
 		this.data.fromPage = parameters.from;
 		this.data.operation = parameters.operation;
 		this.data.carId = parameters.carId;
-		
+		if(this.data.fromPage == 'weixin')
+		{
+			wx.setStorageSync('from', 'weixin');
+		}
 		
   },
 
@@ -46,7 +49,9 @@ Page({
 			var that = this;
 			that.setData({
 				unlock_progress: true,
-			});					
+			});			
+
+
 
 			operation.unlock(
 				that,
@@ -63,56 +68,30 @@ Page({
 
 		}
 
-		//从外部扫描进来
-		if (this.data.operation == 'unlock' && this.data.fromPage == 'weixin')
-		{
-			console.log('from weixin');
-			var that = this;
-			operation.loginSystem(
-				this,
-				()=>{
-					//登录成功去开锁
-					operation.unlock(
-						that,
-						wx.getStorageSync(user.CustomerID),
-						that.data.carId,
-						(result) => {
-
-
-
-						},
-					);
-				},
-				()=>{
-					//分情况，从外部扫码进来就转接，内部扫码进来就返回上一页
-					// if(that.data.fromPage == 'index')
-					// {
-					// 	wx.navigateBack({
-					// 		delta: 1,
-					// 	})
-					// }
-					// else
-					{
-						wx.redirectTo({
-							url: 'index',
-							success: function (res) { },
-							fail: function (res) { },
-							complete: function (res) { },
-						});
-					}
-
-				}
-			);
-
-		}
+		
 
 		//检测到关锁
-		if (this.data.operation == 'lock')
+		if (this.data.operation == 'lock' || wx.getStorageSync('executeLock') == 'yes')
 		{
+			wx.setStorageSync('executeLock', 'no');
+			wx.closeBLEConnection({
+				deviceId: wx.getStorageSync(user.UsingCarDevice),
+				success: function (res) {
+					wx.closeBluetoothAdapter({
+						success: function (res) { },
+						fail: function (res) { },
+						complete: function (res) { },
+					})
+				},
+				fail: function (res) { },
+				complete: function (res) { },
+			});
+			
 			wx.showLoading({
 				title: '关锁中···',
 				mask: true,
 			})
+
 			var that = this;
 			operation.lock(
 				wx.getStorageSync(user.CustomerID),
@@ -127,46 +106,13 @@ Page({
 
 					wx.hideLoading();
 
-					var closeDevice;
-					if (wx.getStorageSync('platform') == 'ios')
-					{
-						closeDevice = wx.getStorageSync('DeviceID');
-					}
-					else
-					{
-						closeDevice = wx.getStorageSync(user.UsingCar);
-					}
-					wx.closeBLEConnection({
-						deviceId: closeDevice,
-						success: function (res) {
-							wx.setStorageSync('ServiceId', null);
-							wx.setStorageSync('characteristicIdToRead', null);
-							wx.setStorageSync('characteristicIdToWrite', null);
-						 },
-						fail: function (res) { },
-						complete: function (res) { },
-					})
+					
+					
 				},
 				() => {
 					wx.hideLoading();
 
-					var closeDevice;
-					if (wx.getStorageSync('platform') == 'ios') {
-						closeDevice = wx.getStorageSync('DeviceID');
-					}
-					else {
-						closeDevice = wx.getStorageSync(user.UsingCar);
-					}
-					wx.closeBLEConnection({
-						deviceId: closeDevice,
-						success: function (res) { 
-							wx.setStorageSync('ServiceId', null);
-							wx.setStorageSync('characteristicIdToRead', null);
-							wx.setStorageSync('characteristicIdToWrite', null);
-						},
-						fail: function (res) { },
-						complete: function (res) { },
-					})
+					
 				}
 			);
 		}
@@ -186,9 +132,10 @@ Page({
 	},
 
 	lockToPay: function (e) {
+		
 		this.data.payFormId = e.detail.formId;
 		wx.showLoading({
-			title: '请稍候',
+			title: '计费中',
 			mask: true,
 			success: function(res) {},
 			fail: function(res) {},
@@ -197,6 +144,8 @@ Page({
 		lockToPay(this);
 	},
 	lockToHold: function (e) {
+
+
 		lockToHold(this);
 	},
 
@@ -209,23 +158,32 @@ Page({
 			fail: function(res) {},
 			complete: function(res) {},
 		})
-		selectHoldTime(appointmentTime, this);
+		selectHoldTime(appointmentTime, this,
+			()=>{
+				
+				wx.reLaunch({
+					url: 'index?from=processing',
+					success: function(res) {},
+					fail: function(res) {},
+					complete: function(res) {},
+				})
+			}
+		);
 
 	},
 
 	confirmBill: function (e) {
 		
-		{
-			wx.navigateBack({
-				delta: 1,
-			})
-			// wx.redirectTo({
-			// 	url: '/pages/index/index?from=processing',
-			// 	success: function (res) { },
-			// 	fail: function (res) { },
-			// 	complete: function (res) { },
-			// })
-		}
+		// this.setData({
+		// 	notify_bill: false,
+		// });
+		
+		wx.reLaunch({
+			url: 'index?from=processing',
+			success: function (res) { },
+			fail: function (res) { },
+			complete: function (res) { },
+		})
 		
 	},
 
@@ -268,6 +226,8 @@ Page({
 
 function lockToPay(the) {
 
+	
+
 	var that = the;
 	operation.computeFee(
 		wx.getStorageSync(user.CustomerID),
@@ -275,7 +235,22 @@ function lockToPay(the) {
 		wx.getStorageSync(user.RecordID),
 		that.data.payFormId,
 		(result) => {
-			console.log("compute fee: " + result.data);
+			wx.hideLoading();
+
+			// wx.showModal({
+			// 	title: '',
+			// 	content: JSON.stringify(result.data),
+			// 	showCancel: true,
+			// 	cancelText: '',
+			// 	cancelColor: '',
+			// 	confirmText: '',
+			// 	confirmColor: '',
+			// 	success: function(res) {},
+			// 	fail: function(res) {},
+			// 	complete: function(res) {},
+			// })
+
+
 			that.setData({
 				selection_after_lock: false,
 				select_hold_time: false,
@@ -283,7 +258,8 @@ function lockToPay(the) {
 				price: result.data.price,
 				duration: result.data.time,
 			});
-			wx.hideLoading();
+			
+
 		},
 		()=>{
 			wx.hideLoading();
@@ -293,13 +269,15 @@ function lockToPay(the) {
 
 function lockToHold(the) {
 
+	
+
 	the.setData({
 		selection_after_lock: false,
 		select_hold_time: true,
 	});
 }
 
-function selectHoldTime(appointmentTime, the) {
+function selectHoldTime(appointmentTime, the, success, fail) {
 
 	
 	var that = the;
@@ -309,26 +287,13 @@ function selectHoldTime(appointmentTime, the) {
 		appointmentTime,
 		wx.getStorageSync(user.RecordID),
 		(result) => {
-			console.log("select hold time: " + result.data);
+			
 			that.setData({
-				holding: true,
 				selection_after_lock: false,
 				select_hold_time: false,
-				mapHeight: wx.getStorageSync('windowHeight') - 80,
 			});
 			wx.hideLoading();
-			
-			{
-				wx.navigateBack({
-					delta: 1,
-				})
-				// wx.redirectTo({
-				// 	url: '/pages/index/index?from=processing',
-				// 	success: function (res) { },
-				// 	fail: function (res) { },
-				// 	complete: function (res) { },
-				// });
-			}
+			typeof success == "function" && success(result);
 		
 		},
 		()=>{

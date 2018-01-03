@@ -6,23 +6,30 @@
   line-height: 50rpx;
   padding-top: 20rpx;
   padding-bottom: 20rpx;
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+#record_date_{
+	font-weight: bold;
 }
 
 #record_date{
 
   width: 100%;
   
-  color: lightgray;
+  color: gray;
   font-size: 32rpx;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 
 }
 
 .group_split{
-  width: 95%;
-  margin-left: 5%;
-  height: 10rpx;
-  background-color: lightgray;
+  
+  height: 15px;
+  background-color: #F6F6F6;
 }
 
 @import "../section/history_record_list.wxss";
