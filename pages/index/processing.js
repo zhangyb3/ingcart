@@ -59,9 +59,15 @@ Page({
 				that.data.carId,
 				(result)=>{
 
-					
-
 				},
+				()=>{
+					wx.reLaunch({
+						url: 'index?from=processing',
+						success: function(res) {},
+						fail: function(res) {},
+						complete: function(res) {},
+					})
+				}
 			);
 								
 

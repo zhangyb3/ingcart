@@ -240,77 +240,112 @@ Page({
 					console.log('using car', wx.getStorageSync('UsingCar'));
 					if (wx.getStorageSync(user.UsingCarStatus) == 1) 
 					{
+						if (wx.getStorageSync('platform') == 'ios') 
+						{
 
-						wx.getConnectedBluetoothDevices({
-							services: ['FEE7'],
-							success: function (res) {
-								//检查是否已连接目标设备
-								var connected = false;
-								for (var count = 0; count < res.devices.length; count++) {
+							wx.closeBluetoothAdapter({
+								success: function (res) {
+									wx.openBluetoothAdapter({
+										success: function (res) {
 
-									if (res.devices[count].deviceId == wx.getStorageSync(user.UsingCarDevice)) {
-										connected = true;
+											wx.showLoading({
+												title: '加载纪录',
+												mask: true,
+												success: function (res) { },
+												fail: function (res) { },
+												complete: function (res) { },
+											});
+
+											//ios情况下，先搜索已经发现的设备，再搜索没发现的，找到符合的设备就去连接
+											wx.startBluetoothDevicesDiscovery({
+												services: ['FEE7'],
+												allowDuplicatesKey: true,
+												interval: 0,
+												success: function (res) {
+													wx.onBluetoothDeviceFound(function (res) {
+														if (res.devices[0].deviceId == wx.getStorageSync(user.UsingCarDevice)) {
+															wx.stopBluetoothDevicesDiscovery({
+																success: function (res) {
+
+																	operation.connectDevice(that,
+																		wx.getStorageSync(user.UsingCarDevice),
+																		(tokenFrameHexStr) => {
+																			wx.hideLoading();
+																			if (tokenFrameHexStr.slice(0, 8) == '05080100') {
+
+
+																				//检测到关锁成功信号
+																				wx.setStorageSync('executeLock', 'yes');
+																				wx.navigateTo({
+																					url: 'processing?operation=lock',
+																					success: function (res) { },
+																					fail: function (res) { },
+																					complete: function (res) { },
+																				})
+
+
+
+
+																			}
+
+																		},
+																	);
+																},
+																fail: function (res) { },
+																complete: function (res) { },
+															})
+														}
+													})
+												},
+												fail: function (res) { },
+												complete: function (res) { },
+											})
+
+
+
+
+
+										},
+										fail: function (res) { },
+										complete: function (res) { },
+									})
+								},
+								fail: function (res) { },
+								complete: function (res) { },
+							});
+
+						}
+						else
+						{
+							wx.getConnectedBluetoothDevices({
+								services: ['FEE7'],
+								success: function (res) {
+									//检查是否已连接目标设备
+									var connected = false;
+									for (var count = 0; count < res.devices.length; count++) {
+
+										if (res.devices[count].deviceId == wx.getStorageSync(user.UsingCarDevice)) {
+											connected = true;
+										}
 									}
-								}
-								//没连接则连接
-								if (connected == false) 
-								{
-									if (wx.getStorageSync('platform') == 'ios') {
+									//没连接则连接
+									if (connected == false)
+									{
+								
+										{
+											//android版监听
+											operation.connectDevice(that,
+												wx.getStorageSync(user.UsingCarDevice),
+												(tokenFrameHexStr) => {
+													wx.hideLoading();
+													if (tokenFrameHexStr.slice(0, 8) == '05080100') {
 
-										wx.closeBluetoothAdapter({
-											success: function (res) {
-												wx.openBluetoothAdapter({
-													success: function (res) {
 
-														wx.showLoading({
-															title: '加载纪录',
-															mask: true,
+														//检测到关锁成功信号
+														wx.setStorageSync('executeLock', 'yes');
+														wx.navigateTo({
+															url: 'processing?operation=lock',
 															success: function (res) { },
-															fail: function (res) { },
-															complete: function (res) { },
-														});
-
-														//ios情况下，先搜索已经发现的设备，再搜索没发现的，找到符合的设备就去连接
-														wx.startBluetoothDevicesDiscovery({
-															services: ['FEE7'],
-															allowDuplicatesKey: true,
-															interval: 0,
-															success: function (res) {
-																wx.onBluetoothDeviceFound(function (res) {
-																	if (res.devices[0].deviceId == wx.getStorageSync(user.UsingCarDevice)) {
-																		wx.stopBluetoothDevicesDiscovery({
-																			success: function (res) {
-
-																				operation.connectDevice(that,
-																					wx.getStorageSync(user.UsingCarDevice),
-																					(tokenFrameHexStr) => {
-																						wx.hideLoading();
-																						if (tokenFrameHexStr.slice(0, 8) == '05080100') {
-
-
-																							//检测到关锁成功信号
-																							wx.setStorageSync('executeLock', 'yes');
-																							wx.navigateTo({
-																								url: 'processing?operation=lock',
-																								success: function (res) { },
-																								fail: function (res) { },
-																								complete: function (res) { },
-																							})
-
-
-
-
-																						}
-
-																					},
-																				);
-																			},
-																			fail: function (res) { },
-																			complete: function (res) { },
-																		})
-																	}
-																})
-															},
 															fail: function (res) { },
 															complete: function (res) { },
 														})
@@ -318,67 +353,19 @@ Page({
 
 
 
+													}
 
-													},
-													fail: function (res) { },
-													complete: function (res) { },
-												})
-											},
-											fail: function (res) { },
-											complete: function (res) { },
-										});
+												},
+											);
+										}
 
 									}
-									else {
-										//android版监听
-										wx.closeBluetoothAdapter({
-											success: function (res) {
-
-												wx.openBluetoothAdapter({
-													success: function (res) {
-
-														operation.connectDevice(that,
-															wx.getStorageSync(user.UsingCarDevice),
-															(tokenFrameHexStr) => {
-																wx.hideLoading();
-																if (tokenFrameHexStr.slice(0, 8) == '05080100') {
-
-
-																	//检测到关锁成功信号
-																	wx.setStorageSync('executeLock', 'yes');
-																	wx.navigateTo({
-																		url: 'processing?operation=lock',
-																		success: function (res) { },
-																		fail: function (res) { },
-																		complete: function (res) { },
-																	})
-
-
-
-
-																}
-
-															},
-														);
-
-													},
-													fail: function (res) { },
-													complete: function (res) { },
-												})
-											},
-											fail: function (res) { },
-											complete: function (res) { },
-										})
-
-									}
-
-								}
-
-							},
-							fail: function (res) { },
-							complete: function (res) { },
-						});
-							
+								},
+									fail: function (res) { },
+									complete: function (res) { },
+							});
+						}
+						
 										
 					}
 					

@@ -143,45 +143,77 @@ function unlock(the, customerId, carId, success, fail){
   var that = the;
 
 	//设置5秒检查时间，到时如果仍未开锁则清除缓存重新执行该函数
-	setTimeout(
-		function () { 
-			
-			if(wx.getStorageSync(user.UsingCar) != 1)
-			{
-				wx.closeBLEConnection({
-					deviceId: wx.getStorageSync('DeviceID'),
-					success: function(res) {
+	if (wx.getStorageSync('platform') == 'android')
+	{
+		setTimeout(
+			function () {
 
-						wx.closeBluetoothAdapter({
-							success: function (res) {
+				if (wx.getStorageSync(user.UsingCarStatus) != 1) {
+					wx.closeBLEConnection({
+						deviceId: wx.getStorageSync('DeviceID'),
+						success: function (res) {
 
-								wx.openBluetoothAdapter({
-									success: function (res) {
+							wx.closeBluetoothAdapter({
+								success: function (res) {
 
-										unlock(that, customerId, carId);
+									wx.openBluetoothAdapter({
+										success: function (res) {
 
-									},
-									fail: function (res) { },
-									complete: function (res) { },
+											unlock(that, customerId, carId);
+
+										},
+										fail: function (res) { },
+										complete: function (res) { },
+									})
+
+								},
+								fail: function (res) { },
+								complete: function (res) { },
+							});
+
+						},
+						fail: function (res) { },
+						complete: function (res) { },
+					})
+
+
+				}
+
+
+			},
+			1000 * 10
+		);
+	}
+	else
+	{
+		setTimeout(
+			function () {
+
+				if(wx.getStorageSync(user.UsingCarStatus) != 1)
+				{
+					wx.showModal({
+						title: '',
+						content: '连接超时，请再次扫码',
+						confirmText: '我知道了',
+						confirmColor: '',
+						success: function(res) {
+							if(res.confirm)
+							{
+								wx.navigateBack({
+									delta: 1,
 								})
-
-							},
-							fail: function (res) { },
-							complete: function (res) { },
-						});
-
-					},
-					fail: function(res) {},
-					complete: function(res) {},
-				})
-				
-
-			}
-			
-		
-		},
-		1000 * 10
-	);
+							}
+						},
+						fail: function(res) {},
+						complete: function(res) {},
+					})
+					
+				}
+			},
+			1000 * 10
+		);
+	}
+	
 			
 	wx.request({
 		url: UNLOCK_PREPARE_URL,
@@ -207,7 +239,10 @@ function unlock(the, customerId, carId, success, fail){
 						(res)=>{
 							typeof success == "function" && success(res.data);
 						},
-						
+						(res)=>{
+							typeof fail == "function" && fail(res);
+						}
+
 					);
 					
 				}
@@ -233,6 +268,9 @@ function unlock(the, customerId, carId, success, fail){
 											(res) => {
 												typeof success == "function" && success(res.data);
 											},
+											(res) => {
+												typeof fail == "function" && fail(res);
+											}
 											
 										);
 										
