@@ -2,6 +2,7 @@
 var config = require("../../utils/config.js");
 var user = require("../../utils/user.js");
 var util = require("../../utils/util.js");
+var operation = require("../../utils/operation.js");
 
 Page({
   data:{
@@ -27,7 +28,6 @@ Page({
   onShow:function(){
 
 		
-
     var that = this;
     wx.request({
       url: config.PytheRestfulServerURL + '/customer/select',
@@ -99,5 +99,11 @@ Page({
       complete: function(res) {},
     })
   },
+
+	toRecordRepair: function () {
+		wx.navigateTo({
+			url: 'record_repair'
+		})
+	},
 
 })

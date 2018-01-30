@@ -82,3 +82,13 @@
 .submit-btn:active{
   background-color: gray;
 }
+
+
+#admin_hint{
+	height: 100rpx;
+	line-height: 100rpx;
+	font-size: 36rpx;
+	/* font-weight: bold; */
+	text-align: center;
+	color: gray;
+}

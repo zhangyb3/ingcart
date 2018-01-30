@@ -52,20 +52,28 @@ Page({
 			});			
 
 
-
+			
 			operation.unlock(
 				that,
 				wx.getStorageSync(user.CustomerID),
 				that.data.carId,
 				(result)=>{
 
+					// if(wx.getStorageSync('DeviceID') != null)
+					// {
+					// 	setTimeout(
+					// 		function(){
+					// 			wx.navigateBack({
+					// 				delta: 1,
+					// 			})
+					// 		},
+					// 		1000*5
+					// 	);
+					// }
 				},
 				()=>{
-					wx.reLaunch({
-						url: 'index?from=processing',
-						success: function(res) {},
-						fail: function(res) {},
-						complete: function(res) {},
+					wx.navigateBack({
+						delta: 1,
 					})
 				}
 			);
@@ -99,28 +107,58 @@ Page({
 			})
 
 			var that = this;
-			operation.lock(
-				wx.getStorageSync(user.CustomerID),
-				wx.getStorageSync(user.UsingCar),
-				wx.getStorageSync(user.RecordID),
-				(result) => {
-					console.log(result);
 
-					that.setData({
-						selection_after_lock: true,
-					});
+			if(wx.getStorageSync(user.Level) == 1)
+			{
+				//管理员版直接返回主页面
+				operation.lock(
+					wx.getStorageSync(user.CustomerID),
+					wx.getStorageSync(user.UsingCar),
+					wx.getStorageSync(user.RecordID),
+					(result) => {
+						console.log(result);
 
-					wx.hideLoading();
+						wx.showToast({
+							title: '关锁成功',
+							icon: '',
+							image: '',
+							duration: 1500,
+							mask: true,
+							success: function(res) {},
+							fail: function(res) {},
+							complete: function(res) {},
+						})
 
-					
-					
-				},
-				() => {
-					wx.hideLoading();
+						wx.reLaunch({
+							url: 'index?from=processing',
+							success: function (res) { },
+							fail: function (res) { },
+							complete: function (res) { },
+						})
 
-					
-				}
-			);
+						
+
+						// that.setData({
+						// 	selection_after_lock: true,
+						// });
+
+						wx.hideLoading();
+
+
+
+					},
+					() => {
+						wx.hideLoading();
+
+
+					}
+				);
+
+				
+			}
+			
+
+			
 		}
 
   },
@@ -204,6 +242,12 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload: function () {
+
+		wx.closeBluetoothAdapter({
+			success: function(res) {},
+			fail: function(res) {},
+			complete: function(res) {},
+		})
 		
   },
 

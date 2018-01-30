@@ -21,5 +21,6 @@ module.exports = {
     RecordID: 'RecordID',
     UsingCar: "UsingCar",
     UsingCarStatus: "UsingCarStatus",
-		UsingCarDevice: "UsingCarDevice"
+		UsingCarDevice: "UsingCarDevice",
+		Level: "Level"
 }

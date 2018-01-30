@@ -56,7 +56,7 @@ function sendVerificationCode(registerPhonenumber)
     })
 }
 
-function commitRegister(the)
+function commitRegister(the, success, fail)
 {
   var that = the;
   
@@ -102,14 +102,34 @@ function commitRegister(the)
           wx.setStorageSync(user.RecordID, res.data.data.recordId);
           wx.setStorageSync(user.UsingCarStatus, res.data.data.carStatus);
 
+					wx.setStorageSync(user.Level, res.data.data.level);
+
           //判断注册是否成功，成功则返回index页面
           wx.setStorageSync('alreadyRegister', 'yes');
           
-          wx.navigateBack({
-            delta: 1,
-          })
+					
+					typeof success == "function" && success(res);
+          
           
         }
+				else if (res.data.status == 202){
+					wx.showModal({
+						title: '提示',
+						content: res.data.msg,
+						confirmText: '我知道了',
+						confirmColor: '',
+						success: function(res) {
+							if(res.confirm)
+							{
+								wx.navigateBack({
+									delta: 2,
+								})
+							}
+						},
+						fail: function(res) {},
+						complete: function(res) {},
+					})
+				}
 
       },
       fail: function () {

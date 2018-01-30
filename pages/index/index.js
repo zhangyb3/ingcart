@@ -124,6 +124,8 @@ Page({
 														allowDuplicatesKey: true,
 														interval: 0,
 														success: function (res) {
+
+															
 															wx.onBluetoothDeviceFound(function (res) {
 																if (res.devices[0].deviceId == wx.getStorageSync(user.UsingCarDevice)) {
 																	wx.stopBluetoothDevicesDiscovery({
@@ -138,15 +140,14 @@ Page({
 
 																						//检测到关锁成功信号
 																						wx.setStorageSync('executeLock', 'yes');
-																						wx.navigateTo({
-																							url: 'processing?operation=lock',
-																							success: function (res) { },
-																							fail: function (res) { },
-																							complete: function (res) { },
-																						})
-
-
-
+																						operation.managerLock(that);
+																						// wx.navigateTo({
+																						// 	url: 'processing?operation=lock',
+																						// 	success: function (res) { },
+																						// 	fail: function (res) { },
+																						// 	complete: function (res) { },
+																						// })
+																						refreshPage(that);
 
 																					}
 
@@ -189,15 +190,14 @@ Page({
 
 												//检测到关锁成功信号
 												wx.setStorageSync('executeLock', 'yes');
-												wx.navigateTo({
-													url: 'processing?operation=lock',
-													success: function (res) { },
-													fail: function (res) { },
-													complete: function (res) { },
-												})
-
-
-
+												operation.managerLock(that);
+												// wx.navigateTo({
+												// 	url: 'processing?operation=lock',
+												// 	success: function (res) { },
+												// 	fail: function (res) { },
+												// 	complete: function (res) { },
+												// })
+												refreshPage(that);
 
 											}
 
@@ -223,13 +223,13 @@ Page({
 			
 			checkBluetooth(that);
 			
-			wx.showLoading({
-				title: 'loading',
-				mask: true,
-				success: function (res) { },
-				fail: function (res) { },
-				complete: function (res) { },
-			});
+			// wx.showLoading({
+			// 	title: '加载中',
+			// 	mask: true,
+			// 	success: function (res) { },
+			// 	fail: function (res) { },
+			// 	complete: function (res) { },
+			// });
 
 			checkUsingCarStatus(that,
 				(checkResult) => {
@@ -240,82 +240,7 @@ Page({
 					console.log('using car', wx.getStorageSync('UsingCar'));
 					if (wx.getStorageSync(user.UsingCarStatus) == 1) 
 					{
-						if (wx.getStorageSync('platform') == 'ios') 
-						{
-
-							wx.closeBluetoothAdapter({
-								success: function (res) {
-									wx.openBluetoothAdapter({
-										success: function (res) {
-
-											wx.showLoading({
-												title: '加载纪录',
-												mask: true,
-												success: function (res) { },
-												fail: function (res) { },
-												complete: function (res) { },
-											});
-
-											//ios情况下，先搜索已经发现的设备，再搜索没发现的，找到符合的设备就去连接
-											wx.startBluetoothDevicesDiscovery({
-												services: ['FEE7'],
-												allowDuplicatesKey: true,
-												interval: 0,
-												success: function (res) {
-													wx.onBluetoothDeviceFound(function (res) {
-														if (res.devices[0].deviceId == wx.getStorageSync(user.UsingCarDevice)) {
-															wx.stopBluetoothDevicesDiscovery({
-																success: function (res) {
-
-																	operation.connectDevice(that,
-																		wx.getStorageSync(user.UsingCarDevice),
-																		(tokenFrameHexStr) => {
-																			wx.hideLoading();
-																			if (tokenFrameHexStr.slice(0, 8) == '05080100') {
-
-
-																				//检测到关锁成功信号
-																				wx.setStorageSync('executeLock', 'yes');
-																				wx.navigateTo({
-																					url: 'processing?operation=lock',
-																					success: function (res) { },
-																					fail: function (res) { },
-																					complete: function (res) { },
-																				})
-
-
-
-
-																			}
-
-																		},
-																	);
-																},
-																fail: function (res) { },
-																complete: function (res) { },
-															})
-														}
-													})
-												},
-												fail: function (res) { },
-												complete: function (res) { },
-											})
-
-
-
-
-
-										},
-										fail: function (res) { },
-										complete: function (res) { },
-									})
-								},
-								fail: function (res) { },
-								complete: function (res) { },
-							});
-
-						}
-						else
+						
 						{
 							wx.getConnectedBluetoothDevices({
 								services: ['FEE7'],
@@ -331,7 +256,91 @@ Page({
 									//没连接则连接
 									if (connected == false)
 									{
-								
+										wx.showModal({
+											title: '',
+											content: 'not connected',
+											confirmText: '',
+											confirmColor: '',
+											success: function(res) {},
+											fail: function(res) {},
+											complete: function(res) {},
+										})
+										if (wx.getStorageSync('platform') == 'ios') {
+
+											wx.closeBluetoothAdapter({
+												success: function (res) {
+													wx.openBluetoothAdapter({
+														success: function (res) {
+
+															wx.showLoading({
+																title: '加载纪录',
+																mask: true,
+																success: function (res) { },
+																fail: function (res) { },
+																complete: function (res) { },
+															});
+
+															//ios情况下，先搜索已经发现的设备，再搜索没发现的，找到符合的设备就去连接
+															wx.startBluetoothDevicesDiscovery({
+																services: ['FEE7'],
+																allowDuplicatesKey: true,
+																interval: 0,
+																success: function (res) {
+																	wx.onBluetoothDeviceFound(function (res) {
+																		if (res.devices[0].deviceId == wx.getStorageSync(user.UsingCarDevice)) {
+																			wx.stopBluetoothDevicesDiscovery({
+																				success: function (res) {
+
+																					operation.connectDevice(that,
+																						wx.getStorageSync(user.UsingCarDevice),
+																						(tokenFrameHexStr) => {
+																							wx.hideLoading();
+																							if (tokenFrameHexStr.slice(0, 8) == '05080100') {
+
+
+																								//检测到关锁成功信号
+																								wx.setStorageSync('executeLock', 'yes');
+																								operation.managerLock(that);
+																								// wx.navigateTo({
+																								// 	url: 'processing?operation=lock',
+																								// 	success: function (res) { },
+																								// 	fail: function (res) { },
+																								// 	complete: function (res) { },
+																								// })
+																								refreshPage(that);
+
+
+
+																							}
+
+																						},
+																					);
+																				},
+																				fail: function (res) { },
+																				complete: function (res) { },
+																			})
+																		}
+																	})
+																},
+																fail: function (res) { },
+																complete: function (res) { },
+															})
+
+
+
+
+
+														},
+														fail: function (res) { },
+														complete: function (res) { },
+													})
+												},
+												fail: function (res) { },
+												complete: function (res) { },
+											});
+
+										}
+										else
 										{
 											//android版监听
 											operation.connectDevice(that,
@@ -343,13 +352,14 @@ Page({
 
 														//检测到关锁成功信号
 														wx.setStorageSync('executeLock', 'yes');
-														wx.navigateTo({
-															url: 'processing?operation=lock',
-															success: function (res) { },
-															fail: function (res) { },
-															complete: function (res) { },
-														})
-
+														operation.managerLock(that);
+														// wx.navigateTo({
+														// 	url: 'processing?operation=lock',
+														// 	success: function (res) { },
+														// 	fail: function (res) { },
+														// 	complete: function (res) { },
+														// })
+														refreshPage(that);
 
 
 
@@ -372,6 +382,9 @@ Page({
 					
 
 				},
+				()=>{
+					wx.hideLoading();
+				}
 			);
 		}
 	
@@ -403,7 +416,7 @@ Page({
       case 2: 
         {
           var that = this;
-					if (wx.getStorageSync(user.UsingCar) == null || wx.getStorageSync(user.UsingCarStatus) == 2)
+					// if (wx.getStorageSync(user.UsingCar) == null || wx.getStorageSync(user.UsingCarStatus) == 2)
 					{
 			
 						wx.scanCode({
@@ -415,12 +428,13 @@ Page({
 									operation.qr2mac(parameters.id,
 										(result)=>{
 
-											var carId = result;
+											var carId = result.id;
 											var customerId = wx.getStorageSync(user.CustomerID);
 											var recordId = wx.getStorageSync(user.RecordID);
 
 
-											if (wx.getStorageSync('platform') == 'ios') {
+											if (wx.getStorageSync('platform') == 'ios') 
+											{
 												//据说每次都要先关闭再打开适配器清理缓存,试一下
 												wx.closeBluetoothAdapter({
 													success: function (res) {
@@ -434,16 +448,8 @@ Page({
 																	allowDuplicatesKey: true,
 																	interval: 0,
 																	success: function (res) {
-
-																		wx.navigateTo({
-																			url: 'processing?from=index&carId=' + carId + '&operation=unlock',
-																			success: function (res) { },
-																			fail: function (res) {
-
-																			},
-																			complete: function (res) { },
-																		});
-
+																		
+																		
 																	},
 																	fail: function (res) {
 
@@ -452,6 +458,20 @@ Page({
 
 																	},
 																});
+
+																setTimeout(
+																	function(){
+																		wx.navigateTo({
+																			url: 'processing?from=index&carId=' + carId + '&operation=unlock',
+																			success: function (res) { },
+																			fail: function (res) {
+
+																			},
+																			complete: function (res) { },
+																		});
+																	},
+																	1000
+																);
 
 															},
 															fail: function (res) {
@@ -467,6 +487,8 @@ Page({
 													complete: function (res) {
 													},
 												})
+
+												
 											}
 											else {
 												//android版开锁
@@ -525,9 +547,14 @@ Page({
         });
         break;
       // 点击头像控件，跳转到个人中心
-      case 5: wx.navigateTo({
-          url: '../my/display'
-        });
+      case 5: 
+				
+				
+						wx.navigateTo({
+							url: '../my/display'
+						});
+					
+				
         break; 
       default: break;
     }
@@ -681,6 +708,8 @@ Page({
 
   onUnload:function(){
 
+		// stopUnload(this);
+
     wx.closeBluetoothAdapter({
       success: function(res) {},
       fail: function(res) {},
@@ -688,7 +717,6 @@ Page({
     })
 
     wx.clearStorageSync();
-
 
 		
   },
@@ -730,66 +758,68 @@ function refreshPage(the){
 function showControls(the){
 	var that = the;
 	that.setData({
-		controls: [{
-			id: 1,
-			iconPath: '/images/location.png',
-			position: {
-				left: 15,
-				top: wx.getStorageSync('windowHeight') - 60 -80,
-				
-				width: 40,
-				height: 40
+		controls: [
+			{
+				id: 1,
+				iconPath: '/images/location.png',
+				position: {
+					left: 15,
+					top: wx.getStorageSync('windowHeight') - 60 -80,
+					
+					width: 40,
+					height: 40
+				},
+				clickable: true
 			},
-			clickable: true
-		},
-		{
-			id: 2,
-			iconPath: '/images/use.png',
-			position: {
-				left: wx.getStorageSync('windowWidth') / 2 - 105,
-				top: wx.getStorageSync('windowHeight') - 72 -80,
-				
-				width: 210,
-				height: 51
+			{
+				id: 2,
+				iconPath: '/images/use.png',
+				position: {
+					left: wx.getStorageSync('windowWidth') / 2 - 105,
+					top: wx.getStorageSync('windowHeight') - 72 -80,
+					
+					width: 210,
+					height: 51
+				},
+				clickable: true
 			},
-			clickable: true
-		},
-		{
-			id: 3,
-			iconPath: '/images/warn.png',
-			position: {
-				left: 15,
-				top: wx.getStorageSync('windowHeight') - 100 -80,
-				
-				width: 40,
-				height: 40
+			// {
+			// 	id: 3,
+			// 	iconPath: '/images/warn.png',
+			// 	position: {
+			// 		left: 15,
+			// 		top: wx.getStorageSync('windowHeight') - 100 -80,
+					
+			// 		width: 40,
+			// 		height: 40
+			// 	},
+			// 	clickable: true
+			// },
+			{
+				id: 4,
+				iconPath: '/images/marker.png',
+				position: {
+					left: wx.getStorageSync('windowWidth') / 2 - 18,
+					top: wx.getStorageSync('windowHeight') / 2 - 36 -80,
+					
+					width: 36,
+					height: 36
+				},
+				clickable: true
 			},
-			clickable: true
-		},
-		{
-			id: 4,
-			iconPath: '/images/marker.png',
-			position: {
-				left: wx.getStorageSync('windowWidth') / 2 - 18,
-				top: wx.getStorageSync('windowHeight') / 2 - 36 -80,
-				
-				width: 36,
-				height: 36
-			},
-			clickable: true
-		},
-		{
-			id: 5,
-			iconPath: '/images/avatar.png',
-			position: {
-				left: wx.getStorageSync('windowWidth') - 50,
-				top: wx.getStorageSync('windowHeight') - 60 -80,
-				
-				width: 40,
-				height: 40
-			},
-			clickable: true
-		}]
+			{
+				id: 5,
+				iconPath: '/images/avatar.png',
+				position: {
+					left: wx.getStorageSync('windowWidth') - 50,
+					top: wx.getStorageSync('windowHeight') - 60 -80,
+					
+					width: 40,
+					height: 40
+				},
+				clickable: true
+			}
+		]
 	});
 }
 
@@ -855,7 +885,7 @@ function refreshUsingMinutes(the){
 				if (result.status == 200) {
 					that.data.usingMinutes = result.data.time;
 					that.setData({
-						timing: true,
+						// timing: true,
 						holding: false,
 						usingMinutes: result.data.time,
 						mapHeight: wx.getStorageSync('windowHeight') - 180 - 60,
@@ -971,7 +1001,7 @@ function checkUsingCarStatus(the, success, fail)
 					if (result.status == 200) {
 						that.data.usingMinutes = result.data.time;
 						that.setData({
-							timing: true,
+							// timing: true,
 							holding: false,
 							usingMinutes: result.data.time,
 							mapHeight: wx.getStorageSync('windowHeight') - 180 -60,
@@ -987,6 +1017,17 @@ function checkUsingCarStatus(the, success, fail)
 				},
 			);
 		}
+
+		else if (wx.getStorageSync(user.UsingCarStatus) == 4)
+		{
+			setTimeout(
+				function () { 
+					checkUsingCarStatus(that); 
+				},
+				1000 * 5
+			);
+		}
+
 		else {
 			that.setData({
 				timing: false,
@@ -1034,9 +1075,23 @@ function checkBluetooth(the){
 			})
 		},
 		complete: function (res) {
-			wx.hideLoading();
+			// wx.hideLoading();
 		 },
 	});
 
+}
+
+function stopUnload(the){
+	var that = the;
+	wx.showModal({
+		content: '阻止退出',
+		confirmText: '',
+		confirmColor: '',
+		success: function(res) {
+			stopUnload(that);
+		},
+		fail: function(res) {},
+		complete: function(res) {},
+	})
 }
 

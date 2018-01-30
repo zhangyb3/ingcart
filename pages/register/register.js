@@ -75,7 +75,16 @@ Page({
     wx.setStorageSync('verificationCode', verificationCode);
   },
   customerRegister:function(e){
-    register.commitRegister(this);
+    register.commitRegister(this,
+			(res)=>{
+				wx.reLaunch({
+					url: '../index/index',
+					success: function(res) {},
+					fail: function(res) {},
+					complete: function(res) {},
+				})
+			}
+		);
   },
 
   /**

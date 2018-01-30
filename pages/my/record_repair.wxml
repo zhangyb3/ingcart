@@ -1,0 +1,11 @@
+
+<view id="record_repair_scan_container">
+
+	<view id="record_repair_scan_hint">上传已检修车辆信息</view>
+
+	<image id="record_repair_scan" src="../../images/record_repair_scan.png" bindtap='recordRepair'></image>
+
+
+</view>
+
+

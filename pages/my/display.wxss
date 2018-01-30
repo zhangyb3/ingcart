@@ -86,6 +86,21 @@ page{
   text-align: right;
 }
 
+.repair_entrance{
+  width: 50%;
+  text-align: left;
+}
+
+.repair_quantity{
+  width: 20%;
+  text-align: right;
+}
+
+.repair_operation{
+  width: 30%;
+  text-align: right;
+}
+
 #operation{
   width: 45rpx;
   height: 45rpx;

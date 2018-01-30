@@ -7,6 +7,7 @@
     "pages/bill/list",
     "pages/my/display",
     "pages/my/history",
+		"pages/my/record_repair",
     "pages/wallet/total",
     "pages/wallet/charge",
     "pages/register/register",

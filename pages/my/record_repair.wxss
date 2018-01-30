@@ -1,0 +1,22 @@
+
+#record_repair_scan_container{
+	margin-top: 50px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#record_repair_scan_hint{
+	height: 30px;
+	line-height: 30px;
+	font-size: 40rpx;
+	font-weight: bold;
+	color: lightgray;
+	text-align: center;
+}
+
+#record_repair_scan{
+	margin-top: 80px;
+	width: 200px;
+	height: 200px;
+}

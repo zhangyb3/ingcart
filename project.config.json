@@ -28,6 +28,12 @@
 					"name": "processing",
 					"pathName": "pages/index/processing",
 					"query": "from=index&carId=C8:FD:19:92:17:29&operation=unlock"
+				},
+				{
+					"id": 1,
+					"name": "register",
+					"pathName": "pages/register/register",
+					"query": ""
 				}
 			]
 		}
