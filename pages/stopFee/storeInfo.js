@@ -4,6 +4,10 @@ var config = require("../../utils/config.js");
 
 const stratTimes = []
 for (let i = 0; i <= 23; i++) {
+	if(i < 10)
+	{
+		i = '0'+i;
+	}
   stratTimes.push(i+':00')
 }
 Page({
@@ -12,8 +16,8 @@ Page({
     display:'none',  //是否显示弹窗
     storeCode:null,  
     stratTime: stratTimes,
-    storeRunTime:'9:00-18:00',
-		_stratTime: '9:00',
+    storeRunTime:'09:00-18:00',
+		_stratTime: '09:00',
     _endTime:'18:00',
     value:[0,0],
   },
