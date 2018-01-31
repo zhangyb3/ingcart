@@ -4,7 +4,7 @@
       <view class='input-store-info'>
             <view class='column-info'>
                   <text>店铺名称</text>
-                  <input type='text' class='store-name' maxlength='15'></input>
+                  <input type='text' class='store-name' maxlength='15' bindinput='getStoreName'></input>
                   <view class='txt-num'>15字</view>
             </view>
 
@@ -20,13 +20,13 @@
 
             <view class='column-info' style='margin-top:48rpx'>
                   <text>店铺描述</text>
-                  <textarea maxlength='30'></textarea>
+                  <textarea maxlength='30' bindinput='getStoreDescription'></textarea>
                   <view class='txt-num'>30字</view>
             </view>
 
       </view>
 
-      <button class='hand-in'>提交</button>
+      <button class='hand-in' bindtap='managerAddStore'>提交</button>
       
 </view>
 

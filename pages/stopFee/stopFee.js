@@ -1,5 +1,7 @@
 //logs.js
 var util = require('../../utils/util.js');
+var config = require("../../utils/config.js");
+
 const date = new Date()
 const years = []
 const months = []
@@ -44,19 +46,19 @@ Page({
     display:'none',  //是否显示弹窗
     checkTel:'none', //是否显示手机号码格式
     years: years,
-    year1: date.getFullYear(),
+    _year: date.getFullYear(),
     year: date.getFullYear(),
     months: months,
-    month1: date.getMonth() + 1,
+    _month: date.getMonth() + 1,
     month: date.getMonth()+1,
     days: days,
-    day1: date.getDate(),
+    _day: date.getDate(),
     day: date.getDate(),
     hours:hours,
-    hour1: date.getHours(),
+    _hour: date.getHours(),
     hour: date.getHours(),
     minutes: minutes,
-    minute1: date.getMinutes(),
+    _minute: date.getMinutes(),
     minute: date.getMinutes(),
     value: [0,0,0,0,0],
   },
@@ -105,11 +107,11 @@ Page({
     var that = this;
     that.setData({
       display: 'none' ,
-      year1: this.data.year,
-      month1: this.data.month,
-      day1: this.data.day,
-      hour1: this.data.hour,
-      minute1: this.data.minute      
+      _year: this.data.year,
+      _month: this.data.month,
+      _day: this.data.day,
+      _hour: this.data.hour,
+      _minute: this.data.minute      
     })
   },
  
@@ -127,5 +129,53 @@ Page({
       })
     }
      
-  }
+  },
+
+	getCustomerPhoneNum:function(e){
+		console.log(e.detail.value);
+		this.data.customerPhoneNum = e.detail.value;
+	},
+
+	managerStopFee:function(e){
+		var that = this;
+		wx.request({
+			url: config.PytheRestfulServerURL + '/manage/urgent/lock/',
+			data: {
+				phoneNum: that.data.customerPhoneNum,
+				date: that.data._year+'-'+that.data._month+'-'+that.data._day+' '+that.data._hour+':'+that.data._minute,
+			},
+			method: 'POST',
+			success: function (res) {
+				if(res.data.status == 200)
+				{
+					wx.showToast({
+						title: res.data.data,
+						icon: '',
+						image: '',
+						duration: 2000,
+						mask: true,
+						success: function(res) {},
+						fail: function(res) {},
+						complete: function(res) {},
+					})
+				}
+				if(res.data.status == 400)
+				{
+					wx.showModal({
+						title: '提示',
+						content: res.data.msg,
+						showCancel: false,
+						confirmText: '我知道了',
+						confirmColor: '',
+						success: function(res) {},
+						fail: function(res) {},
+						complete: function(res) {},
+					})
+				}
+			},
+			fail: function (res) { },
+			complete: function (res) { },
+		})
+	},
+
 })

@@ -1,5 +1,7 @@
 //logs.js
 var util = require('../../utils/util.js');
+var config = require("../../utils/config.js");
+
 const stratTimes = []
 for (let i = 0; i <= 23; i++) {
   stratTimes.push(i+':00')
@@ -8,11 +10,11 @@ Page({
   data: {
     winHeight:0,
     display:'none',  //是否显示弹窗
-    inputValue:'',  
+    storeCode:null,  
     stratTime: stratTimes,
     storeRunTime:'9:00-18:00',
-    stratTime1: '',
-    endTime1:'',
+		_stratTime: '9:00',
+    _endTime:'18:00',
     value:[0,0],
   },
   onLoad: function () {
@@ -38,8 +40,8 @@ Page({
     console.log(e.detail.value);
    const val = e.detail.value;
    this.setData({
-     stratTime1: this.data.stratTime[val[0]],
-     endTime1: this.data.stratTime[val[1]],     
+     _stratTime: this.data.stratTime[val[0]],
+     _endTime: this.data.stratTime[val[1]],     
    })
   },
   
@@ -54,7 +56,7 @@ Page({
 //  弹窗的确定按钮
   sure: function () {
     var that = this;
-    var storeRunTime = that.data.stratTime1 + '-' + that.data.endTime1;
+    var storeRunTime = that.data._stratTime + '-' + that.data._endTime;
     that.setData({
       display: 'none',
       storeRunTime: storeRunTime
@@ -64,9 +66,93 @@ Page({
   // 店铺编码只能输入数字
   numberType:function(e){
    console.log(e.detail.value);
-   var inputValue = e.detail.value;
+   var storeCode = e.detail.value;
    this.setData({
-     inputValue: inputValue.replace(/[^0-9]/g,'')
+     storeCode: storeCode.replace(/[^0-9]/g,'')
    })
-  }
+  },
+
+
+	getStoreName:function(e){
+		console.log(e);
+		this.data.storeName = e.detail.value;
+	},
+
+	getStoreDescription: function (e) {
+		console.log(e);
+		this.data.storeDescription = e.detail.value;
+	},
+
+	managerAddStore:function(e){
+		if(this.data.storeName == null || this.data.storeCode == null)
+		{
+			wx.showModal({
+				title: '提示',
+				content: '请填写完整信息',
+				showCancel: false,
+				confirmText: '我知道了',
+				confirmColor: '',
+				success: function(res) {},
+				fail: function(res) {},
+				complete: function(res) {},
+			})
+		}
+		else
+		{
+			var that= this;
+			wx.getLocation({
+				type: "gcj02",
+				success: (res) => {
+					that.setData({
+						longitude: res.longitude,
+						latitude: res.latitude
+					});
+
+					wx.request({
+						url: config.PytheRestfulServerURL + '/insert/store/',
+						data: {
+							name: that.data.storeName,
+							description: that.data.storeDescription,
+							store_hours: that.data.storeRunTime,
+							longitude: that.data.longitude,
+							latitude: that.data.latitude,
+							location_name: that.data.storeCode
+						},
+						method: 'POST',
+						success: function(res) {
+							if (res.data.status == 200) {
+								wx.showToast({
+									title: res.data.data,
+									icon: '',
+									image: '',
+									duration: 2000,
+									mask: true,
+									success: function (res) { },
+									fail: function (res) { },
+									complete: function (res) { },
+								})
+							}
+							if (res.data.status == 400) {
+								wx.showModal({
+									title: '提示',
+									content: res.data.msg,
+									showCancel: false,
+									confirmText: '我知道了',
+									confirmColor: '',
+									success: function (res) { },
+									fail: function (res) { },
+									complete: function (res) { },
+								})
+							}
+						},
+						fail: function(res) {},
+						complete: function(res) {},
+					})
+
+				}
+			});
+		}
+	},
+
+
 })
