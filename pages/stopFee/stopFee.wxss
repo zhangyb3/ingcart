@@ -1,0 +1,68 @@
+.tel-title {
+  font-size: 28rpx;
+  text-align: center;
+  color: #666;
+  margin-top: 50px;
+}
+
+.input-tel {
+  width: 50%;
+  margin: 10px auto;
+}
+
+.input-tel input {
+  display: block;
+  font-size: 36rpx;
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+}
+
+.choose-stop-title {
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  margin-top: 80px;
+}
+
+.getTime {
+  margin: 10px auto;
+  width: 50%;
+  text-align: center;
+  height: 60px;
+  line-height: 60px;
+  background-color: #ddd;
+}
+
+.hand-in{
+  width:50%;
+  height:40px;
+  margin:30px auto;
+  color:#fff;
+  background-color:#f93 ;
+  font-size:32rpx;
+}
+
+picker-view-column view{text-align: center;}
+
+.chooe-time {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  background-color:rgba(0,0,0,0.3);
+}
+
+.pick-box{
+  position:absolute;width:100%;padding:20px;box-sizing:border-box;bottom:0;left:0;background-color: #fff;margin-bottom:20px;
+}
+
+.choose-btn{
+  height:50px;line-height:50px;
+}
+
+.choose-btn .close{color:#f93;float:left;}
+.choose-btn .sure{color:#f93;float:right;}

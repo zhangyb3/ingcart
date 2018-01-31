@@ -1,0 +1,44 @@
+<!--logs.wxml-->
+<view style='min-height:{{winHeight*0.6}}px;'>
+      <view class='tel-title'>输入客户电话</view>
+      <view class='input-tel'>
+           <input type='text' placeholder='电话号码' bindblur='checkTelRight'></input>
+           <view style='line-height:1.6;color:red;font-size:12px;text-align:center;display:{{checkTel}};'>
+                 手机号格式不正确！
+           </view>
+      </view>
+
+      <view class=''>
+           <view class='choose-stop-title'>选择停止时间</view>
+           <view class='getTime' bindtap='getTime'>{{year1}}-{{month1}}-{{day1}} {{hour1}}:{{minute1}}</view>          
+      </view> 
+
+</view>
+<button class='hand-in'>提交</button>
+
+<view class='chooe-time' style='height:{{winHeight}}px;display:{{display}};'>      
+      <view class='pick-box'>
+                 <view class='choose-btn'>
+                        <text class='close' bindtap='close'>取消</text>
+                        <text class='sure' bindtap='sure'>确定</text>
+                 </view>
+                 <view style='height:40px;line-height:40px;text-align:center;'>{{year}}-{{month}}-{{day}} {{hour}}:{{minute}}</view>
+                 <picker-view indicator-style="height: 50px;" style="width:100%;height: 200px;margin:0 auto;" value="{{value}}" bindchange="changeTime">
+                   <picker-view-column>
+                      <view wx:for="{{years}}" wx:key='unique' style="line-height: 50px">{{item}}年</view>
+                   </picker-view-column>
+                   <picker-view-column>
+                      <view wx:for="{{months}}" wx:key='unique' wx:key='unique' style="line-height: 50px">{{item}}月</view>
+                   </picker-view-column>
+                   <picker-view-column>
+                      <view wx:for="{{days}}" wx:key='unique' style="line-height: 50px">{{item}}日</view>
+                   </picker-view-column>
+                   <picker-view-column>
+                      <view wx:for="{{hours}}" wx:key='unique' style="line-height: 50px">{{item}}时</view>
+                   </picker-view-column>
+                   <picker-view-column>
+                      <view wx:for="{{minutes}}" wx:key='unique' style="line-height: 50px">{{item}}分</view>
+                   </picker-view-column>
+                 </picker-view>
+           </view>
+</view>

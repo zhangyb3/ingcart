@@ -106,4 +106,16 @@ Page({
 		})
 	},
 
+  stopFee:function(){
+    wx.navigateTo({
+      url: '../stopFee/stopFee',
+    })
+  },
+
+  storeInfo: function () {
+    wx.navigateTo({
+      url: '../stopFee/storeInfo',
+    })
+  },
+
 })

@@ -90,7 +90,7 @@ Page({
 				() => {
 
 					wx.hideLoading();
-					checkBluetooth(that);
+					// checkBluetooth(that);
 
 					checkUsingCarStatus(that,
 						(checkResult) => {
@@ -221,7 +221,7 @@ Page({
 		{
 			var that = this;
 			
-			checkBluetooth(that);
+			// checkBluetooth(that);
 			
 			// wx.showLoading({
 			// 	title: '加载中',
@@ -1070,7 +1070,7 @@ function checkBluetooth(the){
 				 },
 				fail: function (res) { },
 				complete: function (res) { 
-					checkBluetooth(that);
+					// checkBluetooth(that);
 				},
 			})
 		},
