@@ -142,14 +142,14 @@ Page({
 			url: config.PytheRestfulServerURL + '/manage/urgent/lock/',
 			data: {
 				phoneNum: that.data.customerPhoneNum,
-				date: that.data._year+'-'+that.data._month+'-'+that.data._day+' '+that.data._hour+':'+that.data._minute,
+				date: that.data._year+'-'+that.data._month+'-'+that.data._day+' '+that.data._hour+':'+that.data._minute+':00',
 			},
 			method: 'POST',
 			success: function (res) {
 				if(res.data.status == 200)
 				{
 					wx.showToast({
-						title: res.data.data,
+						title: res.data.msg,
 						icon: '',
 						image: '',
 						duration: 2000,

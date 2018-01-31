@@ -122,7 +122,7 @@ Page({
 						success: function(res) {
 							if (res.data.status == 200) {
 								wx.showToast({
-									title: res.data.data,
+									title: res.data.data.toString(),
 									icon: '',
 									image: '',
 									duration: 2000,
