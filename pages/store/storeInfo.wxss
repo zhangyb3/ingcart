@@ -1,4 +1,4 @@
-@import 'stopFee.wxss';
+@import '../stopFee/stopFee.wxss';
 view{font-size:14px;}
 .store-info{padding:40rpx;box-sizing: border-box;}
 .store-title{font-size:32rpx;text-align: center;margin-bottom:96rpx;}

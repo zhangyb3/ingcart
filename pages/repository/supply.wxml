@@ -1,0 +1,23 @@
+
+<view style='min-height:{{winHeight*0.6}}px;'>
+      <!-- <view class='store_code'>店铺编码</view> -->
+      <view class='input_store_code'>
+           <input type='text' placeholder='输入店铺编码' bindblur='queryStoreName' bindinput='getStoreCode'></input>
+           <view style='line-height:40px;color:red;font-size:32rpx;text-align:center;'>
+                 {{storeName}}
+           </view>
+      </view>
+
+			<view class="row_display" style="">
+				<text style="width:40%;font-size:40rpx;text-align:center;">余量：</text>
+				<text style="width:60%;font-size:40rpx;text-align:center;color:red;">{{cargoMargin}}</text>
+			</view>
+
+      <view class='supply_operation'>
+           <view class='store_code'>补仓数量</view>
+           <input type='number' placeholder='0' bindblur='checkSupplyNum' bindinput='getSupplyNum'></input>          
+      </view> 
+
+</view>
+
+<button class='hand-in' disabled='{{commitNotAllowed}}' bindtap='managerRecordSupply'>提交</button>

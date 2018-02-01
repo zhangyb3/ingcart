@@ -681,7 +681,7 @@ Page({
             show_store_detail: true,
 						holding: false,
             check_store: res.data.data,
-						mapHeight: wx.getStorageSync('windowHeight') - 100 -60,
+						mapHeight: wx.getStorageSync('windowHeight') - 120 -60,
           });
         },
         fail: function(res) {},

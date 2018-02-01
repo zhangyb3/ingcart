@@ -1,6 +1,7 @@
 //logs.js
 var util = require('../../utils/util.js');
 var config = require("../../utils/config.js");
+var user = require("../../utils/user.js");
 
 const stratTimes = []
 for (let i = 0; i <= 23; i++) {
@@ -14,15 +15,20 @@ Page({
   data: {
     winHeight:0,
     display:'none',  //是否显示弹窗
-    storeCode:null,  
+    storeCode:null,
     stratTime: stratTimes,
     storeRunTime:'09:00-18:00',
 		_stratTime: '09:00',
     _endTime:'18:00',
     value:[0,0],
+		addPadding: 20,
+		scrollViewHeight: 0,
+		scrollTop: 0,
+		isTextarea: false
   },
   onLoad: function () {
     var that=this;
+		that.getRect();
     wx.getSystemInfo({
       success: function (res) {
          that.setData({
@@ -32,12 +38,32 @@ Page({
     })
   },
   
-  runTime:function(){
-    var that = this;
-    that.setData({
-      display: 'block'
-    })
-  },
+	getRect: function () {
+		var that = this;
+		wx.createSelectorQuery().select('.store-info').boundingClientRect(function (rect) {
+			that.setData({
+				scrollViewHeight: rect.height  // 节点的高度
+			})
+
+		}).exec()
+	},
+
+	runTime: function () {
+		var that = this;
+		that.setData({
+			display: 'block'
+		});
+		if (that.data.display == 'block') {
+			this.setData({
+				isTextarea: true
+			})
+		} else {
+			this.setData({
+				isTextarea: false
+			})
+		}
+
+	},
   
   // 营业时间
   changeRunTime:function(e){
@@ -49,13 +75,22 @@ Page({
    })
   },
   
-  // 弹窗的取消按钮
-  close: function () {
-    var that = this;
-    that.setData({
-      display: 'none'
-    })
-  },
+	// 弹窗的取消按钮
+	close: function () {
+		var that = this;
+		that.setData({
+			display: 'none'
+		});
+		if (that.data.display == 'block') {
+			this.setData({
+				isTextarea: true
+			})
+		} else {
+			this.setData({
+				isTextarea: false
+			})
+		}
+	},
  
 //  弹窗的确定按钮
   sure: function () {
@@ -64,7 +99,16 @@ Page({
     that.setData({
       display: 'none',
       storeRunTime: storeRunTime
-    })
+    });
+		if (that.data.display == 'block') {
+			this.setData({
+				isTextarea: true
+			})
+		} else {
+			this.setData({
+				isTextarea: false
+			})
+		}
   },
   
   // 店铺编码只能输入数字
@@ -74,6 +118,7 @@ Page({
    this.setData({
      storeCode: storeCode.replace(/[^0-9]/g,'')
    })
+
   },
 
 
@@ -88,11 +133,11 @@ Page({
 	},
 
 	managerAddStore:function(e){
-		if(this.data.storeName == null || this.data.storeCode == null)
+		if(this.data.storeName == null || this.data.storeCode == null || this.data.storeCode.length != 7)
 		{
 			wx.showModal({
 				title: '提示',
-				content: '请填写完整信息',
+				content: '请完整填写正确信息',
 				showCancel: false,
 				confirmText: '我知道了',
 				confirmColor: '',
@@ -120,7 +165,8 @@ Page({
 							store_hours: that.data.storeRunTime,
 							longitude: that.data.longitude,
 							latitude: that.data.latitude,
-							location_name: that.data.storeCode
+							location_name: that.data.storeCode,
+							dealer: wx.getStorageSync(user.PhoneNum),
 						},
 						method: 'POST',
 						success: function(res) {
@@ -156,6 +202,44 @@ Page({
 				}
 			});
 		}
+	},
+
+	focuPadding: function () {
+		var that = this;
+
+		this.setData({
+			addPadding: 150,
+		});
+
+		setTimeout(function () {
+			that.setData({
+				scrollTop: 210
+			})
+		}, 300);
+		// this.getRect();
+
+	},
+
+	blurPadding: function () {
+		this.setData({
+			addPadding: 20,
+			scrollTop: 0
+		})
+		// this.getRect();
+	},
+
+	focuPadding1: function () {
+		var that = this;
+		this.setData({
+			addPadding: 250,
+		});
+
+		setTimeout(function () {
+			that.setData({
+				scrollTop: 170
+			})
+		}, 300);
+		// this.getRect();
 	},
 
 

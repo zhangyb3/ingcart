@@ -12,7 +12,8 @@
     "pages/wallet/charge",
     "pages/register/register",
     "pages/stopFee/stopFee",
-    "pages/stopFee/storeInfo",
+    "pages/store/storeInfo",
+		"pages/repository/supply",
     "pages/logs/logs"
   ],
   "window":{

@@ -1,4 +1,5 @@
-<view class='store-info' style='min-height:{{winHeight}}px;'>
+<scroll-view class='scroll' bindscroll='scroll' scroll-y scroll-top="{{scrollTop}}" style='height:{{scrollViewHeight}}px;'>
+<view class='store-info' style='min-height:{{winHeight}}px;padding-bottom:{{addPadding}}px;'>
       <view class='store-title'>添加店铺地址</view>
 
       <view class='input-store-info'>
@@ -15,12 +16,12 @@
 
             <view class='column-info' style='margin-top:48rpx'>
                   <text>店铺编码</text>
-                  <input type='text' class='store-name' bindinput='numberType' value='{{inputValue}}'></input>
+                  <input type='text' class='store-name' bindinput='numberType' bindfocus='focuPadding' bindblur='blurPadding' value='{{inputValue}}'></input>
             </view>
 
-            <view class='column-info' style='margin-top:48rpx'>
+            <view class='column-info' style='margin-top:48rpx' hidden='{{isTextarea}}'>
                   <text>店铺描述</text>
-                  <textarea maxlength='30' bindinput='getStoreDescription'></textarea>
+                  <textarea maxlength='30' bindinput='getStoreDescription' bindfocus='focuPadding1' bindblur='blurPadding'></textarea>
                   <view class='txt-num'>30字</view>
             </view>
 
@@ -30,6 +31,7 @@
       
 </view>
 
+</scroll-view>
 
 <view class='chooe-time' style='height:{{winHeight}}px;display:{{display}};'>      
       <view class='pick-box'>

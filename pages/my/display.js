@@ -114,8 +114,14 @@ Page({
 
   storeInfo: function () {
     wx.navigateTo({
-      url: '../stopFee/storeInfo',
+      url: '../store/storeInfo',
     })
   },
+
+	repositorySupply: function () {
+		wx.navigateTo({
+			url: '../repository/supply',
+		})
+	},
 
 })

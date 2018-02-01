@@ -21,13 +21,21 @@
 				<view style='height:20rpx;'></view>
 
         <view id="business_hours" class="row_display">
-          <image src="../../images/business_hours.png"></image>
-          <text>8:00~22:00</text>
+          <!-- <image src="../../images/business_hours.png"></image> -->
+					<text>剩余布套：</text>
+          <text style="color: red;">{{check_store.bagNum}}</text>
         </view>
 
         <view id="store_address" class="row_display">
-          <image src="../../images/address.png"></image>
-          <text>{{check_store.locationName}}</text>
+          <!-- <image src="../../images/address.png"></image> -->
+					<text>店铺编码：</text>
+          <text style="color: gray;">{{check_store.locationName}}</text>
+        </view>
+
+				<view id="store_address" class="row_display">
+          <!-- <image src="../../images/address.png"></image> -->
+					<text>店铺地址：</text>
+          <text>{{check_store.description}}</text>
         </view>
 
       </view>

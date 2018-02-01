@@ -22,5 +22,6 @@ module.exports = {
     UsingCar: "UsingCar",
     UsingCarStatus: "UsingCarStatus",
 		UsingCarDevice: "UsingCarDevice",
-		Level: "Level"
+		Level: "Level",
+		PhoneNum: "PhoneNum",
 }

@@ -1058,6 +1058,7 @@ function loginSystem(the, success, fail) {
 						wx.setStorageSync(user.UsingCarDevice, registerInfo.deviceId);
 
 						wx.setStorageSync(user.Level, registerInfo.level);
+						wx.setStorageSync(user.PhoneNum, registerInfo.phoneNum);
 
 						wx.showToast({
 							title: '已登录',

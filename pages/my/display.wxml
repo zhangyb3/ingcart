@@ -101,6 +101,21 @@
       </view>
       <view class="split_line"></view>
     </view>
+
+		<view class="line_item_container" bindtap="repositorySupply">
+      <view class="line_item">
+        <view class="line_include_item_container repair_entrance">
+          <text >布套补仓</text>
+        </view>
+        <view class="line_include_item_container repair_quantity">
+          <text></text>
+        </view>
+        <view class="line_include_item_container repair_operation">
+          <image id="operation" src="../../images/more.png"></image>
+        </view>
+      </view>
+      <view class="split_line"></view>
+    </view>
     
     <!--<button bindtap="loginORlogout" class="switchID" >切换账号</button>-->
     
