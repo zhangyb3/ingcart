@@ -11,7 +11,7 @@ Page({
   data: {
 		storeCode:null,
 		storeName:'',
-		cargoMargin: '未知',
+		cargoMargin: '',
 		commitNotAllowed: true,
   },
 
@@ -130,6 +130,16 @@ Page({
 					that.setData({
 						cargoMargin: res.data.data.total_bag_num
 					});
+					wx.showToast({
+						title: '补仓成功',
+						icon: '',
+						image: '',
+						duration: 1000,
+						mask: true,
+						success: function(res) {},
+						fail: function(res) {},
+						complete: function(res) {},
+					})
 					setTimeout(function () { 
 							wx.navigateBack({
 								delta: 1,

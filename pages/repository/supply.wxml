@@ -10,7 +10,7 @@
 
 			<view class="row_display" style="">
 				<text style="width:40%;font-size:40rpx;text-align:center;">余量：</text>
-				<text style="width:60%;font-size:40rpx;text-align:center;color:red;">{{cargoMargin}}</text>
+				<text style="width:60%;font-size:40rpx;text-align:center;color:red;">{{cargoMargin}}个</text>
 			</view>
 
       <view class='supply_operation'>
