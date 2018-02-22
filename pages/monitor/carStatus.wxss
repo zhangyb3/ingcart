@@ -1,0 +1,8 @@
+/* pages/monitor/carStatus.wxss */
+
+.row_display{
+	/* margin-top: 50px; */
+	display: flex;
+	flex-direction: row;
+
+}

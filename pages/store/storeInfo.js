@@ -116,7 +116,7 @@ Page({
    console.log(e.detail.value);
    var storeCode = e.detail.value;
    this.setData({
-     storeCode: storeCode.replace(/[^0-9]/g,'')
+     storeCode: storeCode//.replace(/[^0-9]/g,'')
    })
 
   },

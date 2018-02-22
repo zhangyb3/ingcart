@@ -13,7 +13,9 @@
     "pages/register/register",
     "pages/stopFee/stopFee",
     "pages/store/storeInfo",
+		"pages/store/cancelStore",
 		"pages/repository/supply",
+		"pages/monitor/carStatus",
     "pages/logs/logs"
   ],
   "window":{

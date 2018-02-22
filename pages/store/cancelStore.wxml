@@ -1,0 +1,15 @@
+
+<view style='min-height:{{winHeight*0.6}}px;'>
+      <!-- <view class='store_code'>店铺编码</view> -->
+      <view class='input_store_code'>
+           <input type='text' placeholder='输入店铺编码' bindblur='queryStoreName' bindinput='getStoreCode'></input>
+           <view style='line-height:40px;color:gray;font-size:32rpx;text-align:center;'>
+                 {{storeName}}
+           </view>
+      </view>
+
+			
+
+</view>
+
+<button class='hand-in' disabled='{{commitNotAllowed}}' bindtap='managerCancelStore'>删除</button>

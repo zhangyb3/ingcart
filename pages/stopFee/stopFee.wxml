@@ -3,8 +3,11 @@
       <view class='tel-title'>输入客户电话</view>
       <view class='input-tel'>
            <input type='text' placeholder='电话号码' bindblur='checkTelRight' bindinput='getCustomerPhoneNum'></input>
-           <view style='line-height:1.6;color:red;font-size:12px;text-align:center;display:{{checkTel}};'>
+           <view style='line-height:20px;color:red;font-size:12px;text-align:center;display:{{checkTel}};'>
                  手机号格式不正确！
+           </view>
+					 <view style='line-height:20px;color:lightgray;font-size:12px;text-align:center;'>
+                 开始时间：{{chargingStartTime}}
            </view>
       </view>
 

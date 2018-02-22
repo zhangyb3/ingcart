@@ -46,9 +46,9 @@ Page({
 		});
 		if (that.data.storeCode.length > 6) {
 			wx.request({
-				url: config.PytheRestfulServerURL + '/store/detail',
+				url: config.PytheRestfulServerURL + '/select/store/bag',
 				data: {
-					storeId: that.data.storeCode
+					code: that.data.storeCode
 				},
 				method: 'GET',
 				success: function (res) {

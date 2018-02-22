@@ -1,0 +1,28 @@
+	<view class="row_display" style="width: 100%;height: 100px; line-height: 100px; font-size:">
+				<text style="width:40%;font-size:50rpx;text-align:center;">余量：</text>
+				<text style="width:60%;font-size:50rpx;text-align:center;color:red;">{{carMargin}}辆</text>
+	</view>
+
+	<view class="row_display" style="width: 100%;height: 50px;line-height: 50px;">
+		<text style="width:40%;font-size:50rpx;text-align:center;">起始时间</text>
+		<text style="width:30%;font-size:50rpx;text-align:center;">电话号码</text>
+		<text style="width:30%;font-size:50rpx;text-align:center;">车辆编码</text>
+	</view>
+
+	
+	<scroll-view style='width: 100%;height:{{deviceHeight-150}}px' lower-threshold="0"	bindscrolltolower='getMoreCarStatus'  scroll-y>
+
+		<view wx:for='{{carStatusList}}' wx:key='unique' wx:for-index="index">
+
+			<view class="row_display" style="height: 40px;line-height: 40px;border-top: 1px solid lightgray;">
+				<text style="width:40%;font-size:30rpx;text-align:center;color:lightgray;">{{item.start_time}}</text>
+				<text style="width:30%;font-size:32rpx;text-align:center;color:red;">{{item.phone_num}}</text>
+				<text style="width:30%;font-size:32rpx;text-align:center;color:red;">{{item.car_code}}</text>
+			</view>
+
+		</view>
+		
+	</scroll-view>
+
+
+	

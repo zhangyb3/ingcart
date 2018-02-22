@@ -118,9 +118,21 @@ Page({
     })
   },
 
+	cancelStore: function () {
+		wx.navigateTo({
+			url: '../store/cancelStore',
+		})
+	},
+
 	repositorySupply: function () {
 		wx.navigateTo({
 			url: '../repository/supply',
+		})
+	},
+
+	carStatusQuery: function () {
+		wx.navigateTo({
+			url: '../monitor/carStatus',
 		})
 	},
 
