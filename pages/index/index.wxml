@@ -1,13 +1,48 @@
 <!--index.wxml-->
-<view class="container">
+<view class="container" >
 
 
 	<import src="../pop/holding.wxml" />
   <template is="holding_timer" wx:if="{{holding == true}}" data="{{holdingMinutes}}"></template> 
 
 	<import src="../pop/business_hint.wxml" />
-  <template is="business_hint" wx:if="{{holding == false}}" data="{{avatar,unitpriceText,securityHint}}"></template> 
 
+  <!-- 后期修改 隐藏于2018-02-23 09:58 -->
+   <!-- <template is="business_hint" wx:if="{{holding == false}}" data="{{avatar,unitpriceText,securityHint}}"></template>   -->
+
+   <!-- 后期修改 添加于2018-02-23 09:58 -->
+   <view >
+     <view class='index-tab'>
+           <text class='tab-column current-tab'>首页</text>
+           <text class='tab-column'>优惠活动</text>
+           <text class='tab-column'>充值</text>
+     </view>
+
+     <view class='using-info'>
+           <view class='using-title'>用车中</view>
+           <view class='info-aboutUsing' style=''>
+                 <view class='info-ingcart'>
+                      <text class='price-ingcart'>5元</text>
+                      <text class='price-small'>价格/半小时</text>
+                 </view>
+                 <view class='info-ingcart'>
+                      <text class='price-ingcart'>00:30</text>
+                      <text class='price-small'>时长</text>
+                 </view>
+                 <view class='info-ingcart'>
+                      <text class='price-ingcart'>0米</text>
+                      <text class='price-small'>距离</text>
+                 </view>
+           </view> 
+
+           <view class='using-operate'>
+                 <view class='operate'>强制关锁</view>
+                 <view class='operate'>报修</view>
+           </view>
+     </view>
+   </view>
+   <!-- 后期修改 添加于2018-02-23 09:58 -->
+   
 		<!-- <view id="hint_detail_container"  wx:if="{{holding == false}}" >
       
       <view id="avatar_container">
@@ -32,7 +67,7 @@
       
 
     </view>  -->
-
+ 
   <map id="ingcartMap" 
   latitude="{{latitude}}" 
   longitude="{{longitude}}" 
@@ -43,7 +78,7 @@
   controls="{{controls}}" 
   bindmarkertap="markerTap"  
   bindcontroltap="bindcontroltap" 
-  style="height:{{mapHeight}}px;" 
+  style="height:{{mapHeight-200}}px;" 
 	bindtap='testLock'
   show-location>
 
@@ -84,7 +119,7 @@
     </cover-view> -->
 
       
-
+  
   </map>
 
   <!-- <canvas style='width:300px;height:200px;' canvas_id="fuck" id="canvas_test">

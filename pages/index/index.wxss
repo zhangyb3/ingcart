@@ -1,56 +1,116 @@
 /**index.wxss**/
-.container{
-  
+
+.container {
   width: 100%;
-	display: flex;
-	flex-direction: column;
-  
+  display: flex;
+  flex-direction: column;
 }
 
- #ingcartMap{
-  
-  
+#ingcartMap {
   width: 100%;
+}
 
-  
-} 
-
-.pop_container{
+.pop_container {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-
   z-index: 20;
 }
-
 @import "../pop/mask.wxss";
-
 @import "../pop/using.wxss";
-
 @import "../pop/holding.wxss";
-
 @import "../pop/selection_after_lock.wxss";
-
 @import "../pop/select_hold_time.wxss";
-
 @import "../pop/bill_notify.wxss";
-
 @import "../pop/arrearage_notify.wxss";
-
 @import "../pop/unlock_progress.wxss";
-
 @import "../pop/unlock_status.wxss";
-
 @import "../pop/store_detail.wxss";
-
 @import "../pop/business_hint.wxss";
 
-#info_show{
+
+#info_show {
   background-color: white;
   position: fixed;
   width: 100%;
   bottom: 0;
   height: 120px;
+}
+
+.index-tab {
+  height: 50px;
+  background-color: #f1f1f1;
+  padding: 0 20px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.tab-column {
+  font-size: 28rpx;
+  padding: 0 5px;
+  display: inline-block;
+  margin: 0 15px;
+  height: 48px;
+  line-height: 48px;
+}
+
+.current-tab {
+  border-bottom: 2px solid #f93;
+}
+
+.using-info {
+  font-size: 28rpx;
+  color: #555;
+  background-color: #fff;
+}
+
+.using-title {
+  padding:0 40rpx;
+  box-sizing: border-box;
+  border-bottom: 1px solid #f1f1f1;
+  line-height:40px;
+}
+
+.info-aboutUsing{
+  overflow:hidden;padding:20rpx 40rpx;box-sizing: border-box;
+  letter-spacing: 1px;
+}
+
+.info-ingcart{
+  float:left;
+  width:33.33%;
+  text-align: center;
+}
+
+.info-ingcart text{
+  display: block;
+}
+
+.price-ingcart{
+  font-size:32rpx;
+  font-weight:bold;
+  color:#333;
+}
+
+.price-small{
+  color:#888;
+  line-height: 30px;
+}
+
+.using-operate{
+  padding:0rpx 0rpx 30rpx;box-sizing: border-box;
+  overflow: hidden;
+  letter-spacing: 1px;
+}
+
+.operate{
+  width:41%;
+  float:left;text-align:center;
+  border:1px solid #e6e6e6;
+  border-radius:3px;
+  line-height: 32px;
+  box-sizing: border-box;
+  margin-left:6%;
 }

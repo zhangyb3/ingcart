@@ -22,3 +22,4 @@
 	margin: 40rpx auto 30rpx;
 	text-align: center;
 }
+view,text{font-family: '微软雅黑';}
