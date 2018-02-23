@@ -16,7 +16,9 @@
 		"pages/store/cancelStore",
 		"pages/repository/supply",
 		"pages/monitor/carStatus",
-    "pages/logs/logs"
+    "pages/logs/logs",
+    "pages/activity/activity"
+    
   ],
   "window":{
     "backgroundTextStyle":"light",

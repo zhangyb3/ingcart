@@ -734,7 +734,17 @@ Page({
 		
   },
 
-	
+  toMine:function(){
+    wx.navigateTo({
+      url: '../my/display',
+    })
+  },
+
+  toActivity: function () {
+    wx.navigateTo({
+      url: '../activity/activity',
+    })
+  },
 
 })
 

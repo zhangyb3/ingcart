@@ -14,8 +14,8 @@
    <view >
      <view class='index-tab'>
            <text class='tab-column current-tab'>首页</text>
-           <text class='tab-column'>优惠活动</text>
-           <text class='tab-column'>充值</text>
+           <text class='tab-column' bindtap='toActivity'>优惠活动</text>
+           <text class='tab-column' bindtap='toMine'>我的</text>
      </view>
 
      <view class='using-info'>
