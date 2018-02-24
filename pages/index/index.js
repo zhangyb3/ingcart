@@ -746,6 +746,18 @@ Page({
     })
   },
 
+  stopFee:function(){
+    wx.navigateTo({
+      url: '../stopFee/stopFee',
+    })
+  },
+
+  toRepair: function () {
+    wx.navigateTo({
+      url: '../my/record_repair',
+    })
+  },
+
 })
 
 

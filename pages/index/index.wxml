@@ -36,8 +36,8 @@
            </view> 
 
            <view class='using-operate'>
-                 <view class='operate'>强制关锁</view>
-                 <view class='operate'>报修</view>
+                 <view class='operate' bindtap='stopFee'>强制关锁</view>
+                 <view class='operate' bindtap='toRepair'>报修</view>
            </view>
      </view>
    </view>
