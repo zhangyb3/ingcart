@@ -1,5 +1,5 @@
 <!--index.wxml-->
-<view class="container" >
+<view class="container" wx:if='{{coverView}}'>
 
 
 	<import src="../pop/holding.wxml" />
@@ -117,7 +117,7 @@
      
      <!-- 用车时显示 用车中 信息 -->
      <cover-view class='using-info'>
-           <cover-view class='using-title'>用车中</cover-view>
+           <cover-view class='using-title'><cover-view class='forPadding'>用车中</cover-view> </cover-view>
            <cover-view class='info-aboutUsing' style=''>
                  <cover-view class='info-ingcart'>
                       <cover-view class='price-ingcart'>5元</cover-view>
@@ -137,7 +137,7 @@
      </cover-view>
      <!-- 不用车时 显示余额信息 -->
      <cover-view class='balance'>
-          <cover-view class='current-money'>当前余额：100元</cover-view>
+          <cover-view class='current-money'><cover-view class='forPadding'>当前余额：100元</cover-view></cover-view>
           <cover-view class='recharge' bindtap='toRecharge'>去充值</cover-view>
      </cover-view>
    </cover-view>
@@ -161,7 +161,7 @@
                            <cover-view class='illustration'>3、如您在指定还车点归还车辆，我们将返回20元作为规范停车鼓励</cover-view>
                      </cover-view>
 
-                     <cover-view class='iKnow' bindtap='iKnow'>知道了，去充值</cover-view>
+                     <cover-view class='iKnow' bindtap='toRecharge'>知道了，去充值</cover-view>
 
                </cover-view>
         </cover-view>
@@ -184,6 +184,10 @@
 	<import src="../pop/using.wxml" />
   <template is="using_timer" wx:if="{{timing == true}}" data="{{usingMinutes}}"></template>
 
+</view>
+
+<view wx:else>
+      请更新微信版本
 </view>
 
 

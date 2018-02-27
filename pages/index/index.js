@@ -34,7 +34,8 @@ Page({
 		//计时中标记不可点击
 		markerClickable: true,
     wHeight:0,
-    isNoEnough:true
+    isNoEnough:true,
+    coverView: wx.canIUse('cover-view')
   },
 
 // 页面加载
