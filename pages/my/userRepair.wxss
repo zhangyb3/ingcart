@@ -1,0 +1,105 @@
+.user-repair {
+  padding: 0 30px;
+  box-sizing: border-box;
+  color: #333;
+}
+
+.user-repair-title {
+  text-align: center;
+  line-height: 80px;
+}
+
+.scan-code {
+  border: 1px solid #000;
+  padding: 6px 10px;
+  box-sizing: border-box;
+}
+
+.scanCode-img {
+  width: 40px;
+  height: 40px;
+  display: block;
+  float: left;
+}
+
+.scan-Inputinfo {
+  padding-left: 70px;
+  box-sizing: border-box;
+  height: 42px;
+}
+
+.scan-Inputinfo input {
+  line-height: 42px;
+  height: 100%;
+  display: block;
+  letter-spacing: 1px;
+  font-size: 28rpx;
+}
+
+.problem-list {
+  margin-top: 20px;
+}
+
+.problem-group {
+  overflow: hidden;
+}
+
+.problem-label {
+  float: left;
+  display: block;
+  width: 50%;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.problem-label checkbox{
+  transform: scale(0.8);
+  font-size:32rpx;
+}
+
+.problem-label:nth-child(even) checkbox{
+   width:168rpx;
+   float:right;
+   letter-spacing: 1px;
+}
+
+.problem-remark {
+  width: 100%;
+  height: 150px;
+  background-color: #f1f1f1;
+  border-radius: 4px;
+  overflow: hidden;
+  padding:10px;box-sizing: border-box;
+  margin-top:15px;
+}
+
+.problem-remark textarea {
+  display: block;
+  width: 100%;
+  height: 113px;
+  font-size: 28rpx;
+  line-height:1.7;
+  color:#333;
+}
+
+.hand-inProblem{
+  width:100%;
+  height:68rpx;
+  border-radius:4px;
+  background-color:#f93;
+  letter-spacing: 1px;
+  margin:50px auto 50px;
+  font-size:28rpx;
+  color:#fff;
+}
+
+.contact-us{
+  font-size:28rpx;
+  letter-spacing: 1px;
+  text-align: center;
+  color:#666;
+  line-height:1.6;
+  margin-bottom:30px;
+}

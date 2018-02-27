@@ -33,7 +33,8 @@ Page({
 
 		//计时中标记不可点击
 		markerClickable: true,
-    wHeight:0
+    wHeight:0,
+    isNoEnough:true
   },
 
 // 页面加载
@@ -734,30 +735,31 @@ Page({
 		
   },
 
-  toMine:function(){
-    wx.navigateTo({
-      url: '../my/display',
-    })
-  },
-
+  // 优惠活动
   toActivity: function () {
     wx.navigateTo({
       url: '../activity/activity',
     })
   },
-
-  stopFee:function(){
-    wx.navigateTo({
-      url: '../stopFee/stopFee',
-    })
-  },
-
+  
+  // 报修
   toRepair: function () {
     wx.navigateTo({
-      url: '../my/record_repair',
+      url: '../my/userRepair',
     })
   },
+  
+  // 去充值
+  toRecharge:function(){
+    this.setData({
+      isNoEnough: true
+    });
+    wx.navigateTo({
+      url: '../my/rechargePage',
+    });
 
+  },
+  
 })
 
 
@@ -799,7 +801,7 @@ function showControls(the){
 				iconPath: '/images/location.png',
 				position: {
 					left: 15,
-					top: wx.getStorageSync('windowHeight') -80-200,
+					top: wx.getStorageSync('windowHeight') -80,
 					
 					width: 40,
 					height: 40
@@ -811,7 +813,7 @@ function showControls(the){
 				iconPath: '/images/use.png',
 				position: {
 					left: wx.getStorageSync('windowWidth') / 2 - 105,
-					top: wx.getStorageSync('windowHeight') - 12 -80-200,
+					top: wx.getStorageSync('windowHeight') - 12 -80,
 					
 					width: 210,
 					height: 51
@@ -835,7 +837,7 @@ function showControls(the){
 				iconPath: '/images/marker.png',
 				position: {
 					left: wx.getStorageSync('windowWidth') / 2 - 18,
-					top: wx.getStorageSync('windowHeight') / 2 - 36 -20-200,
+					top: wx.getStorageSync('windowHeight') / 2 - 36 -20,
 					
 					width: 36,
 					height: 36
@@ -847,7 +849,7 @@ function showControls(the){
 				iconPath: '/images/avatar.png',
 				position: {
 					left: wx.getStorageSync('windowWidth') - 50,
-					top: wx.getStorageSync('windowHeight') - 60 -20-200,
+					top: wx.getStorageSync('windowHeight') - 60 -20,
 					
 					width: 40,
 					height: 40
