@@ -24,4 +24,5 @@ module.exports = {
 		UsingCarDevice: "UsingCarDevice",
 		Level: "Level",
 		PhoneNum: "PhoneNum",
+		Amount: "Amount",
 }
