@@ -1,0 +1,95 @@
+
+.maintenance_car_id_container{
+	margin-top: 20px;
+  width: 80%;
+  margin-left: 10%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: #f2f2f2;
+}
+
+#maintenance_scan_image{
+  width: 100rpx;
+  height: 100rpx;
+  padding: 20rpx;
+}
+
+.maintenance_scan_car_id_container{
+  /*align-items: center;
+  width: 60%;
+  margin-left: 20%;
+ 
+  padding-top: 20rpx;
+  padding-bottom: 20rpx;
+  border: 1px solid gray;*/
+}
+
+.maintenance_car_id{
+  padding: 10rpx;
+  font-size: 36rpx;
+  text-align: center;
+}
+
+.maintenance_scan_operation{
+  padding: 10rpx;
+  font-size: 28rpx;
+  text-align: center;
+}
+
+.row_display{
+	
+	width: 80%;
+	margin-left: 10%;
+	display: flex;
+	flex-direction: row;
+
+}
+
+.hand-in{
+  width:50%;
+  height:40px;
+  margin:10px auto;
+  color:#fff;
+  background-color:#f93 ;
+  font-size:32rpx;
+}
+
+
+.choose-name {
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  margin-top: 10px;
+}
+
+.getName {
+  margin: 10px auto;
+  width: 50%;
+  text-align: center;
+  height: 60px;
+  line-height: 60px;
+  background-color: #ddd;
+}
+
+picker-view-column view{text-align: center;}
+
+.chooe-time {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  background-color:rgba(0,0,0,0.3);
+}
+
+.pick-box{
+  position:absolute;width:100%;padding:20px;box-sizing:border-box;bottom:0;left:0;background-color: #fff;margin-bottom:20px;
+}
+
+.choose-btn{
+  height:50px;line-height:50px;
+}
+
+.choose-btn .close{color:#f93;float:left;}
+.choose-btn .sure{color:#f93;float:right;}
