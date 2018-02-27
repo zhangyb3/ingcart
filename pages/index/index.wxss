@@ -1,56 +1,244 @@
 /**index.wxss**/
-.container{
-  
+
+.container {
   width: 100%;
-	display: flex;
-	flex-direction: column;
-  
+  display: flex;
+  flex-direction: column;
 }
 
- #ingcartMap{
-  
-  
+#ingcartMap {
   width: 100%;
+}
 
-  
-} 
-
-.pop_container{
+.pop_container {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-
   z-index: 20;
 }
-
 @import "../pop/mask.wxss";
-
 @import "../pop/using.wxss";
-
 @import "../pop/holding.wxss";
-
 @import "../pop/selection_after_lock.wxss";
-
 @import "../pop/select_hold_time.wxss";
-
 @import "../pop/bill_notify.wxss";
-
 @import "../pop/arrearage_notify.wxss";
-
 @import "../pop/unlock_progress.wxss";
-
 @import "../pop/unlock_status.wxss";
-
 @import "../pop/store_detail.wxss";
-
 @import "../pop/business_hint.wxss";
 
-#info_show{
+#info_show {
   background-color: white;
   position: fixed;
   width: 100%;
   bottom: 0;
   height: 120px;
+}
+
+.index-tab {
+  height: 50px;
+  background-color: #fff;
+  padding: 3px 20px 0;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.tab-column {
+  font-size: 24rpx;
+  display: block;
+  height: 48px;
+  color: #777;
+  width: 33.33%;
+  float: left;
+  text-align: center;
+  /* line-height: 48px; */
+}
+
+.tabCenter {
+  display: inline-block;
+  height: 100%;
+}
+
+.tab-column cover-image {
+  width: 20px;
+  height: 20px;
+  display: block;
+  margin: 5px auto 3px;
+}
+
+.current-tab {
+  border-bottom: 2px solid #f93;
+}
+
+.using-info {
+  font-size: 28rpx;
+  color: #333;
+  background-color: #fff;
+}
+
+.using-title {
+  padding: 0 40rpx;
+  box-sizing: border-box;
+  border-bottom: 1px solid #f1f1f1;
+  line-height: 40px;
+  background-color: #f1f1f1;
+  border-top: 1px solid #fff;
+}
+
+.info-aboutUsing {
+  overflow: hidden;
+  padding: 20rpx 40rpx;
+  box-sizing: border-box;
+  letter-spacing: 1px;
+}
+
+.info-ingcart {
+  float: left;
+  width: 33.33%;
+  text-align: center;
+}
+
+.info-ingcart text {
+  display: block;
+}
+
+.price-ingcart {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.price-small {
+  color: #888;
+  line-height: 30px;
+}
+
+.using-operate {
+  padding: 0rpx 0rpx 30rpx;
+  box-sizing: border-box;
+  overflow: hidden;
+  letter-spacing: 1px;
+}
+
+.operate {
+  width: 41%;
+  float: left;
+  text-align: center;
+  border: 1px solid #e6e6e6;
+  border-radius: 3px;
+  line-height: 32px;
+  box-sizing: border-box;
+  margin-left: 6%;
+}
+
+.balance {
+  width: 100%;
+  height: 88rpx;
+  font-size: 28rpx;
+  border-bottom: 1px solid #e5e6e6;
+}
+
+.current-money {
+  width: 75%;
+  background-color: #f1f1f1;
+  float: left;
+  height: 100%;
+  padding: 0 40rpx;
+  box-sizing: border-box;
+  line-height: 88rpx;
+}
+
+.recharge {
+  color: #fff;
+  width: 25%;
+  background-color: #f93;
+  text-align: center;
+  float: left;
+  height: 100%;
+  line-height: 88rpx;
+}
+
+.layer-map {
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+ 
+}
+
+.layer-flex {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.layer-content {
+  padding:0rpx 0 30rpx;
+  width: 80%;
+  background-color: #fff;
+  margin: auto auto;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.layer-title {
+  color: #f93;
+  font-size: 30rpx;
+  line-height: 60rpx;
+  border-bottom: 1px solid #f1f1f1;
+  margin-bottom: 15px;
+  padding:0 30rpx;
+  box-sizing: border-box;
+}
+
+.balance-info {
+  margin: 5px 0px 30px;
+  text-align:center;
+}
+
+.balance-show {
+  display: inline-block;
+  color: #f93;
+  font-size: 32px;
+}
+
+.money-unit {
+  font-size: 28rpx;
+  display: inline-block;
+  margin-left:5px;
+  line-height:22px;
+
+}
+
+.balance-illustration{
+  padding:0 30rpx;
+  box-sizing: border-box;
+}
+
+.illustration{
+  line-height:1.5;
+  margin-bottom:5px;
+
+}
+
+.iKnow{
+  width:70%;
+  line-height: 68rpx;
+  margin:20px auto 0;
+  background-color: #f93;
+  color:#fff;
+  text-align:center;
+  border-radius:6px;
+}
+
+cover-view{
+ word-wrap:break-word;
 }

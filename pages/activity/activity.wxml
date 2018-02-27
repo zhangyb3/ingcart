@@ -1,0 +1,5 @@
+<view class='pageView' style='min-height:{{deviceHeight}}px;'>
+    <view class=''>
+          <image mode='widthFix' src='/images/activity.png'></image> 
+    </view>
+</view>

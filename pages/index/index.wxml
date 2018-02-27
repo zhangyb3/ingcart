@@ -1,13 +1,17 @@
 <!--index.wxml-->
-<view class="container">
+<view class="container" >
 
 
 	<import src="../pop/holding.wxml" />
   <template is="holding_timer" wx:if="{{holding == true}}" data="{{holdingMinutes}}"></template> 
 
 	<import src="../pop/business_hint.wxml" />
-  <template is="business_hint" wx:if="{{holding == false}}" data="{{avatar,unitpriceText,securityHint}}"></template> 
 
+  <!-- 后期修改 隐藏于2018-02-23 09:58 -->
+   <!-- <template is="business_hint" wx:if="{{holding == false}}" data="{{avatar,unitpriceText,securityHint}}"></template>   -->
+
+   
+   
 		<!-- <view id="hint_detail_container"  wx:if="{{holding == false}}" >
       
       <view id="avatar_container">
@@ -32,7 +36,7 @@
       
 
     </view>  -->
-
+ 
   <map id="ingcartMap" 
   latitude="{{latitude}}" 
   longitude="{{longitude}}" 
@@ -83,8 +87,89 @@
     
     </cover-view> -->
 
-      
+     <!-- 后期修改 添加于2018-02-23 09:58 -->
+   <cover-view style='position:fixed;width:100%;top:0;left:0;z-index:2;'  >
+     <cover-view class='index-tab'> 
+          <cover-view class='tab-column' bindtap='toMy'>
+            <cover-view class='tabCenter'>
+              <cover-image src='../../images/myWallet.png'></cover-image>
+              <cover-view class=''>我</cover-view> 
+            </cover-view>
+          </cover-view> 
 
+          <cover-view class='tab-column' bindtap='toRepair'>
+            <cover-view class='tabCenter'>
+              <cover-image src='../../images/repair.png'></cover-image>
+              <cover-view class=''>报修</cover-view> 
+            </cover-view>
+          </cover-view> 
+
+          <cover-view class='tab-column' bindtap='toActivity'>
+            <cover-view class='tabCenter'>
+              <cover-image src='../../images/favourActivity.png'></cover-image>
+              <cover-view class=''>优惠活动</cover-view> 
+            </cover-view>
+          </cover-view>  
+           
+           <!-- <view class='tab-column' bindtap='toActivity'>优惠活动</view>
+           <text class='tab-column' bindtap='toMine'>我的</text> -->
+     </cover-view>
+     
+     <!-- 用车时显示 用车中 信息 -->
+     <cover-view class='using-info'  wx:if="{{timing == true}}">
+           <cover-view class='using-title'>用车中</cover-view>
+           <cover-view class='info-aboutUsing' style=''>
+                 <cover-view class='info-ingcart'>
+                      <cover-view class='price-ingcart'>5元</cover-view>
+                      <cover-view class='price-small'>价格/半小时</cover-view>
+                 </cover-view>
+                 <cover-view class='info-ingcart'>
+                      <cover-view class='price-ingcart'>00:30</cover-view>
+                      <cover-view class='price-small'>时长</cover-view>
+                 </cover-view>
+                 
+           </cover-view> 
+
+           <!-- <view class='using-operate'>
+                 <view class='operate' bindtap='stopFee'>强制关锁</view>
+                 <view class='operate' bindtap='toRepair'>报修</view>
+           </view> -->
+     </cover-view>
+     <!-- 不用车时 显示余额信息 -->
+     <cover-view class='balance'>
+          <cover-view class='current-money'>当前余额：{{amount}}元</cover-view>
+          <cover-view class='recharge' bindtap='toRecharge'>去充值</cover-view>
+     </cover-view>
+   </cover-view>
+
+  <!-- 充值提示弹窗 暂时隐藏 当扫码时余额不足时弹出-->
+   <cover-view class='layer-map' hidden='{{isNoEnough}}'>
+        <cover-view class='layer-flex'>
+               <cover-view class='layer-content'>
+                     <cover-view class='layer-title'>余额不足</cover-view>
+
+                     <cover-view style='text-align:center;'>当前余额</cover-view>
+
+                     <cover-view class='balance-info'>
+                         <cover-view class='balance-show'>10</cover-view>
+                         <cover-view class='money-unit'>元</cover-view>
+                     </cover-view>
+
+                     <cover-view class='balance-illustration'>
+                           <cover-view class='illustration'>1、共享婴儿车当日使用费用50元封顶</cover-view>
+                           <cover-view class='illustration'>2、您当前所在的景区需要钱包余额至少50元</cover-view>
+                           <cover-view class='illustration'>3、如您在指定还车点归还车辆，我们将返回20元作为规范停车鼓励</cover-view>
+                     </cover-view>
+
+                     <cover-view class='iKnow' bindtap='iKnow'>知道了，去充值</cover-view>
+
+               </cover-view>
+        </cover-view>
+   </cover-view>
+   <!-- 后期修改 添加于2018-02-23 09:58 --> 
+
+
+  
   </map>
 
   <!-- <canvas style='width:300px;height:200px;' canvas_id="fuck" id="canvas_test">
@@ -100,4 +185,5 @@
   <template is="using_timer" wx:if="{{timing == true}}" data="{{usingMinutes}}"></template>
 
 </view>
+
 

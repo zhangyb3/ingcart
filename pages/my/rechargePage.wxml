@@ -1,0 +1,29 @@
+<view class='rechargePage' style='min-height:{{windowHeight}}px;'>
+  <view style='min-height:{{windowHeight-150}}px;'>
+     <view class='recharge-sum'>选择充值金额</view>
+     
+     <view class='recharge-list'>
+           <view class='recharge-choice'>
+               <view class="sum {{addStyle==0?'sumColor':' '}}" bindtap='moneyChoice' data-charge='30' data-class='0'>30元</view>
+           </view>
+
+           <view class='recharge-choice'>
+               <view class="sum {{addStyle==1?'sumColor':' '}}" bindtap='moneyChoice' data-charge='50' data-class='1'>50元</view>
+           </view>
+
+           <view class='recharge-choice'>
+               <view class="sum {{addStyle==2?'sumColor':' '}}" bindtap='moneyChoice' data-charge='0' data-class='2'>其他金额</view>
+           </view>
+     </view>
+  </view>
+  <button class='recharge-money' hidden='{{isShow}}'>确定充值</button>
+</view>
+
+<view class='randow-recharge' style='height:{{windowHeight}}px;' hidden='{{isRandow}}'>
+      <view class='recharge-content'>
+            <view class='close-layer' bindtap='closeLayer'>关闭</view>           
+            <view class='randow-title'>输入充值金额（元）</view> 
+            <input type='number' class='money-sum' bindinput='inputMoney' value='{{inputMoney}}'></input>
+            <button class='recharge-money'>确定充值</button>
+      </view>
+</view>

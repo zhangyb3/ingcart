@@ -1,0 +1,99 @@
+rechargePage {
+  background-color: #f1f1f1;
+  font-size: 30rpx;
+}
+
+.recharge-sum {
+  text-align: center;
+  font-size: 30rpx;
+  letter-spacing: 1px;
+  line-height: 70px;
+}
+
+.recharge-list {
+  margin: 15px 0 30px;
+  overflow: hidden;
+}
+
+.recharge-choice {
+  width: 50%;
+  float: left;
+  margin-bottom: 30px;
+}
+
+.sum {
+  width: 70%;
+  margin: 0 auto;
+  height: 94rpx;
+  line-height: 94rpx;
+  border: 1px solid #f93;
+  text-align: center;
+  color: #f93;
+  border-radius: 6px;
+}
+
+.recharge-money {
+  height: 86rpx;
+  width: 60%;
+  margin: 20px auto 20px;
+  color: #fff;
+  background-color: #f93;
+  border-radius: 6px;
+  letter-spacing: 1px;
+  font-size: 30rpx;
+  line-height:86rpx
+}
+
+.randow-recharge {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  letter-spacing: 1px;
+}
+
+.recharge-content {
+  background-color: #fff;
+  position:absolute;
+  bottom:0;left:0;
+  min-height: 480rpx;
+  width:100%;
+  padding-bottom:20px;
+}
+
+.randow-title {
+  color: #666;
+  text-align: center;
+  line-height: 50px;
+  margin-top:20px;
+}
+
+.money-sum {
+  width: 50%;
+  display: block;
+  border: none 0;
+  border-bottom: 1px solid #ccc;
+  margin: 10px auto 50px;
+  color: #f93;
+  font-size:30px;
+  text-align: center;
+  line-height:40px;
+  height:40px;
+}
+
+.sumColor{
+
+  color:#fff;
+  background-color: #f93;
+}
+
+.close-layer{
+  position:absolute;
+  right:10px;
+  top:10px;
+  color:#666;
+  font-size:28rpx;
+}
+
+.recharge-content .recharge-money{margin-bottom:0;}

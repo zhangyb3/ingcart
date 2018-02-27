@@ -8,6 +8,8 @@
     "pages/my/display",
     "pages/my/history",
 		"pages/my/record_repair",
+    "pages/my/userRepair",
+    "pages/my/rechargePage",
     "pages/wallet/total",
     "pages/wallet/charge",
     "pages/register/register",
@@ -16,7 +18,9 @@
 		"pages/store/cancelStore",
 		"pages/repository/supply",
 		"pages/monitor/carStatus",
-    "pages/logs/logs"
+    "pages/logs/logs",
+    "pages/activity/activity"
+    
   ],
   "window":{
     "backgroundTextStyle":"light",
