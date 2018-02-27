@@ -1,0 +1,32 @@
+
+
+<scroll-view class='toolKit-notes' style='min-height:{{deviceHeight}}px' lower-threshold='0' bindscrolltolower='getMoreCallRepair'>
+
+    <view style='min-height:{{deviceHeight-60}}px'>
+      <view class='tk-noteList' wx:for='{{callRepairList}}' wx:key='unique' >
+				<view class="tk-note-item" data-cart='{{item}}' bindtap='findTargetOnMap' >
+            <view class='tk-note-title' style='color:red;' >车辆编号：{{item.qrId}}</view>
+            <view class='tk-note-subtitle' style='{{notesHeight[index]}}'>{{item.type}}</view>
+
+            <view class='notes-info'>
+                  <view class='notes' style='max-height:{{notesHeight2[index]}}rpx;' >{{item.annotation}}</view>
+
+                  <view class='note-mark-info'>
+                        <text class='noted-time'>{{item.callTime}}</text>
+                        <!-- <image class='notes-share' src='../../images/share.png' bindtap='toShare' data-nid="{{item.id}}" data-title='{{item.title}}' data-content='{{item.content}}' data-note='{{item.note}}'></image>  -->
+                        <!-- <button plain='true' class='shareBtn' open-type="share">
+                          <image class='notes-share' src='../../images/share.png'></image>
+                        </button> -->
+
+                        <view class='notes-fold' bindtap='foldMore' data-fold='{{index}}' data-param='{{param[index]}}' data-not_redirect='true'>{{foldTxt[index]}}</view>
+                        <view class='del-notes' bindtap='alreadyFindTarget' wx:if="{{visibleArray[index]}}" data-index='{{index}}' data-not_redirect='true'>捕获</view>
+												
+
+                  </view>
+            </view>
+				</view>
+      </view> 
+    </view>
+
+
+</scroll-view>

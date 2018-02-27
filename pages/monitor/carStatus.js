@@ -98,9 +98,7 @@ Page({
 			success: function (res) {
 				if (res.data.status == 200) {
 					var result = res.data.data;
-					that.setData({
-						carMargin: result.size,
-					});
+				
 
 					if(result.user == null){
 						that.data.pageNum = that.data.pageNum -1;
@@ -109,6 +107,7 @@ Page({
 						that.data.carStatusList = that.data.carStatusList.concat(result.user);
 						that.setData({
 							carStatusList: that.data.carStatusList,
+							carMargin: result.size,
 						});
 					}
 					

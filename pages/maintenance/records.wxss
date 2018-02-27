@@ -1,0 +1,35 @@
+
+
+.toolKit-notes {
+  background-color: #f1f1f1;
+}
+
+.tk-note-item {
+  background-color: #fff;
+  padding: 22rpx 36rpx 34rpx 12rpx;
+  box-sizing: border-box;
+  margin-bottom:16rpx;
+}
+
+
+.tk-note-title{font-size:32rpx;color:#666;padding:0 22rpx;}
+.tk-note-subtitle{font-size:28rpx;color:#666;padding-left:22rpx;margin-top:6rpx;overflow:hidden;text-overflow: ellipsis;line-height:1.6;}
+.notes-info{margin-top:32rpx;}
+.notes{line-height:1.7;border-left:6rpx solid #f93;padding-left:16rpx;box-sizing: border-box;font-size:32rpx;overflow: hidden;color:#000;}
+.note-mark-info{overflow: hidden;margin-top:20rpx;padding-left:22rpx;}
+.note-mark-info text,.note-mark-info view{font-size:28rpx;color:#666;}
+.noted-time{float:left;}
+.notes-share,.notes-fold,.del-notes{float:right;}
+.notes-share{width:40rpx;height:40rpx;display: block;margin-left:40rpx;
+}
+.del-notes{margin-right:40rpx;}
+
+.shareBtn{
+  width:40rpx;height:40rpx;
+  float:right;border-color:#fff;margin-left:40rpx;
+}
+
+
+button[plain]{
+  border:1px solid #fff;width:40rpx;height:40rpx;
+}

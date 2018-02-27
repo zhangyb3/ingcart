@@ -1,0 +1,72 @@
+
+		<view class=''>
+					<view class='choose-name'>选择城市</view>
+					<view class='getName' bindtap='chooseCityName'>{{cityName}}</view>
+		</view> 
+		
+		<view class=''>
+					<view class='choose-name'>选择景区</view>
+					<view class='getName' bindtap='chooseZoneName'>{{zoneName}}</view>
+		</view> 
+		
+		<view class="maintenance_car_id_container" >
+      <view class="maintenance_scan_image_container" bindtap="scanCar">
+        <image id="maintenance_scan_image" src="../../images/scan_call.png"></image>
+      </view>
+      <view class="maintenance_scan_car_id_container">
+        <view class="maintenance_car_id">
+          <input class="maintenance_car_id_input" placeholder="点图标扫码或手输车号" value="{{qrId}}" bindinput="carIdInput"/>
+        </view>
+        <!--<view class="maintenance_scan_operation" bindtap="scanFaultCar">轻触左边按钮扫码或上方手动输入车号</view>-->
+      </view>
+    </view>
+
+
+		<scroll-view style='margin-top:10px;width: 100%;height:150px' lower-threshold="0"	bindscrolltolower='getMoreCarStatus'  scroll-y>
+
+		<view wx:for='{{carts}}' wx:key='unique' wx:for-index="index">
+
+			<view class="row_display" style="height: 40px;line-height: 40px;border-top: 1px solid lightgray;">
+				<text style="width:70%;font-size:30rpx;text-align:center;color:lightgray;">{{item}}</text>
+				<text style="width:30%;font-size:32rpx;text-align:center;color:red;" data-cart='{{item}}' data-index='{{index}}' bindtap='unrecordCarInPosition'>X</text>
+			</view>
+
+		</view>
+		
+	</scroll-view>
+
+	<button class='hand-in' bindtap='recordCarInPosition'>录入</button>
+
+
+<view class='chooe-time' style='height:{{winHeight}}px;display:{{chooseCityName}};'>      
+      <view class='pick-box'>
+                 <view class='choose-btn'>
+                        <text class='close' bindtap='close'>取消</text>
+                        <text class='sure' bindtap='sureCity'>确定</text>
+                 </view>
+                 <view style='height:40px;line-height:40px;text-align:center;'></view>
+                 <picker-view indicator-style="height: 50px;" style="width:100%;height: 200px;margin:0 auto;" value="{{value}}" bindchange="changeCity">
+                   <picker-view-column id="city_column">
+                      <view wx:for="{{cities}}" wx:key='unique' style="line-height: 50px">{{item.city}}</view>
+                   </picker-view-column>
+                   
+                 </picker-view>
+           </view>
+</view>
+
+
+<view class='chooe-time' style='height:{{winHeight}}px;display:{{chooseZoneName}};'>      
+      <view class='pick-box'>
+                 <view class='choose-btn'>
+                        <text class='close' bindtap='close'>取消</text>
+                        <text class='sure' bindtap='sureZone'>确定</text>
+                 </view>
+                 <view style='height:40px;line-height:40px;text-align:center;'></view>
+                 <picker-view indicator-style="height: 50px;" style="width:100%;height: 200px;margin:0 auto;" value="{{value}}" bindchange="changeZone">
+                   <picker-view-column id="zone_column">
+                      <view wx:for="{{zones}}" wx:key='unique' style="line-height: 50px">{{item.name}}</view>
+                   </picker-view-column>
+                   
+                 </picker-view>
+           </view>
+</view>

@@ -155,7 +155,7 @@ Page({
 		this.data.customerPhoneNum = e.detail.value;
 		var regExp = /0?(13|14|15|18)[0-9]{9}/;
 		// if (!regExp.test(this.data.customerPhoneNum)) {
-		if (this.data.customerPhoneNum.length != 11) {
+		if (this.data.customerPhoneNum.length != 11 && this.data.customerPhoneNum.length != 7) {
 			this.setData({
 				checkTel: 'block'
 			})

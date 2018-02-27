@@ -136,4 +136,22 @@ Page({
 		})
 	},
 
+	recordCarInPosition: function () {
+		wx.navigateTo({
+			url: '../monitor/recordCar',
+		})
+	},
+
+	recordOperationZone: function () {
+		wx.navigateTo({
+			url: '../zone/record',
+		})
+	},
+
+	checkCallRepair: function () {
+		wx.navigateTo({
+			url: '../maintenance/records',
+		})
+	},
+
 })

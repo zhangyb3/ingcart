@@ -14,7 +14,7 @@
 
 		<view wx:for='{{carStatusList}}' wx:key='unique' wx:for-index="index">
 
-			<view class="row_display" style="height: 40px;line-height: 40px;border-top: 1px solid lightgray;">
+			<view class="row_display" style="height: 60px;line-height: 60px;border-top: 1px solid lightgray;">
 				<text style="width:40%;font-size:30rpx;text-align:center;color:lightgray;">{{item.start_time}}</text>
 				<text style="width:30%;font-size:32rpx;text-align:center;color:red;">{{item.phone_num}}</text>
 				<text style="width:30%;font-size:32rpx;text-align:center;color:red;">{{item.car_code}}</text>

@@ -35,7 +35,10 @@ Page({
 		markerClickable: true,
     wHeight:0,
     isNoEnough:false,
+<<<<<<< HEAD
     coverView: wx.canIUse('cover-view')
+=======
+>>>>>>> 3a76428caff1cccbd9bd6c8f6724b26530fdb49f
   },
 
 // 页面加载
@@ -746,7 +749,7 @@ Page({
   // 报修
   toRepair: function () {
     wx.navigateTo({
-      url: '../my/userRepair',
+      url: '../maintenance/call',
     })
   },
   
@@ -760,6 +763,15 @@ Page({
     });
 
   },
+
+	// 去我的页面
+	toMy: function () {
+		
+		wx.navigateTo({
+			url: '../my/display',
+		});
+
+	},
   
 })
 
@@ -845,18 +857,18 @@ function showControls(the){
 				},
 				clickable: true
 			},
-			{
-				id: 5,
-				iconPath: '/images/avatar.png',
-				position: {
-					left: wx.getStorageSync('windowWidth') - 50,
-					top: wx.getStorageSync('windowHeight') - 60 -20,
+			// {
+			// 	id: 5,
+			// 	iconPath: '/images/avatar.png',
+			// 	position: {
+			// 		left: wx.getStorageSync('windowWidth') - 50,
+			// 		top: wx.getStorageSync('windowHeight') - 60 -20,
 					
-					width: 40,
-					height: 40
-				},
-				clickable: true
-			}
+			// 		width: 40,
+			// 		height: 40
+			// 	},
+			// 	clickable: true
+			// }
 		]
 	});
 }

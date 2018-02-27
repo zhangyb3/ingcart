@@ -8,7 +8,7 @@ var register = require('./register')
 const QR_TO_MAC_URL = `${config.PytheRestfulServerURL}/use/QR2MAC`;
 
 //开锁前检查
-const UNLOCK_PREPARE_URL = `${config.PytheRestfulServerURL}/unlock/prepare`;
+const UNLOCK_PREPARE_URL = `${config.PytheRestfulServerURL}/qr/unlock/prepare`;
 
 //开锁
 const UNLOCK_URL = `${config.PytheRestfulServerURL}/use/unlock`;
@@ -1059,6 +1059,7 @@ function loginSystem(the, success, fail) {
 
 						wx.setStorageSync(user.Level, registerInfo.level);
 						wx.setStorageSync(user.PhoneNum, registerInfo.phoneNum);
+						wx.setStorageSync(user.Amount, registerInfo.amount);
 
 						wx.showToast({
 							title: '已登录',
@@ -1072,7 +1073,8 @@ function loginSystem(the, success, fail) {
 
 					that.setData({
 						logoutSystem: wx.getStorageSync('logoutSystem'),
-						alreadyRegister: wx.getStorageSync('alreadyRegister')
+						alreadyRegister: wx.getStorageSync('alreadyRegister'),
+						amount: wx.getStorageSync(user.Amount),
 					});
 
 				},
