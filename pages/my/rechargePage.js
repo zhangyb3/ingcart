@@ -7,7 +7,8 @@ Page({
     windowHeight:0,
     isShow:false ,  //‘确定充值’按钮是否显示
     isRandow:true,
-    addStyle:0
+    addStyle:0,
+    inputMoney:''
   },
 
   onLoad: function () {
@@ -52,6 +53,14 @@ Page({
       isShow: false,
       isRandow: true,
       addStyle: 0
+    })
+  },
+
+  inputMoney:function(e){
+    var inputMoney=e.detail.value;
+    var patt=/[0-9]+.?/;
+    this.setData({
+      inputMoney: inputMoney.replace(/[^0-9]/,'')
     })
   }
   
