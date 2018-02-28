@@ -143,8 +143,12 @@
                  <cover-view class='wran-tip' style='margin:8px 0 10px;'>如需继续使用，可手动关闭电子锁，再次使用同一台设备扫码，仍可继续使用。</cover-view>
 
                  <cover-view class='sure-end'>
-                      <cover-view class='sure-end-btn' bindtap='customerFinishUsing'>确定结束用车</cover-view>
-                 </cover-view>
+                      
+									<form  bindsubmit="customerFinishUsing" report-submit='true' >
+										<cover-view class='sure-end-btn' bindtap='customerFinishUsing' form-type="submit">确定结束用车</cover-view>
+										
+									</form>
+								 </cover-view>
            </cover-view>
 
            <!-- <view class='using-operate'>
@@ -153,7 +157,7 @@
            </view> -->
      </cover-view>
      <!-- 不用车时 显示余额信息 -->
-     <cover-view class='balance'>
+     <cover-view class='balance' wx:if="{{timing == false}}" >
 
 
           <cover-view class='current-money'><cover-view class='forPadding'>当前余额：{{amount}}元</cover-view></cover-view>

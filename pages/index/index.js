@@ -112,7 +112,7 @@ Page({
 				() => {
 
 					wx.hideLoading();
-					// checkBluetooth(that);
+					checkBluetooth(that);
 					refreshPage(that);
 
 					checkUsingCarStatus(that,
@@ -142,7 +142,7 @@ Page({
 		{
 			var that = this;
 			
-			// checkBluetooth(that);
+			checkBluetooth(that);
 			
 			// wx.showLoading({
 			// 	title: '加载中',
@@ -326,7 +326,8 @@ Page({
     })
   },
 
-	customerFinishUsing:function(){
+	customerFinishUsing:function(e){
+		var formId = e.detail.formId;
 		var that  = this;
 		wx.getLocation({
 			type: 'gcj02',
@@ -342,6 +343,7 @@ Page({
 						customerId: wx.getStorageSync(user.CustomerID),
 						longitude: wx.getStorageSync(user.Longitude),
 						latitude: wx.getStorageSync(user.Latitude),
+						formId: formId,
 					},
 					method: 'POST',
 					success: function (res) { 
@@ -860,7 +862,7 @@ function checkBluetooth(the){
 				 },
 				fail: function (res) { },
 				complete: function (res) { 
-					// checkBluetooth(that);
+					checkBluetooth(that);
 				},
 			})
 		},
