@@ -34,7 +34,9 @@ Page({
 		//计时中标记不可点击
 		markerClickable: true,
     wHeight:0,
+
     isNotEnough:false,
+
   },
 
 // 页面加载

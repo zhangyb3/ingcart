@@ -1,5 +1,5 @@
 <!--index.wxml-->
-<view class="container" >
+<view class="container">
 
 
 	<import src="../pop/holding.wxml" />
@@ -116,8 +116,10 @@
      </cover-view>
      
      <!-- 用车时显示 用车中 信息 -->
+
      <cover-view class='using-info'  wx:if="{{timing == true}}">
            <cover-view class='using-title'>用车中</cover-view>
+
            <cover-view class='info-aboutUsing' style=''>
                  <cover-view class='info-ingcart'>
                       <cover-view class='price-ingcart'>30元</cover-view>
@@ -137,7 +139,9 @@
      </cover-view>
      <!-- 不用车时 显示余额信息 -->
      <cover-view class='balance'>
+
           <cover-view class='current-money'>当前余额：{{amount}}元</cover-view>
+
           <cover-view class='recharge' bindtap='toRecharge'>去充值</cover-view>
      </cover-view>
    </cover-view>
@@ -185,5 +189,7 @@
   <!-- <template is="using_timer" wx:if="{{timing == true}}" data="{{usingMinutes}}"></template> -->
 
 </view>
+
+
 
 
