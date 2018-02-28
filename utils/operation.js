@@ -150,8 +150,7 @@ function getUnlockFrame(carId, token, success, fail) {
 function unlock(the, customerId, carId, qrId, success, fail){
 
   var that = the;
-	
-	
+		
 
 	var deviceId;
 	//android、ios分情况处理
@@ -450,17 +449,13 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 										if (tokenFrameHexStr.slice(0, 8) == '05020100') 
 										{
 											//开锁成功
-											that.setData({
-												unlock_progress: false,
-											});
+											
 
 											wx.closeBLEConnection({
 												deviceId: deviceId,
 												success: function (res) {
 													wx.hideLoading();
-													wx.navigateBack({
-														delta: 1,
-													});
+													
 												},
 												fail: function (res) { },
 												complete: function (res) { },
@@ -489,7 +484,13 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 																wx.getStorageSync(user.CustomerID),
 																() => {
 
-																	
+																	that.setData({
+																		unlock_progress: false,
+																	});
+
+																	wx.navigateBack({
+																		delta: 1,
+																	});
 																
 																});
 
@@ -552,6 +553,11 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 		complete: function (res) { },
 	});
 }
+
+function queryLockStatus(the, carId, qrId, deviceId, token, success, fail){
+
+}
+
 
 function lock(customerId, carId, recordId, success, fail){
 
@@ -743,6 +749,8 @@ function normalUpdateCustomerStatus(customerId, success, fail)
 			wx.setStorageSync(user.Level, info.level);
 			wx.setStorageSync(user.Amount, info.amount);
 
+			wx.setStorageSync(user.UsingCarPrice, info.price);
+
       typeof success == "function" && success(res.data);
     },
     fail: function(res){
@@ -889,6 +897,7 @@ function loginSystem(the, success, fail) {
 						wx.setStorageSync(user.RecordID, registerInfo.recordId);
 						wx.setStorageSync(user.UsingCarStatus, registerInfo.carStatus);
 						wx.setStorageSync(user.UsingCarDevice, registerInfo.deviceId);
+						wx.setStorageSync(user.UsingCarPrice, registerInfo.price);
 
 						wx.setStorageSync(user.Level, registerInfo.level);
 						wx.setStorageSync(user.PhoneNum, registerInfo.phoneNum);
@@ -908,6 +917,7 @@ function loginSystem(the, success, fail) {
 						logoutSystem: wx.getStorageSync('logoutSystem'),
 						alreadyRegister: wx.getStorageSync('alreadyRegister'),
 						amount: wx.getStorageSync(user.Amount),
+						price: wx.getStorageSync(user.UsingCarPrice),
 					});
 
 				},
@@ -999,6 +1009,7 @@ module.exports = {
 
 	UNLOCK_URL: UNLOCK_URL,
 
+	queryLockStatus: queryLockStatus,
   unlock: unlock,
   lock: lock,
   hold: hold,

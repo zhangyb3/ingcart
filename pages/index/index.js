@@ -314,7 +314,7 @@ Page({
 												if (result.status == 300) {
 													that.setData({
 														isNotEnough: true,
-
+														hints: result.data.annotation,
 													});
 
 
@@ -733,6 +733,10 @@ function refreshUsingMinutes(the){
   var that = the;
 	if(wx.getStorageSync(user.UsingCarStatus) == 1)
 	{
+		//检查是否已手动关锁，假如已手动关锁，即转为保留用车状态
+		//暂不实现
+
+		//未手动关锁，不在保留用车状态
 		operation.checkUsingMinutes(
 			wx.getStorageSync(user.UsingCar),
 			(result) => {
@@ -743,6 +747,7 @@ function refreshUsingMinutes(the){
 						// holding: false,
 						usingMinutes: result.data.time,
 						mapHeight: wx.getStorageSync('windowHeight')  ,
+						price: wx.getStorageSync(user.UsingCarPrice),
 					});
 					//此时图标不可点
 					that.data.markerClickable = false;
@@ -757,6 +762,7 @@ function refreshUsingMinutes(the){
 			() => {
 				that.setData({
 					amount: wx.getStorageSync(user.Amount),
+					price: wx.getStorageSync(user.UsingCarPrice),
 				});
 			},
 		);

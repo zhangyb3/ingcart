@@ -123,7 +123,7 @@
 
            <cover-view class='info-aboutUsing' style=''>
                  <cover-view class='info-ingcart'>
-                      <cover-view class='price-ingcart'>30元</cover-view>
+                      <cover-view class='price-ingcart'>{{price}}元</cover-view>
                       <cover-view class='price-small'>价格/天</cover-view>
                  </cover-view>
                  <cover-view class='info-ingcart'>
@@ -163,9 +163,10 @@
                      </cover-view>
 
                      <cover-view class='balance-illustration'>
-                           <cover-view class='illustration'>1、共享婴儿车当日使用费用50元封顶</cover-view>
-                           <cover-view class='illustration'>2、您当前所在的景区需要钱包余额至少50元</cover-view>
-                           <cover-view class='illustration'>3、如您在指定还车点归还车辆，我们将返回20元作为规范停车鼓励</cover-view>
+										 	<cover-view wx:for="{{hints}}">
+												<cover-view class='illustration'>{{item}}</cover-view>
+											</cover-view>
+                           
                      </cover-view>
 
                      <cover-view class='iKnow' bindtap='toRecharge'>知道了，去充值</cover-view>
