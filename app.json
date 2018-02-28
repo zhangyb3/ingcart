@@ -19,7 +19,8 @@
 		"pages/repository/supply",
 		"pages/monitor/carStatus",
     "pages/logs/logs",
-    "pages/activity/activity"
+    "pages/activity/activity",
+    "pages/agreement/agreement"
     
   ],
   "window":{

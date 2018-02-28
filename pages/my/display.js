@@ -156,4 +156,10 @@ Page({
 		})
 	},
 
+  toAgreement: function () {
+    wx.navigateTo({
+      url: '../agreement/agreement',
+    })
+  },
+
 })

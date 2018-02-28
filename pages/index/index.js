@@ -37,8 +37,8 @@ Page({
 
     isNoEnough:true,
 
-    coverView: wx.canIUse('cover-view')
-
+    coverView: wx.canIUse('cover-view'),
+    isShowendUseTip:false
 
 
 
@@ -456,7 +456,22 @@ Page({
       unlock_status: false,
     });
   },
+  
+  // 结束用车
+  endUseCar:function(){
+     this.setData({
+       isShowendUseTip:true
+     })
+  },
 
+  // 关闭结束用车提示
+  closeUseTip:function(){
+    this.setData({
+      isShowendUseTip: false
+    })
+  },
+
+  // 去充值
   toCharge:function(e){
     this.setData({
       notify_arrearage: false,
