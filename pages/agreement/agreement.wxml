@@ -1,0 +1,3 @@
+<view class='agreenments' style="">
+      <rich-text nodes='{{agreement}}'></rich-text>
+</view>

@@ -97,6 +97,7 @@
   float: left;
   width: 33.33%;
   text-align: center;
+  letter-spacing: 2px;
 }
 
 .info-ingcart text {
@@ -107,11 +108,14 @@
   font-size: 32rpx;
   font-weight: bold;
   color: #333;
+  letter-spacing: 2px;
+  
 }
 
 .price-small {
   color: #888;
   line-height: 30px;
+  letter-spacing: 3px;
 }
 
 .using-operate {
@@ -143,12 +147,15 @@
   width: 75%;
   background-color: #f1f1f1;
   float: left;
-  height: 100%;  
+  height: 100%;
   line-height: 88rpx;
 }
 
-.forPadding{padding: 0 40rpx;line-height:40px;
-  box-sizing: border-box;}
+.forPadding {
+  padding: 0 40rpx;
+  line-height: 40px;
+  box-sizing: border-box;
+}
 
 .recharge {
   color: #fff;
@@ -168,7 +175,6 @@
   top: 0;
   left: 0;
   z-index: 10;
- 
 }
 
 .layer-flex {
@@ -180,7 +186,7 @@
 }
 
 .layer-content {
-  padding:0rpx 0 30rpx;
+  padding: 0rpx 0 30rpx;
   width: 80%;
   background-color: #fff;
   margin: auto auto;
@@ -194,14 +200,13 @@
   line-height: 60rpx;
   border-bottom: 1px solid #f1f1f1;
   margin-bottom: 15px;
-  padding:0 30rpx;
   box-sizing: border-box;
   background-color: #f1f1f1;
 }
 
 .balance-info {
   margin: 5px 0px 30px;
-  text-align:center;
+  text-align: center;
 }
 
 .balance-show {
@@ -213,34 +218,80 @@
 .money-unit {
   font-size: 28rpx;
   display: inline-block;
-  margin-left:5px;
-  line-height:22px;
-
+  margin-left: 5px;
+  line-height: 22px;
 }
 
-.balance-illustration{
-  padding:0 30rpx;
+.balance-illustration {
+  padding: 0 30rpx;
   box-sizing: border-box;
 }
 
-.illustration{
-  line-height:1.5;
-  margin-bottom:5px;
-
+.illustration {
+  line-height: 1.5;
+  margin-bottom: 5px;
 }
 
-.iKnow{
-  width:70%;
+.iKnow {
+  width: 70%;
   line-height: 68rpx;
-  margin:20px auto 0;
+  margin: 20px auto 0;
   background-color: #f93;
-  color:#fff;
-  text-align:center;
-  border-radius:6px;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
 }
 
-cover-view{
- white-space: normal;
- display:block;
- width:100%;
+cover-view {
+  white-space: normal;
+}
+
+.end-use {
+  width: 80%;
+  margin: 6px auto;
+  border: 1px solid #f93;
+  color: #f93;
+  font-size: 28rpx;
+  line-height: 26px;
+  text-align:center;
+  border-radius:40px;
+}
+
+.endUse-tip{
+  padding:0 40rpx;
+}
+
+.endUse-tip-title{
+  color:#f93;
+  font-size:28rpx;
+  position:relative;
+  height:30px;line-height:30px;
+}
+
+.endUse-tip-title cover-image{
+  width:12px;
+  height:12px;
+  display: block;
+  position:absolute;
+  top:50%;margin-top:-8px;right:0px;
+}
+.wran-tip{
+  line-height:1.6;
+  color:#333;
+  font-size:28rpx;
+  text-align:justify;
+}
+
+.sure-end{
+  padding-bottom:20px;
+}
+
+.sure-end-btn{
+  width:50%;
+  margin:20px auto 0;
+  text-align:center;
+  line-height:30px;
+  background-color:#f93;
+  color:#fff;
+  border-radius:6px;
 }

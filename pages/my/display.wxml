@@ -62,6 +62,21 @@
       <view class="split_line"></view>
     </view> 
 
+    <view class="line_item_container" bindtap="toAgreement">
+      <view class="line_item">
+        <view class="line_include_item_container history_record">
+          <text >使用协议</text>
+        </view>
+        <view class="line_include_item_container record_quantity">
+          <text></text>
+        </view>
+        <view class="line_include_item_container record_operation">
+          <image id="operation"  src="../../images/more.png"></image>
+        </view>
+      </view>
+      <view class="split_line"></view>
+    </view> 
+
 		<!-- <view class="line_item_container" bindtap="toRecordRepair">
       <view class="line_item">
         <view class="line_include_item_container repair_entrance">
