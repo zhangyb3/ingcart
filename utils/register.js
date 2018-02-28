@@ -103,6 +103,7 @@ function commitRegister(the, success, fail)
           wx.setStorageSync(user.UsingCarStatus, res.data.data.carStatus);
 
 					wx.setStorageSync(user.Level, res.data.data.level);
+					wx.setStorageSync(user.Amount, res.data.data.amount);
 
           //判断注册是否成功，成功则返回index页面
           wx.setStorageSync('alreadyRegister', 'yes');

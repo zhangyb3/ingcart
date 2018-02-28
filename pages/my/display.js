@@ -71,10 +71,12 @@ Page({
 // 跳转至钱包
   toWallet: function(){
     wx.navigateTo({
-      url: '../wallet/charge'
+      // url: '../wallet/charge',
+			url: '../my/rechargePage'
     })
   },
 
+	
   // 跳转至卡券页面
   toCard: function () {
     wx.showModal({

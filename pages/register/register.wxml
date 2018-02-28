@@ -23,7 +23,7 @@
             <button class="submit-btn"  loading="{{loading}}" bindtap="customerRegister" >注册</button>
         </view>
 
-				<view id="admin_hint">仅供管理员使用</view>
+				
     </view>
 </view>
 

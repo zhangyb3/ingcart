@@ -13,7 +13,8 @@
                 </view>
 
                 <view class="line_include_item_container duration">
-                  <text>{{item.minute}}分钟</text>
+                  <!-- <text>{{item.minute}}分钟</text> -->
+									<text>1天</text>
                 </view>
 
                 <view class="line_include_item_container amount">
