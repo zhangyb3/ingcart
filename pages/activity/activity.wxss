@@ -6,3 +6,15 @@
 .pageView image{
   width:100%;border-radius:6px;
 }
+
+.withOutAct{
+  display: flex;
+  flex-direction: column;
+  background-color:#f1f1f1;
+}
+
+.withOutAct-content{
+  margin:auto auto;
+  text-align: center;
+  letter-spacing: 1px;
+}

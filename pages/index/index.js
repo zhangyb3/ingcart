@@ -34,11 +34,10 @@ Page({
 		//计时中标记不可点击
 		markerClickable: true,
     wHeight:0,
-    isNoEnough:false,
-<<<<<<< HEAD
+    isNoEnough:true,
+
     coverView: wx.canIUse('cover-view')
-=======
->>>>>>> 3a76428caff1cccbd9bd6c8f6724b26530fdb49f
+
   },
 
 // 页面加载

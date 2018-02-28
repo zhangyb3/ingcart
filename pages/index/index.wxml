@@ -1,5 +1,5 @@
 <!--index.wxml-->
-<view class="container" wx:if='{{coverView}}'>
+<view class="container" >
 
 
 	<import src="../pop/holding.wxml" />
@@ -116,13 +116,9 @@
      </cover-view>
      
      <!-- 用车时显示 用车中 信息 -->
-<<<<<<< HEAD
-     <cover-view class='using-info'>
+
+     <cover-view class='using-info' wx:if="{{timing == true}}">
            <cover-view class='using-title'><cover-view class='forPadding'>用车中</cover-view> </cover-view>
-=======
-     <cover-view class='using-info'  wx:if="{{timing == true}}">
-           <cover-view class='using-title'>用车中</cover-view>
->>>>>>> 3a76428caff1cccbd9bd6c8f6724b26530fdb49f
            <cover-view class='info-aboutUsing' style=''>
                  <cover-view class='info-ingcart'>
                       <cover-view class='price-ingcart'>5元</cover-view>
@@ -142,11 +138,9 @@
      </cover-view>
      <!-- 不用车时 显示余额信息 -->
      <cover-view class='balance'>
-<<<<<<< HEAD
-          <cover-view class='current-money'><cover-view class='forPadding'>当前余额：100元</cover-view></cover-view>
-=======
-          <cover-view class='current-money'>当前余额：{{amount}}元</cover-view>
->>>>>>> 3a76428caff1cccbd9bd6c8f6724b26530fdb49f
+
+          <cover-view class='current-money'><cover-view class='forPadding'>当前余额：{{amount}}元</cover-view></cover-view>
+
           <cover-view class='recharge' bindtap='toRecharge'>去充值</cover-view>
      </cover-view>
    </cover-view>
@@ -195,8 +189,6 @@
 
 </view>
 
-<view wx:else>
-      请更新微信版本
-</view>
+
 
 

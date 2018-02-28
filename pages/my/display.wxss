@@ -33,25 +33,26 @@ page{
 }
 
 .account_name{
-  width: 50%;
+  width: 40%;
   text-align: left;
 }
 
 .account_amount{
-  width: 20%;
-  text-align: right;
+  width: 35%;
+  text-align: center;
   display: float;
   /*flex-direction: row;*/
 }
 
 .account_operation{
-  width: 30%;
+  width: 25%;
   text-align: right;
 }
 
 .account_operation image{
-  width: 160rpx;
-  height: 60rpx;
+  width: 90%;
+  display: block;
+  margin :0 auto;
 }
 
 .card_name{
@@ -72,7 +73,7 @@ page{
 }
 
 .history_record{
-  width: 50%;
+  width: 40%;
   text-align: left;
 }
 

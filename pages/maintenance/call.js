@@ -62,13 +62,53 @@ Page({
     wordsCountdown: 140,
     maintenanceQRId: null,
     faultDescription: null,
+    scrollTop:0,
+    scrollViewHeight: 0,
+    addPadding: 20,
   },
 
 // 页面加载
   onLoad:function(options){
     wx.setNavigationBarTitle({
       title: '报障维修'
+    });
+
+    this.getRect();
+
+  },
+
+  getRect: function () {
+    var that = this;
+    wx.createSelectorQuery().select('.repair-input').boundingClientRect(function (rect) {
+      that.setData({
+        scrollViewHeight: rect.height  // 节点的高度
+      })
+
+    }).exec()
+  },
+
+  focuPadding: function () {
+    var that = this;
+
+    this.setData({
+      addPadding: 150,
+    });
+
+    setTimeout(function () {
+      that.setData({
+        scrollTop: 210
+      })
+    }, 300);
+    // this.getRect();
+
+  },
+
+  blurPadding: function () {
+    this.setData({
+      addPadding: 20,
+      scrollTop: 0
     })
+    // this.getRect();
   },
 
 // 勾选故障类型，获取类型值存入faults

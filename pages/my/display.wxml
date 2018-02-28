@@ -23,7 +23,7 @@
           <text>元</text>
         </view>
         <view class="line_include_item_container account_operation">
-          <image src="../../images/to_charge.png"></image>
+          <image src="../../images/to_charge.png" mode='widthFix'></image>
         </view>
       </view>
       <view class="split_line"></view>
@@ -56,7 +56,7 @@
           <text></text>
         </view>
         <view class="line_include_item_container record_operation">
-          <image id="operation" src="../../images/more.png"></image>
+          <image id="operation"  src="../../images/more.png"></image>
         </view>
       </view>
       <view class="split_line"></view>

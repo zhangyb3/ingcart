@@ -1,5 +1,10 @@
-<view class='pageView' style='min-height:{{deviceHeight}}px;'>
+<!-- <view class='pageView' style='min-height:{{deviceHeight}}px;'>
     <view class=''>
           <image mode='widthFix' src='/images/activity.png'></image> 
-    </view>
+    </view>  
+</view> -->
+
+<!-- 当没有优惠活动时 用这个，  有优惠活动时 用上面注释掉的那个-->
+<view class='withOutAct' style='height:{{deviceHeight}}px;'>
+         <view class='withOutAct-content'>暂无优惠活动</view> 
 </view>

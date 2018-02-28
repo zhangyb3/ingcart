@@ -16,13 +16,15 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: #f2f2f2;
+  /* background-color: #f2f2f2; */
+border:1px solid #000;
 }
 
 #maintenance_scan_image{
   width: 100rpx;
   height: 100rpx;
   padding: 20rpx;
+  display: block;
 }
 
 .maintenance_scan_car_id_container{
