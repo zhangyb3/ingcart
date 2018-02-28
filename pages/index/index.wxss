@@ -80,10 +80,9 @@
 }
 
 .using-title {
-  border-bottom: 1px solid #f1f1f1;
-  line-height: 40px;
-  background-color: #f1f1f1;
-  border-top: 1px solid #fff;
+  border-top: 1px solid #f1f1f1;
+  line-height: 32px;
+ 
 }
 
 .info-aboutUsing {
@@ -97,7 +96,6 @@
   float: left;
   width: 33.33%;
   text-align: center;
-  letter-spacing: 2px;
 }
 
 .info-ingcart text {
@@ -105,17 +103,17 @@
 }
 
 .price-ingcart {
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: bold;
   color: #333;
   letter-spacing: 2px;
+  word-spacing: 2px;
   
 }
 
 .price-small {
   color: #888;
   line-height: 30px;
-  letter-spacing: 3px;
 }
 
 .using-operate {
@@ -153,8 +151,9 @@
 
 .forPadding {
   padding: 0 40rpx;
-  line-height: 40px;
+  line-height: 32px;
   box-sizing: border-box;
+  color:#f93;
 }
 
 .recharge {
@@ -266,6 +265,7 @@ cover-view {
   font-size:28rpx;
   position:relative;
   height:30px;line-height:30px;
+  margin-bottom:10px;
 }
 
 .endUse-tip-title cover-image{

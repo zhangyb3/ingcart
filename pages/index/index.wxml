@@ -92,7 +92,7 @@
    <cover-view style='position:fixed;width:100%;top:0;left:0;z-index:2;'  >
      <cover-view class='index-tab'> 
           <cover-view class='tab-column' bindtap='toMy'>
-            <cover-view class='tabCenter'>
+            <cover-view class='tabCenter' style='float:left;'>
               <cover-image src='../../images/myWallet.png'></cover-image>
               <cover-view class=''>我</cover-view> 
             </cover-view>
@@ -106,7 +106,7 @@
           </cover-view> 
 
           <cover-view class='tab-column' bindtap='toActivity'>
-            <cover-view class='tabCenter'>
+            <cover-view class='tabCenter' style='float:right'>
               <cover-image src='../../images/favourActivity.png'></cover-image>
               <cover-view class=''>优惠活动</cover-view> 
             </cover-view>
@@ -122,7 +122,7 @@
            <cover-view class='using-title'><cover-view class='forPadding'>用车中</cover-view> </cover-view>
 
            <cover-view class='info-aboutUsing' style=''>
-                 <cover-view class='info-ingcart'>
+                 <cover-view class='info-ingcart' style='text-align:left;'>
                       <cover-view class='price-ingcart'>30元</cover-view>
                       <cover-view class='price-small'>价格/天</cover-view>
                  </cover-view>
@@ -132,7 +132,7 @@
                  </cover-view>
                  
                  <cover-view class='info-ingcart' >
-                        <cover-view class='end-use' bindtap='endUseCar'>结束用车</cover-view>
+                        <cover-view class='end-use' bindtap='endUseCar' style='float:right;'>结束用车</cover-view>
                  </cover-view>
            </cover-view> 
            <cover-view style='height:1px;background-color:#e6e6e6;'></cover-view>
