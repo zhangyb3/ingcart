@@ -14,6 +14,7 @@ Page({
 		fromPage: null,
 		operation: null,
 		carId: null,
+		qrId:null,
   },
 
   /**
@@ -24,6 +25,7 @@ Page({
 		this.data.fromPage = parameters.from;
 		this.data.operation = parameters.operation;
 		this.data.carId = parameters.carId;
+		this.data.qrId = parameters.qrId;
 		if(this.data.fromPage == 'weixin')
 		{
 			wx.setStorageSync('from', 'weixin');
@@ -57,19 +59,10 @@ Page({
 				that,
 				wx.getStorageSync(user.CustomerID),
 				that.data.carId,
+				that.data.qrId,
 				(result)=>{
 
-					// if(wx.getStorageSync('DeviceID') != null)
-					// {
-					// 	setTimeout(
-					// 		function(){
-					// 			wx.navigateBack({
-					// 				delta: 1,
-					// 			})
-					// 		},
-					// 		1000*5
-					// 	);
-					// }
+				
 				},
 				()=>{
 					wx.navigateBack({

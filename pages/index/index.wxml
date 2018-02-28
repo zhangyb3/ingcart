@@ -1,4 +1,5 @@
 <!--index.wxml-->
+
 <view class="container" >
 
 
@@ -119,13 +120,14 @@
 
      <cover-view class='using-info' wx:if="{{timing == true}}">
            <cover-view class='using-title'><cover-view class='forPadding'>用车中</cover-view> </cover-view>
+
            <cover-view class='info-aboutUsing' style=''>
                  <cover-view class='info-ingcart'>
-                      <cover-view class='price-ingcart'>5元</cover-view>
-                      <cover-view class='price-small'>价格/半小时</cover-view>
+                      <cover-view class='price-ingcart'>30元</cover-view>
+                      <cover-view class='price-small'>价格/天</cover-view>
                  </cover-view>
                  <cover-view class='info-ingcart'>
-                      <cover-view class='price-ingcart'>00:30</cover-view>
+                      <cover-view class='price-ingcart'>{{usingMinutes}}</cover-view>
                       <cover-view class='price-small'>时长</cover-view>
                  </cover-view>
                  
@@ -139,14 +141,16 @@
      <!-- 不用车时 显示余额信息 -->
      <cover-view class='balance'>
 
+
           <cover-view class='current-money'><cover-view class='forPadding'>当前余额：{{amount}}元</cover-view></cover-view>
+
 
           <cover-view class='recharge' bindtap='toRecharge'>去充值</cover-view>
      </cover-view>
    </cover-view>
 
   <!-- 充值提示弹窗 暂时隐藏 当扫码时余额不足时弹出-->
-   <cover-view class='layer-map' hidden='{{isNoEnough}}'>
+   <cover-view class='layer-map' wx:if='{{isNotEnough}}'>
         <cover-view class='layer-flex'>
                <cover-view class='layer-content'>
                      <cover-view class='layer-title'>余额不足</cover-view>
@@ -154,7 +158,7 @@
                      <cover-view style='text-align:center;'>当前余额</cover-view>
 
                      <cover-view class='balance-info'>
-                         <cover-view class='balance-show'>10</cover-view>
+                         <cover-view class='balance-show'>{{amount}}</cover-view>
                          <cover-view class='money-unit'>元</cover-view>
                      </cover-view>
 
@@ -185,7 +189,7 @@
   </view>
 
 	<import src="../pop/using.wxml" />
-  <template is="using_timer" wx:if="{{timing == true}}" data="{{usingMinutes}}"></template>
+  <!-- <template is="using_timer" wx:if="{{timing == true}}" data="{{usingMinutes}}"></template> -->
 
 </view>
 

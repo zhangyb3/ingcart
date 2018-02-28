@@ -16,14 +16,14 @@
            </view>
      </view>
   </view>
-  <button class='recharge-money' hidden='{{isShow}}'>确定充值</button>
+  <!-- <button class='recharge-money' hidden='{{isShow}}' bindtap='charge'>确定充值</button> -->
 </view>
 
 <view class='randow-recharge' style='height:{{windowHeight}}px;' hidden='{{isRandow}}'>
       <view class='recharge-content'>
             <view class='close-layer' bindtap='closeLayer'>关闭</view>           
             <view class='randow-title'>输入充值金额（元）</view> 
-            <input type='number' class='money-sum' bindinput='inputMoney' value='{{inputMoney}}'></input>
-            <button class='recharge-money'>确定充值</button>
+            <input type='number' placeholder='0' class='money-sum' bindinput='inputMoney' ></input>
+            <button class='recharge-money' bindtap='charge'>确定充值</button>
       </view>
 </view>

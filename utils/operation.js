@@ -147,244 +147,79 @@ function getUnlockFrame(carId, token, success, fail) {
 }
 
 
-function unlock(the, customerId, carId, success, fail){
+function unlock(the, customerId, carId, qrId, success, fail){
 
   var that = the;
-
-	//设置5秒检查时间，到时如果仍未开锁则清除缓存重新执行该函数
-	// if (wx.getStorageSync('platform') == 'android')
-	// {
-	// 	setTimeout(
-	// 		function () {
-
-	// 			if (wx.getStorageSync(user.UsingCarStatus) != 1) {
-	// 				wx.closeBLEConnection({
-	// 					deviceId: wx.getStorageSync('DeviceID'),
-	// 					success: function (res) {
-
-	// 						wx.closeBluetoothAdapter({
-	// 							success: function (res) {
-
-	// 								wx.openBluetoothAdapter({
-	// 									success: function (res) {
-
-	// 										unlock(that, customerId, carId);
-
-	// 									},
-	// 									fail: function (res) { },
-	// 									complete: function (res) { },
-	// 								})
-
-	// 							},
-	// 							fail: function (res) { },
-	// 							complete: function (res) { },
-	// 						});
-
-	// 					},
-	// 					fail: function (res) { },
-	// 					complete: function (res) { },
-	// 				})
-
-
-	// 			}
-
-
-	// 		},
-	// 		1000 * 10
-	// 	);
-	// }
-	// else
-	// {
-	// 	setTimeout(
-	// 		function () {
-
-	// 			if(wx.getStorageSync(user.UsingCarStatus) != 1)
-	// 			{
-	// 				wx.showModal({
-	// 					title: '',
-	// 					content: '连接超时，请再次扫码',
-	// 					confirmText: '我知道了',
-	// 					confirmColor: '',
-	// 					success: function(res) {
-	// 						if(res.confirm)
-	// 						{
-	// 							wx.navigateBack({
-	// 								delta: 1,
-	// 							})
-	// 						}
-	// 					},
-	// 					fail: function(res) {},
-	// 					complete: function(res) {},
-	// 				})
-					
-	// 			}
-	// 		},
-	// 		1000 * 10
-	// 	);
-	// }
 	
-			
-	wx.request({
-		url: UNLOCK_PREPARE_URL,
-		data: {
-			customerId: wx.getStorageSync(user.CustomerID),
-			carId: carId,
-		
-		},
-		method: 'GET',
-		success: function (res) {
-			var result = res.data;
-			if (result.status == 200) 
-			{
-				//通过检查，可以开锁
+	
 
-				var deviceId;
-				//android、ios分情况处理
-				if(wx.getStorageSync('platform') == 'android')
-				{
-					deviceId = carId;
-					//直接开锁
-					unlockOperation(that, deviceId, carId,
-						(res)=>{
-							typeof success == "function" && success(res.data);
-						},
-						(res)=>{
-							typeof fail == "function" && fail(res);
+	var deviceId;
+	//android、ios分情况处理
+	if (wx.getStorageSync('platform') == 'android') {
+		deviceId = carId;
+		//直接开锁
+		unlockOperation(that, deviceId, carId,
+			(res) => {
+				typeof success == "function" && success(res.data);
+			},
+			(res) => {
+				typeof fail == "function" && fail(res);
+			}
+
+		);
+
+	}
+	if (wx.getStorageSync('platform') == 'ios') {
+
+		//找出跟MAC对应的deviceId
+		wx.stopBluetoothDevicesDiscovery({
+			success: function (res) {
+
+				wx.getBluetoothDevices({
+					success: function (res) {
+						var devices = res.devices;
+
+						for (var count = 0; count < devices.length; count++) {
+							console.log(count, devices[count]);
+
+							console.log('deviceId: ', devices[count].deviceId);
+							var macBuff = (devices[count].advertisData).slice(2, 8);
+							console.log('MAC: ', parseMAC(macBuff));
+							var macAddress = parseMAC(macBuff);
+							if (macAddress == that.data.carId) {
+								deviceId = devices[count].deviceId;
+								wx.setStorageSync('DeviceID', deviceId);
+								break;
+							}
+
 						}
 
-					);
-					
-				}
-				if (wx.getStorageSync('platform') == 'ios') 
-				{
-					
-					//找出跟MAC对应的deviceId
-					wx.stopBluetoothDevicesDiscovery({
-						success: function (res) {
+						//找到目标，停止查找，开锁
+						unlockOperation(that, deviceId, carId,
+							(res) => {
+								typeof success == "function" && success(res.data);
+							},
+							(res) => {
+								typeof fail == "function" && fail(res);
+							}
 
-							wx.getBluetoothDevices({
-								success: function (res) {
-									var devices = res.devices;
+						);
+					},
+					fail: function (res) { },
+					complete: function (res) { },
+				});
 
-									for (var count = 0; count < devices.length; count++) {
-										console.log(count, devices[count]);
-
-										console.log('deviceId: ', devices[count].deviceId);
-										var macBuff = (devices[count].advertisData).slice(2, 8);
-										console.log('MAC: ', parseMAC(macBuff));
-										var macAddress = parseMAC(macBuff);
-										if (macAddress == that.data.carId) {
-											deviceId = devices[count].deviceId;
-											wx.setStorageSync('DeviceID', deviceId);
-											break;
-										}
-
-									}
-
-									//找到目标，停止查找，开锁
-									unlockOperation(that, deviceId, carId,
-										(res) => {
-											typeof success == "function" && success(res.data);
-										},
-										(res) => {
-											typeof fail == "function" && fail(res);
-										}
-
-									);
-								},
-								fail: function (res) { },
-								complete: function (res) { },
-							});
-
-						},
-						fail: function (res) { },
-						complete: function (res) { },
-					})
-					
-					
-
-					// wx.onBluetoothDeviceFound(function(res){
-						
-					// 		console.log('deviceId: ', res.devices[0]);
-					// 		var macBuff = wx.base64ToArrayBuffer(res.devices[0].advertisData).slice(2, 8);
-					// 		console.log('MAC: ', parseMAC(macBuff));
-					// 		var macAddress = parseMAC(macBuff);
-					// 		if (macAddress == carId) 
-					// 		{
-					// 			deviceId = res.devices[0].deviceId;
-					// 			wx.setStorageSync('DeviceID', deviceId);
-					// 			wx.stopBluetoothDevicesDiscovery({
-					// 				success: function(res) {
-
-					// 					//找到目标，停止查找，开锁
-					// 					unlockOperation(that, deviceId, carId,
-					// 						(res) => {
-					// 							typeof success == "function" && success(res.data);
-					// 						},
-					// 						(res) => {
-					// 							typeof fail == "function" && fail(res);
-					// 						}
-											
-					// 					);
-										
-					// 				},
-					// 				fail: function(res) {},
-					// 				complete: function(res) {},
-					// 			})
-					// 		}
-						
-					// });
-
-				}
+			},
+			fail: function (res) { },
+			complete: function (res) { },
+		})
 
 
 
+	}
 
 
-			}
-			else {
-				if (result.status == 300) {
-					that.setData({
-						unlock_progress: false,
-						notify_arrearage: true,
-						arrearage_amount: result.data,
-					});
-				}
-				else {
-					that.setData({
-						unlock_progress: false,
-						// unlock_status: true,
-						// unlock_status_image: '/images/unlock_' + result.status + '.png',
-					});
 
-					wx.showModal({
-						title: '提示',
-						content: result.msg,
-						showCancel: false,
-						confirmText: '我知道了',
-						confirmColor: '',
-						success: function(res) {
-							wx.navigateBack({
-								delta: 1,
-							})
-						},
-						fail: function(res) {},
-						complete: function(res) {},
-					})
-				}
-
-			}
-
-
-		},
-		fail: function (res) {
-			typeof fail == "function" && fail(res);
-			
-		},
-		complete: function(res){
-			
-		}
-	});
 
 }
 
@@ -634,44 +469,41 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 											
 											
 											//更新开锁状态
-											// wx.getLocation({
-											// 	type: 'gcj02',
-											// 	altitude: true,
-											// 	success: function(res) {
+											wx.getLocation({
+												type: 'gcj02',
+												altitude: true,
+												success: function(res) {
 
-											// 		wx.request({
-											// 			url: UNLOCK_URL,
-											// 			data: {
-											// 				carId: carId,
-											// 				customerId: wx.getStorageSync(user.CustomerID),
-											// 				longitude: res.longitude,
-											// 				latitude: res.latitude,
-											// 			},
-											// 			method: 'POST',
-											// 			success: function (res) { 
+													wx.request({
+														url: UNLOCK_URL,
+														data: {
+															carId: carId,
+															customerId: wx.getStorageSync(user.CustomerID),
+															longitude: res.longitude,
+															latitude: res.latitude,
+														},
+														method: 'POST',
+														success: function (res) { 
 
-											// 				normalUpdateCustomerStatus(
-											// 					wx.getStorageSync(user.CustomerID),
-											// 					() => {
+															normalUpdateCustomerStatus(
+																wx.getStorageSync(user.CustomerID),
+																() => {
 
-											// 						wx.navigateBack({
-											// 							delta: 1,
-											// 						})
-
+																	
 																
-											// 					});
+																});
 
-											// 				typeof success == "function" && success('unlock');
+															typeof success == "function" && success('unlock');
 
-											// 			},
-											// 			fail: function (res) { },
-											// 			complete: function (res) { },
-											// 		});
+														},
+														fail: function (res) { },
+														complete: function (res) { },
+													});
 
-											// 	},
-											// 	fail: function(res) {},
-											// 	complete: function(res) {},
-											// })
+												},
+												fail: function(res) {},
+												complete: function(res) {},
+											})
 											
 											
 										}
@@ -909,6 +741,7 @@ function normalUpdateCustomerStatus(customerId, success, fail)
 			wx.setStorageSync(user.UsingCarDevice, info.deviceId);
 
 			wx.setStorageSync(user.Level, info.level);
+			wx.setStorageSync(user.Amount, info.amount);
 
       typeof success == "function" && success(res.data);
     },
