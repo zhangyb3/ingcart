@@ -1,0 +1,5 @@
+.agreenments{
+  text-align: justify;font-size: 30rpx; font-family:'微软雅黑';line-height: 1.6;padding:20px;box-sizing:border-box;
+}
+
+.agreenments view{margin-bottom:10px;}
