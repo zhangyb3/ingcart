@@ -118,16 +118,17 @@
      
      <!-- 用车时显示 用车中 信息 -->
 
-     <cover-view class='using-info' >
+     <cover-view class='using-info' wx:if="{{timing}}">
            <cover-view class='using-title'><cover-view class='forPadding'>用车中</cover-view> </cover-view>
 
            <cover-view class='info-aboutUsing' style=''>
-                 <cover-view class='info-ingcart' style='text-align:left;'>
-                      <cover-view class='price-ingcart'>30元</cover-view>
+
+                 <cover-view class='info-ingcart'>
+                      <cover-view class='price-ingcart'>{{price}}元</cover-view>
                       <cover-view class='price-small'>价格/天</cover-view>
                  </cover-view>
                  <cover-view class='info-ingcart'>
-                      <cover-view class='price-ingcart'>00:30</cover-view>
+                      <cover-view class='price-ingcart'>{{usingMinutes}}</cover-view>
                       <cover-view class='price-small'>时长</cover-view>
                  </cover-view>
                  
@@ -142,7 +143,7 @@
                  <cover-view class='wran-tip' style='margin:8px 0 10px;'>如需继续使用，可手动关闭电子锁，再次使用同一台设备扫码，仍可继续使用。</cover-view>
 
                  <cover-view class='sure-end'>
-                      <cover-view class='sure-end-btn'>确定结束用车</cover-view>
+                      <cover-view class='sure-end-btn' bindtap='customerFinishUsing'>确定结束用车</cover-view>
                  </cover-view>
            </cover-view>
 
@@ -171,14 +172,15 @@
                      <cover-view style='text-align:center;'>当前余额</cover-view>
 
                      <cover-view class='balance-info'>
-                         <cover-view class='balance-show'>1000</cover-view>
+                         <cover-view class='balance-show'>{{amount}}</cover-view>
                          <cover-view class='money-unit'>元</cover-view>
                      </cover-view>
 
                      <cover-view class='balance-illustration'>
-                           <cover-view class='illustration'>1、共享婴儿车当日使用费用50元封顶</cover-view>
-                           <cover-view class='illustration'>2、您当前所在的景区需要钱包余额至少50元</cover-view>
-                           <cover-view class='illustration'>3、如您在指定还车点归还车辆，我们将返回20元作为规范停车鼓励</cover-view>
+										 	<cover-view wx:for="{{hints}}">
+												<cover-view class='illustration'>{{item}}</cover-view>
+											</cover-view>
+                           
                      </cover-view>
 
                      <cover-view class='iKnow' bindtap='toRecharge'>知道了，去充值</cover-view>
