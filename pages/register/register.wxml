@@ -11,7 +11,7 @@
            
             <view class="verification_container">
 							<text class="phone_number_input_hint">验证码：</text>
-              <input class="verification_code_input" bindinput="verificationCodeInput" type="number" placeholder="验证码" />
+              <input class="verification_code_input" bindinput="verificationCodeInput" type="number" placeholder="验证码" style='text-align:left;' />
               <view class="verification_button">
                 <view disabled="{{lock_countdown}}" class="send_verification_code_button" bindtap="sendVerificationCode">{{countdownText}}</view>
 								<view class="countdown_mask" wx:if="{{send_verification_code == false}}"></view>

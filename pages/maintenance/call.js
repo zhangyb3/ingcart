@@ -87,29 +87,29 @@ Page({
     }).exec()
   },
 
-  focuPadding: function () {
-    var that = this;
+  // focuPadding: function () {
+  //   var that = this;
 
-    this.setData({
-      addPadding: 150,
-    });
+  //   this.setData({
+  //     addPadding: 150,
+  //   });
 
-    setTimeout(function () {
-      that.setData({
-        scrollTop: 210
-      })
-    }, 300);
-    // this.getRect();
+  //   setTimeout(function () {
+  //     that.setData({
+  //       scrollTop: 210
+  //     })
+  //   }, 300);
+  //   // this.getRect();
 
-  },
+  // },
 
-  blurPadding: function () {
-    this.setData({
-      addPadding: 20,
-      scrollTop: 0
-    })
-    // this.getRect();
-  },
+  // blurPadding: function () {
+  //   this.setData({
+  //     addPadding: 20,
+  //     scrollTop: 0
+  //   })
+  //   // this.getRect();
+  // },
 
 // 勾选故障类型，获取类型值存入faults
   checkboxChange: function(e){
