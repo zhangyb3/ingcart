@@ -2,7 +2,7 @@
 var config = require("../../utils/config.js");
 var user = require("../../utils/user.js");
 var util = require("../../utils/util.js");
-var listViewUtil = require("../../utils/listViewUtil.js");
+
 
 Page({
 
@@ -103,18 +103,4 @@ function loadHistoryRecord(the) {
     history_record: [],
   });
 
-  listViewUtil.loadList(that, 'history_record', config.PytheRestfulServerURL,
-    "/user/trip",
-    10,
-    parameters,
-    function (netData) {
-      //取出返回结果的列表
-      return netData.data;
-    },
-    function (item) {
-
-    },
-    {},
-    'GET'
-  );
 }
