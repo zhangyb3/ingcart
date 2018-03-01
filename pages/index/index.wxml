@@ -124,8 +124,8 @@
            <cover-view class='info-aboutUsing' style=''>
 
                  <cover-view class='info-ingcart'>
-                      <cover-view class='price-ingcart'>{{price}}元</cover-view>
-                      <cover-view class='price-small'>价格/天</cover-view>
+                      <cover-view class='price-ingcart'>{{price}}</cover-view>
+                      <cover-view class='price-small'>元/天</cover-view>
                  </cover-view>
                  <cover-view class='info-ingcart'>
                       <cover-view class='price-ingcart'>{{usingMinutes}}</cover-view>
@@ -139,15 +139,14 @@
            <cover-view style='height:1px;background-color:#e6e6e6;'></cover-view>
            <cover-view class='endUse-tip' wx:if='{{isShowendUseTip}}'>
                  <cover-view class='endUse-tip-title'>提示 <cover-image src='/images/close.png' bindtap='closeUseTip'></cover-image></cover-view>
-                 <cover-view class='wran-tip'>结束用车后，当日行程将结算，请谨慎使用。</cover-view>
-                 <cover-view class='wran-tip' style='margin:8px 0 10px;'>如需继续使用，可手动关闭电子锁，再次使用同一台设备扫码，仍可继续使用。</cover-view>
+                 <cover-view class='wran-tip'>如您已离园请确认结束用车，系统将结束您的行程并扣费。</cover-view>
+                 <cover-view class='wran-tip' style='margin:8px 0 10px;'>如您仍需使用该车，请勿确认结束用车。同一个账号当天内可多次扫码解锁继续使用该车。</cover-view>
 
                  <cover-view class='sure-end'>
                       
-									<form  bindsubmit="customerFinishUsing" report-submit='true' >
+									<!-- <form  bindsubmit="customerFinishUsing" report-submit='true' > -->
 										<cover-view class='sure-end-btn' bindtap='customerFinishUsing' form-type="submit">确定结束用车</cover-view>
-										
-									</form>
+									<!-- </form> -->
 								 </cover-view>
            </cover-view>
 

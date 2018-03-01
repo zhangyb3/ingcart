@@ -339,6 +339,7 @@ Page({
 				wx.request({
 					url: config.PytheRestfulServerURL + '/customer/urgent/lock/',
 					data: {
+						recordId: wx.getStorageSync(user.RecordID),
 						carId: wx.getStorageSync(user.UsingCar),
 						customerId: wx.getStorageSync(user.CustomerID),
 						longitude: wx.getStorageSync(user.Longitude),
@@ -359,7 +360,7 @@ Page({
 							wx.showModal({
 								title: '提示',
 								content: res.data.msg,
-								// showCancel: false,
+								showCancel: false,
 								confirmText: '我知道了',
 								confirmColor: '',
 								success: function(res) {},
@@ -797,6 +798,7 @@ function checkUsingCarStatus(the, success, fail)
 							holding: false,
 							usingMinutes: result.data.time,
 							mapHeight: wx.getStorageSync('windowHeight')  ,
+							price: wx.getStorageSync(user.UsingCarPrice),
 						});
 						//此时图标不可点
 						that.data.markerClickable = false;

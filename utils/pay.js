@@ -22,7 +22,7 @@ function requestOrder(the, chargeFee,success,fail) {
   var parameters = {
     session_id: sessionID,
     mch_id: config.MerchantID,
-    body: "婴咖充值",
+    body: "INGCART",
     total_fee: chargeFee,
     notify_url: "https://xue.pythe.cn",
     trade_type: "JSAPI",
