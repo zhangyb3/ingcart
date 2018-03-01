@@ -4,7 +4,7 @@
 
             
 
-          <block wx:for="{{history_record[date_key]}}" wx:for-item="item" wx:for-index="index" wx:key="unique">
+          <block wx:for="{{history_record[date]}}" wx:for-item="item" wx:for-index="index" wx:key="unique">
             
             <view id="record_item" class="line_item">
 

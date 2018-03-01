@@ -13,7 +13,7 @@ Page({
 
     list_mode: 'history_record',
     list_type: 'history_record',
-    history_record: [],
+    history_record: {},
     history_date: [],
 		pageNum: 1,
   },
@@ -113,7 +113,7 @@ Page({
 				{
 					var returnData = res.data.data;
 
-					if (returnData.history_date.length == 0)
+					if (returnData.historyDate.length == 0)
 					{
 						that.data.pageNum = that.data.pageNum - 1;
 					}
@@ -140,7 +140,7 @@ Page({
 function handleReturnData(the, currentDatas) 
 {
 	var that = the;
-	var concatDatas = [];
+	var concatDatas = {};
 	
 	//第一次加载或者刚好每日数据切割与分页吻合
 	if (that.data.history_date.length == 0 || that.data.history_date[that.data.history_date.length - 1] != currentDatas.historyDate[0]) {
@@ -150,7 +150,7 @@ function handleReturnData(the, currentDatas)
 			var key = currentDatas.historyDate[count];
 			var temp = currentDatas.record[key];
 			console.log(temp);
-
+			that.data.history_record[key] = temp;
 
 			concatDatas[count] = temp;
 		}
@@ -162,19 +162,19 @@ function handleReturnData(the, currentDatas)
 		var duplicateDate = currentDatas.historyDate.shift();
 		that.data.history_date = that.data.history_date.concat(currentDatas.historyDate);
 		var restRecord = currentDatas.record[duplicateDate];
-
-		Array.prototype.push.apply(that.data.history_record[originalDateLength - 1], restRecord);
+		Array.prototype.push.apply(that.data.history_record[duplicateDate], restRecord);
+		// Array.prototype.push.apply(that.data.history_record[originalDateLength - 1], restRecord);
 		for (var count = 0; count < currentDatas.historyDate.length; count++) {
 			var key = currentDatas.historyDate[count];
 			var temp = currentDatas.record[key];
 			console.log(temp);
-
+			that.data.history_record[key] = temp;
 
 			concatDatas[count] = temp;
 		}
 	}
-
-	that.data.history_record = that.data.history_record.concat(concatDatas);
+	console.log('concatDatas',concatDatas);
+	// that.data.history_record = that.data.history_record.concat(concatDatas);
 	console.log('before setData----------' + that.data.history_date);
 	that.setData({
 		history_record: that.data.history_record,
