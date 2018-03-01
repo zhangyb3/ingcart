@@ -41,7 +41,8 @@ Page({
     isShowendUseTip:false,
 
 		qrIdFromWX:null,
-
+    
+    endUseCarState:0
   },
 
 // 页面加载
@@ -325,15 +326,25 @@ Page({
   
   // 结束用车
   endUseCar:function(){
-     this.setData({
-       isShowendUseTip:true
+    var that=this;
+    if (that.data.endUseCarState==0){
+     that.setData({
+       isShowendUseTip:true,
+       endUseCarState:1    
+     });
+    }else{
+     that.setData({
+       isShowendUseTip: false,
+       endUseCarState:0
      })
+    }
   },
 
   // 关闭结束用车提示
   closeUseTip:function(){
     this.setData({
-      isShowendUseTip: false
+      isShowendUseTip: false,
+       endUseCarState: 0
     })
   },
 

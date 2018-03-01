@@ -23,7 +23,7 @@
       <view class='recharge-content'>
             <view class='close-layer' bindtap='closeLayer'>关闭</view>           
             <view class='randow-title'>输入充值金额（元）</view> 
-            <input type='number' placeholder='0' class='money-sum' bindinput='inputMoney' ></input>
+            <input type='number' placeholder='0' class='money-sum' bindinput='inputMoney' cursor-spacing='100'></input>
             <button class='recharge-money' bindtap='charge'>确定充值</button>
       </view>
 </view>

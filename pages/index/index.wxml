@@ -94,21 +94,21 @@
           <cover-view class='tab-column' bindtap='toMy'>
             <cover-view class='tabCenter' style='float:left;'>
               <cover-image src='../../images/myWallet.png'></cover-image>
-              <cover-view class=''>我</cover-view> 
+              <cover-view class=''>我 </cover-view> 
             </cover-view>
           </cover-view> 
 
           <cover-view class='tab-column' bindtap='toRepair'>
             <cover-view class='tabCenter'>
               <cover-image src='../../images/repair.png'></cover-image>
-              <cover-view class=''>报修</cover-view> 
+              <cover-view class=''>报 修 </cover-view> 
             </cover-view>
           </cover-view> 
 
           <cover-view class='tab-column' bindtap='toActivity'>
             <cover-view class='tabCenter' style='float:right'>
               <cover-image src='../../images/favourActivity.png'></cover-image>
-              <cover-view class=''>优惠活动</cover-view> 
+              <cover-view class=''>优 惠 活 动 </cover-view> 
             </cover-view>
           </cover-view>  
            
