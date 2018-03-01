@@ -205,6 +205,17 @@ Page({
 									var parameters = operation.urlProcess(res.result); console.log(parameters);
 									var qrId = parameters.id;
 
+									wx.getLocation({
+										type: 'gcj02',
+										altitude: true,
+										success: function(res) {
+											wx.setStorageSync(user.Latitude, res.latitude);
+											wx.setStorageSync(user.Longitude, res.longitude);
+										},
+										fail: function(res) {},
+										complete: function(res) {},
+									});
+
 									gotoUnlock(that,qrId);
 
 								}
@@ -329,6 +340,14 @@ Page({
 	customerFinishUsing:function(e){
 		var formId = e.detail.formId;
 		var that  = this;
+
+		wx.showLoading({
+			title: '结束行程中...',
+			mask: true,
+			success: function(res) {},
+			fail: function(res) {},
+			complete: function(res) {},
+		})
 		wx.getLocation({
 			type: 'gcj02',
 			altitude: true,
@@ -348,6 +367,7 @@ Page({
 					},
 					method: 'POST',
 					success: function (res) { 
+						wx.hideLoading();
 						if(res.data.status == 200)
 						{
 							that.setData({
@@ -370,7 +390,9 @@ Page({
 						}
 							
 					},
-					fail: function (res) { },
+					fail: function (res) { 
+						wx.hideLoading();
+					},
 					complete: function (res) { },
 				})
 			},

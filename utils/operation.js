@@ -464,47 +464,38 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 											
 											
 											//更新开锁状态
-											wx.getLocation({
-												type: 'gcj02',
-												altitude: true,
-												success: function(res) {
+											
+											wx.request({
+												url: UNLOCK_URL,
+												data: {
+													carId: carId,
+													customerId: wx.getStorageSync(user.CustomerID),
+													longitude: wx.getStorageSync(user.Longitude),
+													latitude: wx.getStorageSync(user.Latitude),
+												},
+												method: 'POST',
+												success: function (res) { 
 
-													wx.request({
-														url: UNLOCK_URL,
-														data: {
-															carId: carId,
-															customerId: wx.getStorageSync(user.CustomerID),
-															longitude: res.longitude,
-															latitude: res.latitude,
-														},
-														method: 'POST',
-														success: function (res) { 
+													normalUpdateCustomerStatus(
+														wx.getStorageSync(user.CustomerID),
+														() => {
 
-															normalUpdateCustomerStatus(
-																wx.getStorageSync(user.CustomerID),
-																() => {
+															that.setData({
+																unlock_progress: false,
+															});
 
-																	that.setData({
-																		unlock_progress: false,
-																	});
-																	
-																	wx.navigateBack({
-																		delta: 1,
-																	});
-																
-																});
+															wx.navigateBack({
+																delta: 1,
+															});
+														
+														});
 
-															typeof success == "function" && success('unlock');
-
-														},
-														fail: function (res) { },
-														complete: function (res) { },
-													});
+													typeof success == "function" && success('unlock');
 
 												},
-												fail: function(res) {},
-												complete: function(res) {},
-											})
+												fail: function (res) { },
+												complete: function (res) { },
+											});
 											
 											
 										}

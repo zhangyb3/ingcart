@@ -145,7 +145,7 @@
                  <cover-view class='sure-end'>
                       
 									<!-- <form  bindsubmit="customerFinishUsing" report-submit='true' > -->
-										<cover-view class='sure-end-btn' bindtap='customerFinishUsing' form-type="submit">确定结束用车</cover-view>
+										<cover-view class='sure-end-btn' bindtap='customerFinishUsing'>确定结束用车</cover-view>
 									<!-- </form> -->
 								 </cover-view>
            </cover-view>
