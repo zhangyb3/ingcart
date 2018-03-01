@@ -136,7 +136,7 @@
 
 .balance {
   width: 100%;
-  height: 40px;
+  height: 80rpx;
   font-size: 28rpx;
   border-bottom: 1px solid #e5e6e6;
 }
@@ -146,12 +146,12 @@
   background-color: #f1f1f1;
   float: left;
   height: 100%;
-  line-height: 88rpx;
+  line-height: 80rpx;
 }
 
 .forPadding {
   padding: 0 40rpx;
-  line-height: 32px;
+  line-height: 80rpx;
   box-sizing: border-box;
   color:#f93;
 }
@@ -163,7 +163,7 @@
   text-align: center;
   float: left;
   height: 100%;
-  line-height: 88rpx;
+  line-height: 80rpx;
 }
 
 .layer-map {
@@ -254,6 +254,7 @@ cover-view {
   line-height: 26px;
   text-align:center;
   border-radius:40px;
+  box-sizing:border-box;
 }
 
 .endUse-tip{

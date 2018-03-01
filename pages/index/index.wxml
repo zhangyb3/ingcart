@@ -123,7 +123,7 @@
 
            <cover-view class='info-aboutUsing' style=''>
 
-                 <cover-view class='info-ingcart'>
+                 <cover-view class='info-ingcart' style='text-align:left;'>
                       <cover-view class='price-ingcart'>{{price}}</cover-view>
                       <cover-view class='price-small'>元/天</cover-view>
                  </cover-view>
@@ -133,7 +133,7 @@
                  </cover-view>
                  
                  <cover-view class='info-ingcart' >
-                        <cover-view class='end-use' bindtap='endUseCar' style='float:right;'>结束用车</cover-view>
+                        <cover-view class='end-use' bindtap='endUseCar' style='float:right;margin-right:1px;'>结束用车</cover-view>
                  </cover-view>
            </cover-view> 
            <cover-view style='height:1px;background-color:#e6e6e6;'></cover-view>

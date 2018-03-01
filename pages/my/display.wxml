@@ -65,7 +65,7 @@
     <view class="line_item_container" bindtap="toAgreement">
       <view class="line_item">
         <view class="line_include_item_container history_record">
-          <text >使用协议</text>
+          <text >服务协议</text>
         </view>
         <view class="line_include_item_container record_quantity">
           <text></text>
