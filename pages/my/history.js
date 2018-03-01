@@ -13,9 +13,9 @@ Page({
 
     list_mode: 'history_record',
     list_type: 'history_record',
-    history_record: {},
+    history_record: [],
     history_date: [],
-  
+		pageNum: 1,
   },
 
   /**
@@ -49,8 +49,26 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    
-    loadHistoryRecord(this);
+		var that = this;
+    wx.request({
+			url: config.PytheRestfulServerURL + '/user/trip',
+			data: {
+				customerId: wx.getStorageSync(user.CustomerID),
+				pageNum: 1,
+				pageSize: 10,
+			},
+			method: 'GET',
+			success: function(res) {
+				if(res.data.status == 200)
+				{
+					var returnData = res.data.data;
+					handleReturnData(that, returnData);
+				}
+				
+			},
+			fail: function(res) {},
+			complete: function(res) {},
+		})
 
   },
 
@@ -79,7 +97,35 @@ Page({
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: function () {
-  
+		var that = this;
+		that.data.pageNum = that.data.pageNum + 1;
+
+		wx.request({
+			url: config.PytheRestfulServerURL + '/user/trip',
+			data: {
+				customerId: wx.getStorageSync(user.CustomerID),
+				pageNum: that.data.pageNum,
+				pageSize: 10,
+			},
+			method: 'GET',
+			success: function(res) {
+				if(res.data.status == 200)
+				{
+					var returnData = res.data.data;
+
+					if (returnData.history_date.length == 0)
+					{
+						that.data.pageNum = that.data.pageNum - 1;
+					}
+					else{
+						handleReturnData(that, returnData);
+					}
+				}
+			},
+			fail: function(res) {},
+			complete: function(res) {},
+		})
+
   },
 
   /**
@@ -91,16 +137,48 @@ Page({
 })
 
 
-function loadHistoryRecord(the) {
-  var that = the;
-  //加载附近机构列表
-  var parameters = {
-    customerId: wx.getStorageSync(user.CustomerID),
-    pageNum: 1,
-    pageSize: 10,
-  };
-  that.setData({
-    history_record: [],
-  });
+function handleReturnData(the, currentDatas) 
+{
+	var that = the;
+	var concatDatas = [];
+	
+	//第一次加载或者刚好每日数据切割与分页吻合
+	if (that.data.history_date.length == 0 || that.data.history_date[that.data.history_date.length - 1] != currentDatas.historyDate[0]) {
+		that.data.history_date = that.data.history_date.concat(currentDatas.historyDate);
+		
+		for (var count = 0; count < currentDatas.historyDate.length; count++) {
+			var key = currentDatas.historyDate[count];
+			var temp = currentDatas.record[key];
+			console.log(temp);
+
+
+			concatDatas[count] = temp;
+		}
+
+	}
+	else {
+		//拼接相同日期的纪录
+		var originalDateLength = that.data.history_date.length;
+		var duplicateDate = currentDatas.historyDate.shift();
+		that.data.history_date = that.data.history_date.concat(currentDatas.historyDate);
+		var restRecord = currentDatas.record[duplicateDate];
+
+		Array.prototype.push.apply(that.data.history_record[originalDateLength - 1], restRecord);
+		for (var count = 0; count < currentDatas.historyDate.length; count++) {
+			var key = currentDatas.historyDate[count];
+			var temp = currentDatas.record[key];
+			console.log(temp);
+
+
+			concatDatas[count] = temp;
+		}
+	}
+
+	that.data.history_record = that.data.history_record.concat(concatDatas);
+	console.log('before setData----------' + that.data.history_date);
+	that.setData({
+		history_record: that.data.history_record,
+		history_date: that.data.history_date,
+	});
 
 }
