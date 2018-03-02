@@ -1,7 +1,13 @@
 <view class='pageView' style='min-height:{{deviceHeight}}px;'>
-    <view class=''>
-          <image mode='widthFix' src='/images/activityIngCart.jpg' bindtap='gotoCharge'></image> 
-    </view>  
+
+    <view class='activity-content' bindtap='gotoCharge'>
+          <image mode='widthFix' src='/images/activityIngCart.jpg'></image> 
+          <view class='activity-box'>
+               <view class='activity-title'>当日任意使用（仅限本车）</view>
+               <image class='activity-go' src='/images/more.png'></image> 
+          </view>
+    </view> 
+
 
 </view>
 

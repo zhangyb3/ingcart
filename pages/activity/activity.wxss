@@ -1,11 +1,10 @@
 .pageView{
-  background-color: #f1f1f1;
+  background-color: #fff;
   padding:30rpx;
   box-sizing: border-box;
 }
 .pageView image{
-  width:100%;border-radius:6px;margin-bottom:15px;
-  box-shadow: 1px 1px 3px 1px rgba(0,0,0,0.1),-1px -1px 3px 1px rgba(0,0,0,0.1);
+  width:100%;
 }
 
 .withOutAct{
@@ -19,3 +18,13 @@
   text-align: center;
   letter-spacing: 1px;
 }
+
+
+.activity-content{
+  border-radius:6px;margin-bottom:15px;overflow: hidden;
+  box-shadow: 1px 1px 3px 1px rgba(0,0,0,0.1),-1px -1px 3px 1px rgba(0,0,0,0.1);
+}
+
+.activity-box{width:100%;padding:0 20px; box-sizing: border-box;height:40px;}
+.activity-title{width:80%;float:left;line-height:40px;}
+.activity-box .activity-go{width:20px;height:20px;display: block;float:right;margin-top:10px;}

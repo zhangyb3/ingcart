@@ -128,15 +128,15 @@ Page({
 						},
 					});
 
-					
+					console.log('interval', intervalId);
+					if (wx.getStorageSync(user.Amount) != tempAmount) {
+						wx.hideLoading();
+						clearInterval(intervalId);
+					}				
 				},
 				1000
 			);
-			console.log('interval',intervalId);
-			if (wx.getStorageSync(user.Amount) != tempAmount) {
-				wx.hideLoading();
-				clearInterval(intervalId);
-			}
+			
 
 		}		
 
@@ -404,7 +404,8 @@ Page({
 
   // 关闭结束用车提示
   closeUseTip:function(){
-    this.setData({
+		var that = this;
+    that.setData({
       isShowendUseTip: false,
        endUseCarState: 0
     })
