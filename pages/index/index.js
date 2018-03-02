@@ -429,82 +429,127 @@ Page({
 				wx.setStorageSync(user.Latitude, res.latitude);
 				wx.setStorageSync(user.Longitude, res.longitude);
 
-				if (wx.getStorageSync(user.UsingCarStatus) >= 1) {
+				if (wx.getStorageSync(user.UsingCarStatus) >= 1) 
+				{
+					var lockStatusResult = null;
+
+					var int = setTimeout(
+						function () { 
+							if(lockStatusResult == null)
+							{
+								//20秒后依然查不到锁状态，放弃，断开连接，并刷新页面
+								wx.closeBLEConnection({
+									deviceId: wx.getStorageSync(user.UsingCarDevice),
+									success: function(res) {},
+									fail: function(res) {},
+									complete: function(res) {},
+								})
+								wx.showModal({
+									title: '提示',
+									content: '暂时无法查询锁的信息，请稍后重试',
+									showCancel: false,
+									confirmText: '我知道了',
+									success: function(res) {
+										if(res.confirm)
+										{
+											that.onShow();
+										}
+									},
+									fail: function(res) {},
+									complete: function(res) {},
+								})
+							}
+						},
+						1000 * 20
+					);
+
 					operation.checkLockStatus(that,
 						(result) => {
+							lockStatusResult = result;
 							wx.hideLoading();
-							wx.showModal({
-								title: '',
-								content: result,
-								showCancel: true,
-								cancelText: '',
-								cancelColor: '',
-								confirmText: '',
-								confirmColor: '',
-								success: function(res) {},
-								fail: function(res) {},
-								complete: function(res) {},
-							})
+							// wx.showModal({
+							// 	title: '',
+							// 	content: result.toString(),
+							// 	showCancel: true,
+							// 	cancelText: '',
+							// 	cancelColor: '',
+							// 	confirmText: '',
+							// 	confirmColor: '',
+							// 	success: function(res) {},
+							// 	fail: function(res) {},
+							// 	complete: function(res) {},
+							// })
+
+							if (lockStatusResult == 0)
+							{
+								//锁未关闭，不予结算
+								wx.showModal({
+									title: '提示',
+									content: '请先关闭车锁',
+									showCancel: false,
+									confirmText: '我知道了',
+									success: function(res) {},
+									fail: function(res) {},
+									complete: function(res) {},
+								})
+							}
+							else if (lockStatusResult == 1)
+							{
+								//锁已关闭，可以结算
+								wx.request({
+									url: config.PytheRestfulServerURL + '/customer/urgent/lock/',
+									data: {
+										recordId: wx.getStorageSync(user.RecordID),
+										carId: wx.getStorageSync(user.UsingCar),
+										customerId: wx.getStorageSync(user.CustomerID),
+										longitude: wx.getStorageSync(user.Longitude),
+										latitude: wx.getStorageSync(user.Latitude),
+										formId: formId,
+									},
+									method: 'POST',
+									success: function (res) {
+										wx.hideLoading();
+										if (res.data.status == 200) {
+											that.setData({
+												timing: false,
+												isShowendUseTip: false,
+											});
+										}
+										else {
+											wx.showModal({
+												title: '提示',
+												content: res.data.msg,
+												showCancel: false,
+												confirmText: '我知道了',
+												confirmColor: '',
+												success: function (res) { },
+												fail: function (res) { },
+												complete: function (res) { },
+											})
+										}
+
+									},
+									fail: function (res) {
+										wx.hideLoading();
+									},
+									complete: function (res) { },
+								});
+							}
+							else
+							{
+
+							}
+
 						}, 
 						(result)=>{
 							wx.hideLoading();
-							wx.showModal({
-								title: '',
-								content: result,
-								showCancel: true,
-								cancelText: '',
-								cancelColor: '',
-								confirmText: '',
-								confirmColor: '',
-								success: function (res) { },
-								fail: function (res) { },
-								complete: function (res) { },
-							})
+							
 						}
 					)
 						
 				}
 
-				wx.request({
-					url: config.PytheRestfulServerURL + '/customer/urgent/lock/',
-					data: {
-						recordId: wx.getStorageSync(user.RecordID),
-						carId: wx.getStorageSync(user.UsingCar),
-						customerId: wx.getStorageSync(user.CustomerID),
-						longitude: wx.getStorageSync(user.Longitude),
-						latitude: wx.getStorageSync(user.Latitude),
-						formId: formId,
-					},
-					method: 'POST',
-					success: function (res) { 
-						wx.hideLoading();
-						if(res.data.status == 200)
-						{
-							that.setData({
-								timing: false,
-								isShowendUseTip: false,
-							});
-						}
-						else
-						{
-							wx.showModal({
-								title: '提示',
-								content: res.data.msg,
-								showCancel: false,
-								confirmText: '我知道了',
-								confirmColor: '',
-								success: function(res) {},
-								fail: function(res) {},
-								complete: function(res) {},
-							})
-						}
-							
-					},
-					fail: function (res) { 
-						wx.hideLoading();
-					},
-					complete: function (res) { },
-				});
+				
 
 			},
 			fail: function(res) {},

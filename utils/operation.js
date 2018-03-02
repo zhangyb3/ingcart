@@ -1270,6 +1270,18 @@ function checkLockStatusOperation(the, deviceId, carId, success, fail)
 										else if (tokenFrameHexStr.slice(0, 8) == '050F0100') 
 										{
 											//锁未关闭
+											// wx.showModal({
+											// 	title: '',
+											// 	content: tokenFrameHexStr.slice(0, 15),
+											// 	showCancel: true,
+											// 	cancelText: '',
+											// 	cancelColor: '',
+											// 	confirmText: '',
+											// 	confirmColor: '',
+											// 	success: function (res) { },
+											// 	fail: function (res) { },
+											// 	complete: function (res) { },
+											// })
 											wx.closeBLEConnection({
 												deviceId: deviceId,
 												success: function (res) {
@@ -1285,7 +1297,18 @@ function checkLockStatusOperation(the, deviceId, carId, success, fail)
 										else if (tokenFrameHexStr.slice(0, 8) == '050F0101') 
 										{
 											//锁已关闭
-
+											// wx.showModal({
+											// 	title: '',
+											// 	content: tokenFrameHexStr.slice(0, 15),
+											// 	showCancel: true,
+											// 	cancelText: '',
+											// 	cancelColor: '',
+											// 	confirmText: '',
+											// 	confirmColor: '',
+											// 	success: function (res) { },
+											// 	fail: function (res) { },
+											// 	complete: function (res) { },
+											// })
 											wx.closeBLEConnection({
 												deviceId: deviceId,
 												success: function (res) {
@@ -1298,29 +1321,7 @@ function checkLockStatusOperation(the, deviceId, carId, success, fail)
 											typeof success == "function" && success(1);
 
 										}
-										else{
-											wx.hideLoading();
-											
-											wx.closeBLEConnection({
-												deviceId: deviceId,
-												success: function(res) {},
-												fail: function(res) {},
-												complete: function(res) {},
-											})
-
-											wx.showModal({
-												title: '',
-												content: tokenFrameHexStr.slice(0, 15),
-												showCancel: true,
-												cancelText: '',
-												cancelColor: '',
-												confirmText: '',
-												confirmColor: '',
-												success: function (res) { },
-												fail: function (res) { },
-												complete: function (res) { },
-											})
-										}
+										
 										
 
 									}
