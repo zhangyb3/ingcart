@@ -35,6 +35,7 @@ Page({
 		markerClickable: true,
     wHeight:0,
 
+		amount:0,
     isNoEnough:true,
 
     coverView: wx.canIUse('cover-view'),
@@ -42,7 +43,8 @@ Page({
 
 		qrIdFromWX:null,
     
-    endUseCarState:0
+    endUseCarState:0,
+		backFrom:null,
   },
 
 // 页面加载
@@ -67,8 +69,8 @@ Page({
 			wx.setStorageSync('reload', 'yes');
 		}
 
-		this.data.qrIdFromWX = parameters.id;
-
+		this.data.qrIdFromWX = operation.urlProcess(decodeURIComponent(parameters.q)).id ;
+		
 	
 		
     wx.showShareMenu({
@@ -79,8 +81,64 @@ Page({
 
 // 页面显示
   onShow: function(){
+		var that = this;
+		if(this.data.backFrom == 'charge')
+		{
+			var tempAmount = wx.getStorageSync(user.Amount);
+			wx.showLoading({
+				title: '数据更新中',
+				mask: true,
+				success: function(res) {},
+				fail: function(res) {},
+				complete: function(res) {},
+			});
 
-		
+			var info = null;
+			var intervalId = setInterval(
+				function () { 
+					wx.request({
+						url: config.PytheRestfulServerURL + '/customer/select',
+						data: {
+							customerId: wx.getStorageSync(user.CustomerID)
+						},
+						method: 'GET',
+						dataType: '',
+						success: function (res) {
+							console.log(res);
+							info = res.data.data;
+							
+
+							wx.setStorageSync(user.CustomerID, info.customerId);
+							wx.setStorageSync(user.Description, info.description);
+							wx.setStorageSync(user.Status, info.status);
+							wx.setStorageSync(user.UsingCar, info.carId);
+							wx.setStorageSync(user.RecordID, info.recordId);
+							wx.setStorageSync(user.UsingCarStatus, info.carStatus);
+							wx.setStorageSync(user.Amount, info.amount);
+						
+							that.setData({		
+								amount: info.amount,
+							});
+
+							
+						},
+						fail: function (res) { },
+						complete: function (res) {
+
+						},
+					});
+
+					
+				},
+				1000
+			);
+			console.log('interval',intervalId);
+			if (wx.getStorageSync(user.Amount) != tempAmount) {
+				wx.hideLoading();
+				clearInterval(intervalId);
+			}
+
+		}		
 
 		wx.getSystemInfo({
 			success: (res) => {
@@ -113,7 +171,7 @@ Page({
 				() => {
 
 					wx.hideLoading();
-					// checkBluetooth(that);
+					checkBluetooth(that);
 					refreshPage(that);
 
 					checkUsingCarStatus(that,
@@ -124,6 +182,7 @@ Page({
 							
 							if(that.data.qrIdFromWX != null)
 							{
+								
 								var qrId = that.data.qrIdFromWX;
 								gotoUnlock(that, qrId);
 								that.setData({
@@ -131,6 +190,7 @@ Page({
 								});
 							}
 							
+
 
 						},
 					);
@@ -143,7 +203,7 @@ Page({
 		{
 			var that = this;
 			
-			// checkBluetooth(that);
+			checkBluetooth(that);
 			
 			// wx.showLoading({
 			// 	title: '加载中',
@@ -159,6 +219,8 @@ Page({
 					wx.hideLoading();
 
 					refreshPage(that);
+
+					
 
 				},
 				()=>{
@@ -366,6 +428,42 @@ Page({
 				wx.setStorageSync(user.Latitude, res.latitude);
 				wx.setStorageSync(user.Longitude, res.longitude);
 
+				if (wx.getStorageSync(user.UsingCarStatus) >= 1) {
+					operation.checkLockStatus(that,
+						(result) => {
+							wx.hideLoading();
+							wx.showModal({
+								title: '',
+								content: result,
+								showCancel: true,
+								cancelText: '',
+								cancelColor: '',
+								confirmText: '',
+								confirmColor: '',
+								success: function(res) {},
+								fail: function(res) {},
+								complete: function(res) {},
+							})
+						}, 
+						(result)=>{
+							wx.hideLoading();
+							wx.showModal({
+								title: '',
+								content: result,
+								showCancel: true,
+								cancelText: '',
+								cancelColor: '',
+								confirmText: '',
+								confirmColor: '',
+								success: function (res) { },
+								fail: function (res) { },
+								complete: function (res) { },
+							})
+						}
+					)
+						
+				}
+
 				wx.request({
 					url: config.PytheRestfulServerURL + '/customer/urgent/lock/',
 					data: {
@@ -405,7 +503,8 @@ Page({
 						wx.hideLoading();
 					},
 					complete: function (res) { },
-				})
+				});
+
 			},
 			fail: function(res) {},
 			complete: function(res) {},
@@ -425,6 +524,14 @@ Page({
       complete: function(res) {},
     })
   },
+
+	confirmArrearage:function(e){
+		var that = this;
+		that.setData({
+			isNotEnough: false,
+			
+		});
+	},
 
   markerTap:function(e){
     
@@ -897,7 +1004,7 @@ function checkBluetooth(the){
 				 },
 				fail: function (res) { },
 				complete: function (res) { 
-					// checkBluetooth(that);
+					checkBluetooth(that);
 				},
 			})
 		},

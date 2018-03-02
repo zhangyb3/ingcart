@@ -23,5 +23,14 @@ Page({
     })
   },
 
+	gotoCharge:function(e){
+		wx.navigateTo({
+			url: '../my/rechargePage',
+			success: function(res) {},
+			fail: function(res) {},
+			complete: function(res) {},
+		})
+	},
+
 
 })

@@ -15,7 +15,7 @@ const CHARGE_CONFIRM_URL = `${config.PytheRestfulServerURL}/account/wxChargeConf
 /**
  * 充值下单
  */
-function requestOrder(the, chargeFee,success,fail) {
+function requestOrder(the, chargeFee, giving, success,fail) {
   var sessionID = wx.getStorageSync(user.SessionID);
   var openID = wx.getStorageSync(user.OpenID);
 
@@ -26,7 +26,9 @@ function requestOrder(the, chargeFee,success,fail) {
     total_fee: chargeFee,
     notify_url: "https://xue.pythe.cn",
     trade_type: "JSAPI",
-    openId: openID
+    openId: openID,
+		customerId: wx.getStorageSync(user.CustomerID),
+		giving: giving,
   };
 
 

@@ -191,6 +191,7 @@
   margin: auto auto;
   font-size: 28rpx;
   color: #333;
+	position: relative;
 }
 
 .layer-title {
@@ -239,6 +240,14 @@
   color: #fff;
   text-align: center;
   border-radius: 6px;
+}
+
+.close_notify{
+	position: absolute;
+  right: 5px;
+  top: 5px;
+  width: 15px;
+  height: 15px;
 }
 
 cover-view {

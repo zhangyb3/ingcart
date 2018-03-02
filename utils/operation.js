@@ -43,6 +43,9 @@ const FRAME_DECRYPT_URL = `${config.PytheRestfulServerURL}/bluetooth/decrypt`;
 //开锁数据帧加密
 const UNLOCK_FRAME_ENCRYPT_URL = `${config.PytheRestfulServerURL}/unlock/encode`;
 
+//查锁状态
+const CHECK_LOCK_STATUS_FRAME_ENCRYPT_URL = `${config.PytheRestfulServerURL}/checkLockStatus/encode`;
+
 //加密通信帧
 function encryptFrame(frameStr, carId, success, fail) {
 
@@ -143,6 +146,30 @@ function getUnlockFrame(carId, token, success, fail) {
       typeof fail == "function" && fail(res.data.data);
     }
   })
+
+}
+
+function getCheckLockStatusFrame(carId, token, success, fail) {
+
+	wx.request({
+		url: CHECK_LOCK_STATUS_FRAME_ENCRYPT_URL,
+		data: {
+			carId: carId,
+			token: token
+		},
+		method: 'POST',
+		success: function (res) {
+			// if(res.data.status == 200)
+			{
+				console.log(res);
+				typeof success == "function" && success(res.data.data);
+			}
+
+		},
+		fail: function (res) {
+			typeof fail == "function" && fail(res.data.data);
+		}
+	})
 
 }
 
@@ -996,6 +1023,338 @@ function managerLock(the) {
 
 }
 
+function checkLockStatus(the, success, fail) {
+	var that = the;
+	var deviceId;
+	if (wx.getStorageSync('platform') == 'ios') {
+		//据说每次都要先关闭再打开适配器清理缓存,试一下
+		wx.closeBluetoothAdapter({
+			success: function (res) {
+
+				wx.openBluetoothAdapter({
+					success: function (res) {
+
+						//搜索
+						wx.startBluetoothDevicesDiscovery({
+							services: ['FEE7'],
+							allowDuplicatesKey: true,
+							interval: 0,
+							success: function (res) {
+
+
+							},
+							fail: function (res) {
+
+							},
+							complete: function (res) {
+
+							},
+						});
+
+						setTimeout(
+							function () {
+								
+								wx.stopBluetoothDevicesDiscovery({
+									success: function (res) {
+
+										wx.getBluetoothDevices({
+											success: function (res) {
+												var devices = res.devices;
+
+												for (var count = 0; count < devices.length; count++) {
+													console.log(count, devices[count]);
+
+													console.log('deviceId: ', devices[count].deviceId);
+													var macBuff = (devices[count].advertisData).slice(2, 8);
+													console.log('MAC: ', parseMAC(macBuff));
+													var macAddress = parseMAC(macBuff);
+													if (macAddress == wx.getStorageSync(user.UsingCar)) {
+														deviceId = devices[count].deviceId;
+														wx.setStorageSync('DeviceID', deviceId);
+														break;
+													}
+
+												}
+
+												//找到目标，停止查找，查锁状态
+												checkLockStatusOperation(that,
+													deviceId,
+													wx.getStorageSync(user.UsingCar),
+													(result) => {
+														typeof success == "function" && success(result);
+													},
+													(result) => {
+
+													}
+												);
+
+												
+											},
+											fail: function (res) { },
+											complete: function (res) { },
+										});
+
+									},
+									fail: function (res) { },
+									complete: function (res) { },
+								})
+
+							},
+							1000
+						);
+
+					},
+					fail: function (res) {
+
+					},
+					complete: function (res) { },
+				});
+
+			},
+			fail: function (res) {
+
+			},
+			complete: function (res) {
+			},
+		})
+
+
+	}
+	else
+	{
+		wx.closeBluetoothAdapter({
+			success: function (res) {
+
+				wx.openBluetoothAdapter({
+					success: function (res) {
+
+						deviceId = wx.getStorageSync(user.UsingCar);
+						//查锁状态
+						checkLockStatusOperation(that,
+							deviceId,
+							wx.getStorageSync(user.UsingCar),
+							(result) => {
+								typeof success == "function" && success(result);
+							},
+							(result)=>{
+
+							}
+						);
+
+					},
+					fail: function (res) { },
+					complete: function (res) { },
+				})
+			},
+			fail: function (res) { },
+			complete: function (res) { },
+		});
+	}
+
+}
+
+function checkLockStatusOperation(the, deviceId, carId, success, fail)
+{
+	var that = the;
+	wx.createBLEConnection({
+		deviceId: deviceId,
+		success: function (res) {
+			console.log(res);
+
+			wx.getBLEDeviceServices({
+				deviceId: deviceId,
+				success: function (res) {
+					console.log(res);
+
+					wx.setStorageSync('ServiceID', res.services[0].uuid);
+
+					wx.getBLEDeviceCharacteristics({
+						deviceId: deviceId,
+						serviceId: wx.getStorageSync('ServiceID'),
+						success: function (res) {
+							console.log(res);
+							wx.setStorageSync('characteristicIdToWrite', res.characteristics[0].uuid);
+							wx.setStorageSync('characteristicIdToRead', res.characteristics[1].uuid);
+
+
+							//启用特征值订阅，监控串口
+							wx.notifyBLECharacteristicValueChange({
+								deviceId: deviceId,
+								serviceId: wx.getStorageSync('ServiceID'),
+								characteristicId: wx.getStorageSync('characteristicIdToRead'),
+								state: true,
+								success: function (res) {
+									console.log(res);
+								},
+								fail: function (res) {
+									typeof fail == "function" && fail('fallback');
+								},
+								complete: function (res) { },
+							});
+
+							//读取锁连接后的随机令牌
+							getLockToken(
+								carId,
+								(encryptedFrameStr) => {
+
+									wx.writeBLECharacteristicValue({
+										deviceId: deviceId,
+										serviceId: wx.getStorageSync('ServiceID'),
+										characteristicId: wx.getStorageSync('characteristicIdToWrite'),
+										value: wx.base64ToArrayBuffer(encryptedFrameStr),
+										success: function (res) {
+											console.log(res);
+										},
+										fail: function (res) {
+											console.log(res);
+										},
+										complete: function (res) {
+											console.log(res);
+										},
+									});
+								},
+							);
+
+
+							wx.onBLECharacteristicValueChange(function (res) {
+
+								console.log(`characteristic ${res.characteristicId} has changed, now is ${res.value}`);
+								console.log(ab2hex(res.value) + " arraybuffer length: " + res.value.byteLength);//坑，非16字节标准数据
+
+
+								var encryptedTokenFrame = res.value.slice(0, 16);
+
+
+								//解密载有令牌的通信帧
+								decryptFrame(
+									wx.arrayBufferToBase64(encryptedTokenFrame), carId,
+									(res) => {
+										console.log('decrypt token frame: ', res);
+										var tokenFrameHexStr = (ab2hex(wx.base64ToArrayBuffer(res)));
+										console.log('token: ' + tokenFrameHexStr.substring(0, 32) + ' ,head: ' + tokenFrameHexStr.slice(0, 2));
+										//如果通信帧符合，取出token备用
+										if (tokenFrameHexStr.slice(0, 4) == '0602') {
+											console.log('correct token: ' + tokenFrameHexStr.substring(0, 32));
+											wx.setStorageSync("token", tokenFrameHexStr.substring(6, 14));
+
+											
+
+											//后台用token+密码组成加密帧
+											getCheckLockStatusFrame(
+												carId,
+												wx.getStorageSync('token'),
+												(encryptedFrameStr) => {
+
+
+													wx.writeBLECharacteristicValue({
+														deviceId: deviceId,
+														serviceId: wx.getStorageSync('ServiceID'),
+														characteristicId: wx.getStorageSync('characteristicIdToWrite'),
+														value: wx.base64ToArrayBuffer(encryptedFrameStr),
+														success: function (res) {
+															console.log('write to check lock status: ', res);
+
+															
+														},
+														fail: function (res) { },
+														complete: function (res) { },
+													})
+												},
+												() => { }
+											);
+
+										}
+
+
+
+										else if (tokenFrameHexStr.slice(0, 8) == '050F0100') 
+										{
+											//锁未关闭
+											wx.closeBLEConnection({
+												deviceId: deviceId,
+												success: function (res) {
+													wx.hideLoading();
+
+												},
+												fail: function (res) { },
+												complete: function (res) { },
+											});
+											typeof success == "function" && success(0);
+											
+										}
+										else if (tokenFrameHexStr.slice(0, 8) == '050F0101') 
+										{
+											//锁已关闭
+
+											wx.closeBLEConnection({
+												deviceId: deviceId,
+												success: function (res) {
+													wx.hideLoading();
+
+												},
+												fail: function (res) { },
+												complete: function (res) { },
+											});
+											typeof success == "function" && success(1);
+
+										}
+										else{
+											wx.hideLoading();
+											
+											wx.closeBLEConnection({
+												deviceId: deviceId,
+												success: function(res) {},
+												fail: function(res) {},
+												complete: function(res) {},
+											})
+
+											wx.showModal({
+												title: '',
+												content: tokenFrameHexStr.slice(0, 15),
+												showCancel: true,
+												cancelText: '',
+												cancelColor: '',
+												confirmText: '',
+												confirmColor: '',
+												success: function (res) { },
+												fail: function (res) { },
+												complete: function (res) { },
+											})
+										}
+										
+
+									}
+								);
+
+
+							});
+
+
+
+
+
+						},
+						fail: function (res) {
+							typeof fail == "function" && fail('fallback');
+						},
+						complete: function (res) { },
+					})
+
+				},
+				fail: function (res) {
+					typeof fail == "function" && fail('fallback');
+				},
+				complete: function (res) { },
+			})
+
+		},
+		fail: function (res) {
+			typeof fail == "function" && fail('fallback');
+		},
+		complete: function (res) { },
+	});
+}
+
 module.exports = {
 
 	UNLOCK_URL: UNLOCK_URL,
@@ -1025,6 +1384,7 @@ module.exports = {
 	loginSystem: loginSystem,
 	qr2mac: qr2mac,
 
-	managerLock: managerLock
+	managerLock: managerLock,
+	checkLockStatus: checkLockStatus,
 
 }

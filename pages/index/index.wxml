@@ -186,8 +186,9 @@
                            
                      </cover-view>
 
-                     <cover-view class='iKnow' bindtap='toRecharge'>知道了，去充值</cover-view>
-
+                     <cover-view class='iKnow'  bindtap='toRecharge'>知道了，去充值</cover-view>
+										
+										<cover-image class="close_notify" src="../../images/close.png"  bindtap="confirmArrearage" />
                </cover-view>
         </cover-view>
    </cover-view>

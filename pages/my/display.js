@@ -47,19 +47,20 @@ Page({
         wx.setStorageSync(user.UsingCar, info.carId);
         wx.setStorageSync(user.RecordID, info.recordId);
         wx.setStorageSync(user.UsingCarStatus, info.carStatus);
+
+				var showPhoneNum = util.replaceStr(that.data.account.phoneNum, 3, 7, "····");
+				console.log(showPhoneNum);
+				that.setData({
+					avatarUrl: wx.getStorageSync("avatarUrl"),
+					wxNickName: wx.getStorageSync("wxNickName"),
+					showPhoneNum: showPhoneNum,
+					account: that.data.account,
+					cardQuantity: that.data.cardQuantity,
+				});
       },
       fail: function(res) {},
       complete: function(res) {
 
-        var showPhoneNum = util.replaceStr(that.data.account.phoneNum,3,7,"····");
-        console.log(showPhoneNum);
-        that.setData({
-          avatarUrl: wx.getStorageSync("avatarUrl"),
-          wxNickName: wx.getStorageSync("wxNickName"),
-          showPhoneNum: showPhoneNum,
-          account: that.data.account,
-          cardQuantity: that.data.cardQuantity,
-        });
       },
     })
 

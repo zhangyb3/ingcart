@@ -16,6 +16,7 @@ Page({
     isRandow:true,
     addStyle:null,
     inputMoney:30,
+		giving:0,
   },
 
   onLoad: function () {
@@ -91,7 +92,7 @@ Page({
 // 充值
 function charge(the) {
 	var chargeAmount = the.data.inputMoney;
-	
+	var giving = the.data.giving;
 	// 必须输入大于0的数字
 	if (chargeAmount <= 0 || isNaN(chargeAmount)) {
 		wx.showModal({
@@ -105,59 +106,71 @@ function charge(the) {
 
 		var that = the;
 		//小程序支付充值
-		pay.requestOrder(that, chargeAmount,
+		pay.requestOrder(that, chargeAmount, giving,
 			(prepayResultSet) => {
-				var that_ = that;
+				
 				var prepayResultStr = prepayResultSet.data;
 				var prepayResult = JSON.parse(prepayResultStr);
 				//统一下单成功
 				if (prepayResult.return_code == 'SUCCESS'
 					&& prepayResult.result_code == 'SUCCESS') {
 					//调用微信支付
-					pay.orderPay(that_, prepayResult,
+					pay.orderPay(that, prepayResult,
 						(payResultSet) => {
-							var that__ = that_;
+							
 							var payResult = payResultSet.errMsg;
 							//支付成功，更新数据库纪录
 							if (payResult == 'requestPayment:ok') {
 
-								pay.chargeConfirm(that__, payResult,
-									(feedbackrResult) => {
-										console.log(JSON.stringify(feedbackrResult))
-										if (feedbackrResult.status == 200) {
-											wx.showToast({
-												title: feedbackrResult.data,
-												icon: '',
-												image: '',
-												duration: 2000,
-												mask: true,
-												complete: function (res) {
+								// pay.chargeConfirm(that, payResult,
+								// 	(feedbackrResult) => {
+								// 		console.log(JSON.stringify(feedbackrResult))
+								// 		if (feedbackrResult.status == 200) {
+								// 			wx.showToast({
+								// 				title: feedbackrResult.data,
+								// 				icon: '',
+								// 				image: '',
+								// 				duration: 2000,
+								// 				mask: true,
+								// 				complete: function (res) {
 
-													//如果是超值套餐，需要调用赠品接口
-													operation.receiveGift(
-														wx.getStorageSync(user.CustomerID),
-														that__.data.dealerId,
-														prepayResult.out_trade_no,
-														prepayResult.prepay_id,
-														(result) => {
-															console.log(result);
-														},
-														() => { });
+								// 					//如果是超值套餐，需要调用赠品接口
+								// 					// operation.receiveGift(
+								// 					// 	wx.getStorageSync(user.CustomerID),
+								// 					// 	that.data.dealerId,
+								// 					// 	prepayResult.out_trade_no,
+								// 					// 	prepayResult.prepay_id,
+								// 					// 	(result) => {
+								// 					// 		console.log(result);
+								// 					// 	},
+								// 					// 	() => { }
+								// 					// );
 
-													wx.navigateBack({
-														delta: 1,
-													})
-												},
-											})
-										}
-										else {
-											that__.data.hotCharge = false;
-											that__.setData({
-												selectHotCharge: 0,
-											});
-										}
-									},
-									() => { });
+
+								// 					wx.navigateBack({
+								// 						delta: 1,
+								// 					})
+								// 				},
+								// 			})
+								// 		}
+								// 		else {
+								// 			that.data.hotCharge = false;
+								// 			that.setData({
+								// 				selectHotCharge: 0,
+								// 			});
+								// 		}
+								// 	},
+								// 	() => { }
+								// );
+
+								var pages = getCurrentPages();
+								var indexPage = pages[0];
+								indexPage.data.backFrom = 'charge';
+								
+								wx.navigateBack({
+									delta: 1,
+								})
+
 							}
 						},
 						() => { });

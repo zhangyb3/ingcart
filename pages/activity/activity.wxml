@@ -1,6 +1,6 @@
 <view class='pageView' style='min-height:{{deviceHeight}}px;'>
     <view class=''>
-          <image mode='widthFix' src='/images/activityIngCart.jpg'></image> 
+          <image mode='widthFix' src='/images/activityIngCart.jpg' bindtap='gotoCharge'></image> 
     </view>  
 
 </view>
