@@ -3,16 +3,23 @@
      <view class='recharge-sum'>选择充值金额</view>
      
      <view class='recharge-list'>
-           <view class='recharge-choice'>
+
+		 		<view wx:for="{{combos}}" wx:for-item="item" wx:for-index="index">
+					<view class='recharge-choice'>
+               <view class="sum {{addStyle==index?'sumColor':' '}}" bindtap='moneyChoice' data-charge='{{item}}' data-giving="{{item.giving}}" data-class='{{index}}'>{{item.price}}元</view>
+          </view>
+				</view>
+
+           <!-- <view class='recharge-choice'>
                <view class="sum {{addStyle==0?'sumColor':' '}}" bindtap='moneyChoice' data-charge='30' data-class='0'>30元</view>
            </view>
 
            <view class='recharge-choice'>
                <view class="sum {{addStyle==1?'sumColor':' '}}" bindtap='moneyChoice' data-charge='50' data-class='1'>50元</view>
-           </view>
+           </view> -->
 
            <view class='recharge-choice'>
-               <view class="sum {{addStyle==2?'sumColor':' '}}" bindtap='moneyChoice' data-charge='0' data-class='2'>其他金额</view>
+               <view class="sum {{addStyle=='random'?'sumColor':' '}}" bindtap='moneyChoice' data-charge='0' data-giving='0' data-class='random'>其他金额</view>
            </view>
      </view>
   </view>

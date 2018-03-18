@@ -12,17 +12,20 @@ Page({
    * 页面的初始数据
    */
   data: {
-  
+
     countdownText: '发送验证码',
     second: 60,
 		send_verification_code: true,
+		fromPage:null,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
-  
+  onLoad: function (parameters) {
+		var that = this;
+		that.data.fromPage = parameters.fromPage;
+		
   },
 
   /**

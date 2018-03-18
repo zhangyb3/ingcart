@@ -47,6 +47,7 @@ Page({
         wx.setStorageSync(user.UsingCar, info.carId);
         wx.setStorageSync(user.RecordID, info.recordId);
         wx.setStorageSync(user.UsingCarStatus, info.carStatus);
+				wx.setStorageSync(user.PhoneNum, info.phoneNum);
 
 				var showPhoneNum = util.replaceStr(that.data.account.phoneNum, 3, 7, "····");
 				console.log(showPhoneNum);
@@ -162,5 +163,41 @@ Page({
       url: '../agreement/agreement',
     })
   },
+
+	switchAccount:function(){
+		wx.setStorageSync(user.CustomerID, null);
+
+		wx.setStorageSync(user.Description, null);
+		wx.setStorageSync(user.Status, null);
+
+		wx.setStorageSync(user.UsingCar, null);
+		wx.setStorageSync(user.RecordID, null);
+		wx.setStorageSync(user.UsingCarStatus, null);
+
+		wx.setStorageSync(user.Level, null);
+		wx.setStorageSync(user.Amount, null);
+
+		wx.setStorageSync('alreadyRegister', 'no');
+		console.log('p', wx.getStorageSync(user.PhoneNum));
+		wx.request({
+			url: config.PytheRestfulServerURL + '/customer/loginout',
+			data: {
+				phoneNum: wx.getStorageSync(user.PhoneNum),
+			},
+			method: 'POST',
+			success: function(res) {
+				if(res.data.status == 200)
+				{
+					wx.navigateTo({
+						url: '../register/register?fromPage=switchAccount',
+					})
+
+				}
+			},
+			fail: function(res) {},
+			complete: function(res) {},
+		})
+		
+	},
 
 })

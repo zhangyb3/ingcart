@@ -214,6 +214,6 @@
       <view class="split_line"></view>
     </view>  -->
 
-    <!--<button bindtap="loginORlogout" class="switchID" >切换账号</button>-->
+    <button bindtap="switchAccount" class="switchID" >切换账号</button>
     
 </view>

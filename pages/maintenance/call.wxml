@@ -34,7 +34,8 @@
     <view style="height:20rpx;"></view>
 
     <view class="words_countdown_container"  style="width:80%;margin-left:10%;">
-        <view class="words_countdown_text" style='font-size:14px;'>还可输入{{wordsCountdown}}字</view>
+        <!-- <view class="words_countdown_text" style='font-size:14px;'>还可输入{{wordsCountdown}}字</view> -->
+				<view class="words_countdown_text" style='font-size:14px;color:black;font-weight:bold'>客服电话：0755-29648606</view>
     </view>
 
     <view style="height:20rpx;"></view>
@@ -47,6 +48,10 @@
             <button class="submit-btn"  loading="{{loading}}" bindtap="submitFaults" >提交</button>
         </view>
     </view>
+
+
+		
+
 </view>
 
 

@@ -119,7 +119,7 @@
      <!-- 用车时显示 用车中 信息 -->
 
      <cover-view class='using-info' wx:if="{{timing}}">
-           <cover-view class='using-title'><cover-view class='forPadding'>用车中</cover-view> </cover-view>
+           <cover-view class='using-title'><cover-view class='forPadding'>用车中（客服电话：0755-29648606）</cover-view> </cover-view>
 
            <cover-view class='info-aboutUsing' style=''>
 

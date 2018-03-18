@@ -184,6 +184,7 @@ Page({
 							{
 								
 								var qrId = that.data.qrIdFromWX;
+								//去开锁
 								gotoUnlock(that, qrId);
 								that.setData({
 									qrIdFromWX: null,
@@ -279,6 +280,7 @@ Page({
 										complete: function(res) {},
 									});
 
+									//去开锁
 									gotoUnlock(that,qrId);
 
 								}
@@ -437,6 +439,7 @@ Page({
 						function () { 
 							if(lockStatusResult == null)
 							{
+								wx.hideLoading();
 								//20秒后依然查不到锁状态，放弃，断开连接，并刷新页面
 								wx.closeBLEConnection({
 									deviceId: wx.getStorageSync(user.UsingCarDevice),
@@ -444,58 +447,49 @@ Page({
 									fail: function(res) {},
 									complete: function(res) {},
 								})
-								wx.showModal({
-									title: '提示',
-									content: '暂时无法查询锁的信息，请稍后重试',
-									showCancel: false,
-									confirmText: '我知道了',
-									success: function(res) {
-										if(res.confirm)
-										{
-											that.onShow();
-										}
-									},
-									fail: function(res) {},
-									complete: function(res) {},
-								})
+								// wx.showModal({
+								// 	title: '提示',
+								// 	content: '暂时无法查询锁的信息，请稍后重试',
+								// 	showCancel: false,
+								// 	confirmText: '我知道了',
+								// 	success: function(res) {
+								// 		if(res.confirm)
+								// 		{
+								// 			that.onShow();
+								// 		}
+								// 	},
+								// 	fail: function(res) {},
+								// 	complete: function(res) {},
+								// })
 							}
 						},
 						1000 * 20
 					);
 
-					operation.checkLockStatus(that,
-						(result) => {
-							lockStatusResult = result;
-							wx.hideLoading();
-							// wx.showModal({
-							// 	title: '',
-							// 	content: result.toString(),
-							// 	showCancel: true,
-							// 	cancelText: '',
-							// 	cancelColor: '',
-							// 	confirmText: '',
-							// 	confirmColor: '',
-							// 	success: function(res) {},
-							// 	fail: function(res) {},
-							// 	complete: function(res) {},
-							// })
+					//检查用车的锁状态
+					// operation.checkLockStatus(that,
+					// 	(result) => {
+					// 		lockStatusResult = result;
+					// 		wx.hideLoading();
+							
 
-							if (lockStatusResult == 0)
-							{
-								//锁未关闭，不予结算
-								wx.showModal({
-									title: '提示',
-									content: '请先关闭车锁',
-									showCancel: false,
-									confirmText: '我知道了',
-									success: function(res) {},
-									fail: function(res) {},
-									complete: function(res) {},
-								})
-							}
-							else if (lockStatusResult == 1)
-							{
-								//锁已关闭，可以结算
+					// 		if (lockStatusResult == 0)
+					// 		{
+					// 			//锁未关闭，不予结算
+					// 			wx.showModal({
+					// 				title: '提示',
+					// 				content: '请先关闭车锁',
+					// 				showCancel: false,
+					// 				confirmText: '我知道了',
+					// 				success: function(res) {},
+					// 				fail: function(res) {},
+					// 				complete: function(res) {},
+					// 			})
+					// 		}
+					// 		else if (lockStatusResult == 1)
+					// 		{
+					// 			//锁已关闭，可以结算
+
 								wx.request({
 									url: config.PytheRestfulServerURL + '/customer/urgent/lock/',
 									data: {
@@ -513,6 +507,39 @@ Page({
 											that.setData({
 												timing: false,
 												isShowendUseTip: false,
+											});
+											//刷新
+											wx.request({
+												url: config.PytheRestfulServerURL + '/customer/select',
+												data: {
+													customerId: wx.getStorageSync(user.CustomerID)
+												},
+												method: 'GET',
+												dataType: '',
+												success: function (res) {
+													console.log(res);
+													var info;
+													info = res.data.data;
+
+
+													wx.setStorageSync(user.CustomerID, info.customerId);
+													wx.setStorageSync(user.Description, info.description);
+													wx.setStorageSync(user.Status, info.status);
+													wx.setStorageSync(user.UsingCar, info.carId);
+													wx.setStorageSync(user.RecordID, info.recordId);
+													wx.setStorageSync(user.UsingCarStatus, info.carStatus);
+													wx.setStorageSync(user.Amount, info.amount);
+
+													that.setData({
+														amount: info.amount,
+													});
+
+
+												},
+												fail: function (res) { },
+												complete: function (res) {
+
+												},
 											});
 										}
 										else {
@@ -534,18 +561,21 @@ Page({
 									},
 									complete: function (res) { },
 								});
-							}
-							else
-							{
 
-							}
 
-						}, 
-						(result)=>{
-							wx.hideLoading();
+
+					// 		}
+					// 		else
+					// 		{
+
+					// 		}
+
+					// 	}, 
+					// 	(result)=>{
+					// 		wx.hideLoading();
 							
-						}
-					)
+					// 	}
+					// )
 						
 				}
 
@@ -850,6 +880,7 @@ function refreshUsingMinutes(the){
 		operation.checkUsingMinutes(
 			wx.getStorageSync(user.UsingCar),
 			(result) => {
+				
 				if (result.status == 200) {
 					that.data.usingMinutes = result.data.time;
 					that.setData({
@@ -863,7 +894,12 @@ function refreshUsingMinutes(the){
 					that.data.markerClickable = false;
 
 				}
-
+				else{
+					that.setData({
+						timing: false,
+						
+					});
+				}
 			},
 		); 
 
@@ -977,6 +1013,7 @@ function checkUsingCarStatus(the, success, fail)
 			operation.checkUsingMinutes(
 				wx.getStorageSync(user.UsingCar),
 				(result) => {
+					
 					if (result.status == 200) {
 						that.data.usingMinutes = result.data.time;
 						that.setData({
@@ -990,7 +1027,7 @@ function checkUsingCarStatus(the, success, fail)
 						that.data.markerClickable = false;
 						var myVar = setInterval(
 							function () { refreshUsingMinutes(that) },
-							1000 * 60);
+							1000 * 10);
 
 						typeof success == "function" && success('checked');
 					}
@@ -1075,7 +1112,7 @@ function stopUnload(the){
 	})
 }
 
-
+//去开锁
 function gotoUnlock(the, qrId, success, fail)
 {
 	var that = the;
@@ -1189,6 +1226,7 @@ function gotoUnlock(the, qrId, success, fail)
 						wx.showModal({
 							title: '',
 							content: result,
+							showCancel: false,
 							confirmText: '我知道了',
 						})
 					}
@@ -1210,7 +1248,7 @@ function gotoUnlock(the, qrId, success, fail)
 					wx.showModal({
 						title: '提示',
 						content: result.msg,
-						// showCancel: false,
+						showCancel: false,
 						confirmText: '我知道了',
 						confirmColor: '',
 						success: function (res) {

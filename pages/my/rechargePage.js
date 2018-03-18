@@ -32,20 +32,43 @@ Page({
     })
   },
 
+	onShow:function(){
+		var that = this;
+		wx.request({
+			url: config.PytheRestfulServerURL + '/combo/detail',
+			data: {
+				
+			},
+			method: 'GET',
+			success: function(res) {
+				var combos = res.data.data;
+				if(res.data.status == 200)
+				{
+					that.setData({
+						combos: combos,
+					});
+				}
+			},
+			fail: function(res) {},
+			complete: function(res) {},
+		})
+	},
+
 //  点击充值金额选项
   moneyChoice:function(e){
 
     console.log(e.currentTarget.dataset.charge);
     console.log(e.currentTarget.dataset.class);
     var that=this;
-		
-    var rechargeMoney = parseInt(e.currentTarget.dataset.charge);
+		var combo = e.currentTarget.dataset.charge;
+    var rechargeMoney = parseInt(combo.price);
 		that.data.inputMoney = rechargeMoney;
-    var  addStyle= parseInt(e.currentTarget.dataset.class) ;
+		that.data.giving = e.currentTarget.dataset.giving;
+    var  addStyle= (e.currentTarget.dataset.class) ;
     that.setData({
       addStyle: addStyle
     })
-    if (rechargeMoney==0){
+		if (addStyle=='random'){
        that.setData({
          isShow:true,
          isRandow:false,
@@ -57,7 +80,7 @@ Page({
       })
     }
 
-		if(addStyle != 2)
+		if(addStyle != 'random')
 		{
 			charge(that);
 		}
@@ -105,6 +128,7 @@ function charge(the) {
 	else {
 
 		var that = the;
+		console.log(chargeAmount + ' ' + giving);
 		//小程序支付充值
 		pay.requestOrder(that, chargeAmount, giving,
 			(prepayResultSet) => {

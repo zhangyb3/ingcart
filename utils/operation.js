@@ -396,6 +396,7 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 										value: wx.base64ToArrayBuffer(encryptedFrameStr),
 										success: function (res) {
 											console.log(res);
+											wx.setStorageSync('gettingToken', true);
 										},
 										fail: function (res) {
 											console.log(res);
@@ -404,9 +405,40 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 											console.log(res);
 										},
 									});
+
+
+									
+
+
 								},
 							);
-							
+							//进入开锁流程后假如5秒仍未得到token，则自动判断为开锁失败，并断开连接，返回			
+							var int = setTimeout(
+								function () {
+									if(wx.getStorageSync('gettingToken') == true)
+									{
+										wx.showModal({
+											title: '提示',
+											content: '开锁失败，请重启蓝牙',
+											showCancel: false,
+											confirmText: '我知道了',
+											success: function(res) {},
+											fail: function(res) {},
+											complete: function(res) {},
+										});
+										wx.closeBLEConnection({
+											deviceId: deviceId,
+											success: function(res) {},
+											fail: function(res) {},
+											complete: function(res) {},
+										});
+										wx.navigateBack({
+											delta: 1,
+										});
+									}
+								},
+								1000 * 5,
+							);
 
 							wx.onBLECharacteristicValueChange(function (res) {
 
@@ -429,6 +461,8 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 										{
 											console.log('correct token: ' + tokenFrameHexStr.substring(0, 32));
 											wx.setStorageSync("token", tokenFrameHexStr.substring(6, 14));
+											wx.setStorageSync('tokenUseful', true);
+											wx.setStorageSync('gettingToken', false);
 
 											//数据库记录此时车锁的deviceId
 											wx.request({
@@ -464,7 +498,10 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 														},
 														fail: function (res) { },
 														complete: function (res) { },
-													})
+													});
+
+													
+
 												},
 												() => { }
 											);
@@ -482,7 +519,7 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 												deviceId: deviceId,
 												success: function (res) {
 													wx.hideLoading();
-													
+													wx.setStorageSync('tokenUseful', false);
 												},
 												fail: function (res) { },
 												complete: function (res) { },
@@ -528,7 +565,15 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 										}
 										if (tokenFrameHexStr.slice(0, 8) == '05020101') {
 											//开锁失败
-
+											wx.closeBLEConnection({
+												deviceId: deviceId,
+												success: function (res) {
+													wx.hideLoading();
+													wx.setStorageSync('tokenUseful', false);
+												},
+												fail: function (res) { },
+												complete: function (res) { },
+											});
 										}
 
 										if (tokenFrameHexStr.slice(0, 8) == '05080100') {
@@ -1236,7 +1281,7 @@ function checkLockStatusOperation(the, deviceId, carId, success, fail)
 										if (tokenFrameHexStr.slice(0, 4) == '0602') {
 											console.log('correct token: ' + tokenFrameHexStr.substring(0, 32));
 											wx.setStorageSync("token", tokenFrameHexStr.substring(6, 14));
-
+											wx.setStorageSync('tokenUseful', true);
 											
 
 											//后台用token+密码组成加密帧
@@ -1286,7 +1331,7 @@ function checkLockStatusOperation(the, deviceId, carId, success, fail)
 												deviceId: deviceId,
 												success: function (res) {
 													wx.hideLoading();
-
+													wx.setStorageSync('tokenUseful', false);
 												},
 												fail: function (res) { },
 												complete: function (res) { },
@@ -1313,7 +1358,7 @@ function checkLockStatusOperation(the, deviceId, carId, success, fail)
 												deviceId: deviceId,
 												success: function (res) {
 													wx.hideLoading();
-
+													wx.setStorageSync('tokenUseful', false);
 												},
 												fail: function (res) { },
 												complete: function (res) { },
