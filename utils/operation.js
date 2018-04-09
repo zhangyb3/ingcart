@@ -944,7 +944,7 @@ function loginSystem(the, success, fail) {
 
 						//转至注册页面
 						wx.navigateTo({
-							url: '../register/register',
+							url: '../register/accedit',
 							success: function (res) { },
 							fail: function (res) { },
 							complete: function (res) { },

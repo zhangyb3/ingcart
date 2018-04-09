@@ -1,0 +1,26 @@
+<view class='accedit-page'>
+       
+    <view class='accedit-logo'>
+          <image src='/images/accedit_log.png' mode='widthFix'></image> 
+    </view>
+    
+    <view class='accedit-button'>
+       <view class='accedit-txt'><image src='/images/wx_log.png'></image>微信用户快速登录</view>
+       <button class='acceditBtn' plain='true' open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber"></button>
+    </view>
+
+    <view class='other-loginWay' bindtap='redirectToNormalRegister'>输入手机号码登录/注册</view>
+
+
+
+	
+
+
+</view>
+
+<view	class="show-agreement" bindtap='redirectToAgreement'>
+	<view	class="show-agreement-text">
+		<view>点击登录，即表示已阅读并同意</view>
+		<view style="color:darkblue;">《服务协议》</view>
+	</view>
+</view>

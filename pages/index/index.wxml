@@ -139,13 +139,13 @@
            <cover-view style='height:1px;background-color:#e6e6e6;'></cover-view>
            <cover-view class='endUse-tip' wx:if='{{isShowendUseTip}}'>
                  <cover-view class='endUse-tip-title'>提示 <cover-image src='/images/close.png' bindtap='closeUseTip'></cover-image></cover-view>
-                 <cover-view class='wran-tip'>如您已离园请确定结束用车，系统将结束您的行程并扣费。</cover-view>
-                 <cover-view class='wran-tip' style='margin:8px 0 10px;'>如您仍需使用该车，请勿确定结束用车。同一个账号当天内可多次扫码解锁继续使用该车。</cover-view>
+                 <cover-view class='wran-tip'>1、如您已离园，请电话联络客服结束您的行程。</cover-view>
+                 <cover-view class='wran-tip' style='margin:8px 0 10px;'>2、同一个账号当天内可多次扫码解锁使用该车。</cover-view>
 
                  <cover-view class='sure-end'>
                       
 									<!-- <form  bindsubmit="customerFinishUsing" report-submit='true' > -->
-										<cover-view class='sure-end-btn' bindtap='customerFinishUsing'>确定结束用车</cover-view>
+										<!-- <cover-view class='sure-end-btn' bindtap='customerFinishUsing'>确定结束用车</cover-view> -->
 									<!-- </form> -->
 								 </cover-view>
            </cover-view>

@@ -983,7 +983,7 @@ function checkUsingCarStatus(the, success, fail)
 						that.data.markerClickable = false;
 						var myVar = setInterval(
 							function () { refreshHoldingMinutes(that) },
-							1000 * 60);
+							1000 * 3);
 
 						typeof success == "function" && success('checked');
 					}

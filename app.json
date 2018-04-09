@@ -10,6 +10,7 @@
     "pages/my/userRepair",
     "pages/my/rechargePage",
     "pages/register/register",
+		"pages/register/accedit",
     "pages/logs/logs",
     "pages/activity/activity",
     "pages/agreement/agreement"

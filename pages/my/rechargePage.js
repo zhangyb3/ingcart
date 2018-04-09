@@ -129,6 +129,7 @@ function charge(the) {
 
 		var that = the;
 		console.log(chargeAmount + ' ' + giving);
+		var originalAmount =  wx.getStorageSync(user.Amount);
 		//小程序支付充值
 		pay.requestOrder(that, chargeAmount, giving,
 			(prepayResultSet) => {
@@ -191,9 +192,42 @@ function charge(the) {
 								var indexPage = pages[0];
 								indexPage.data.backFrom = 'charge';
 								
-								wx.navigateBack({
-									delta: 1,
-								})
+								//悬浮转圈等待微信异步回调
+								wx.showLoading({
+									title: '充值到账中...',
+									mask: true,
+									success: function(res) {},
+									fail: function(res) {},
+									complete: function(res) {},
+								});
+								var checkAmountIntervalId = setInterval(
+									function(){
+										wx.request({
+											url: config.PytheRestfulServerURL + '/customer/select',
+											data: {
+												customerId: wx.getStorageSync(user.CustomerID)
+											},
+											method: 'GET',
+											dataType: '',
+											success: function(res) {
+												console.log(res);
+												var info = res.data.data;
+												that.data.account = info;
+
+												if (info.amount > originalAmount)
+												{
+													clearInterval(checkAmountIntervalId);
+													wx.navigateBack({
+														delta: 1,
+													})
+												}
+											},
+											fail: function(res) {},
+											complete: function(res) {},
+										})
+									},
+									1000);
+								
 
 							}
 						},

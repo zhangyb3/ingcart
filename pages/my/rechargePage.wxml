@@ -18,9 +18,10 @@
                <view class="sum {{addStyle==1?'sumColor':' '}}" bindtap='moneyChoice' data-charge='50' data-class='1'>50元</view>
            </view> -->
 
-           <view class='recharge-choice'>
+           <!-- <view class='recharge-choice'>
                <view class="sum {{addStyle=='random'?'sumColor':' '}}" bindtap='moneyChoice' data-charge='0' data-giving='0' data-class='random'>其他金额</view>
-           </view>
+           </view> -->
+
      </view>
   </view>
   <!-- <button class='recharge-money' hidden='{{isShow}}' bindtap='charge'>确定充值</button> -->

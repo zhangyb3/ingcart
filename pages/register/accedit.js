@@ -1,4 +1,6 @@
-
+//index.js
+//获取应用实例
+const app = getApp()
 
 var register = require("../../utils/register.js");
 var config = require("../../utils/config.js");
@@ -7,90 +9,53 @@ var login = require("../../utils/login.js");
 var WXBizDataCrypt = require('../../utils/decode.js');
 
 Page({
-
-  /**
-	 * "pages/register/register",
-	 * 
-	 * 
-   * 页面的初始数据
-   */
   data: {
-
-    countdownText: '发送验证码',
-    second: 60,
-		send_verification_code: true,
-		fromPage:null,
+    motto: 'Hello World',
+    userInfo: {},
+    hasUserInfo: false,
+    canIUse: wx.canIUse('button.open-type.getUserInfo')
   },
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (parameters) {
-		var that = this;
-		that.data.fromPage = parameters.fromPage;
-		
+  //事件处理函数
+  bindViewTap: function() {
+    wx.navigateTo({
+      url: '../logs/logs'
+    })
   },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-		// var myVar = setInterval(
-		// 	function () { checkCustomerRegister(this) },
-		// 	1000 * 5);
-
-  },
-
-  //注册
-  phoneNumberInput: function (e) {
-    var registerPhoneNum = e.detail.value;
-    console.log(e.detail.value);
-    wx.setStorageSync('registerPhoneNum', registerPhoneNum);
-  },
-  sendVerificationCode: function (res) {
-    console.log(wx.getStorageSync('registerPhoneNum'));
-    register.sendVerificationCode(wx.getStorageSync('registerPhoneNum'));
-
-    //重发倒数
-    var that = this;
-
-    that.setData({
-      second: 60,
-      lock_countdown: true,
-    });
-    countdown(that);
-    if (second < 0) {
-      that.setData({
-        countdownText: "重发验证码",
-        lock_countdown: false,
-				send_verification_code: true,
-      });
+  onLoad: function () {
+    if (app.globalData.userInfo) {
+      this.setData({
+        userInfo: app.globalData.userInfo,
+        hasUserInfo: true
+      })
+    } else if (this.data.canIUse){
+      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+      // 所以此处加入 callback 以防止这种情况
+      app.userInfoReadyCallback = res => {
+        this.setData({
+          userInfo: res.userInfo,
+          hasUserInfo: true
+        })
+      }
+    } else {
+      // 在没有 open-type=getUserInfo 版本的兼容处理
+      wx.getUserInfo({
+        success: res => {
+          app.globalData.userInfo = res.userInfo
+          this.setData({
+            userInfo: res.userInfo,
+            hasUserInfo: true
+          })
+        }
+      })
     }
   },
-  verificationCodeInput: function (e) {
-    var verificationCode = e.detail.value;
-    console.log(e.detail.value);
-    wx.setStorageSync('verificationCode', verificationCode);
-  },
-  customerRegister:function(e){
-    register.commitRegister(this,
-			(res)=>{
-				wx.reLaunch({
-					url: '../index/index',
-					success: function(res) {},
-					fail: function(res) {},
-					complete: function(res) {},
-				})
-			}
-		);
+  getUserInfo: function(e) {
+    console.log(e)
+    app.globalData.userInfo = e.detail.userInfo
+    this.setData({
+      userInfo: e.detail.userInfo,
+      hasUserInfo: true
+    })
   },
 
 
@@ -109,7 +74,7 @@ Page({
 		var purePhoneNumber = result.purePhoneNumber;
 		var countryCode = result.countryCode;
 
-		if (e.detail.errMsg == 'getPhoneNumber:ok'){
+		if (e.detail.errMsg == 'getPhoneNumber:ok') {
 			wx.request({
 				url: config.PytheRestfulServerURL + '/customer/register/',
 				data: {
@@ -204,80 +169,27 @@ Page({
 
 			});
 		}
-		
+
 
 	},
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-  
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-  
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-  
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-  
-  }
-})
-
-
-function countdown(that) {
-  var second = that.data.second;
-  if (second < 0) {
-    that.setData({
-      countdownText: "重发验证码",
-      lock_countdown: false,
-			send_verification_code: true,
-    });
-    return;
-  }
-
-  var time = setTimeout(function () {
-    that.setData({
-
-      countdownText: second + '秒后可重发',
-      second: second - 1,
-      lock_countdown: true,
-			send_verification_code: false,
-    });
-    countdown(that);
-  }
-    , 1000)
-}
-
-function checkCustomerRegister(the){
-	var that = the;
-	if(wx.getStorageSync(user.CustomerID) > 0)
-	{
+	redirectToNormalRegister:function(e){
 		wx.redirectTo({
-			url: '../index/index',
+			url: 'register',
 			success: function(res) {},
 			fail: function(res) {},
 			complete: function(res) {},
 		})
-	}
-}
+	},
+
+	redirectToAgreement: function (e) {
+		wx.navigateTo({
+			url: '../agreement/agreement',
+			success: function (res) { },
+			fail: function (res) { },
+			complete: function (res) { },
+		})
+	},
+
+	
+})

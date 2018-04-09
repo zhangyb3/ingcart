@@ -189,7 +189,7 @@ Page({
 				if(res.data.status == 200)
 				{
 					wx.navigateTo({
-						url: '../register/register?fromPage=switchAccount',
+						url: '../register/accedit?fromPage=switchAccount',
 					})
 
 				}
