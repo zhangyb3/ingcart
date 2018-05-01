@@ -65,15 +65,21 @@ Page({
     scrollTop:0,
     scrollViewHeight: 0,
     addPadding: 20,
+
+		hotline:null,
   },
 
 // 页面加载
   onLoad:function(options){
+		var that = this;
     wx.setNavigationBarTitle({
       title: '报障维修'
     });
 
     this.getRect();
+		that.setData({
+			hotline: wx.getStorageSync('hotline'),
+		});
 
   },
 
@@ -194,7 +200,9 @@ Page({
               qrId: that.data.maintenanceQRId,
               longitude: wx.getStorageSync(user.Longitude),
               latitude: wx.getStorageSync(user.Latitude),
-              annotation: "haha"
+              annotation: "haha",
+							phoneNum: wx.getStorageSync(user.PhoneNum),
+							level: wx.getStorageSync(user.Level),
             },
             method: 'POST',
             success: function (res) {

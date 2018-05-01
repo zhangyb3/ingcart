@@ -12,8 +12,8 @@
 
 
 
-     <view class="line_item_container" bindtap="toWallet">
-
+    <!-- <view class="line_item_container" bindtap="toWallet"> -->
+		<view class="line_item_container" >
       <view class="line_item">
         <view class="line_include_item_container account_name">
           <text>余额</text>
@@ -22,8 +22,11 @@
           <text style="color:orange;">{{account.amount}}</text>
           <text>元</text>
         </view>
-        <view class="line_include_item_container account_operation">
+        <!-- <view class="line_include_item_container account_operation">
           <image src="../../images/to_charge.png" mode='widthFix'></image>
+        </view> -->
+				<view class="line_include_item_container record_operation">
+          <image id="operation"  src="../../images/more.png"></image>
         </view>
       </view>
       <view class="split_line"></view>
@@ -47,7 +50,22 @@
       <view class="split_line"></view>   
     </view> -->
 
-     <view class="line_item_container" bindtap="toHistory">
+     <view class="line_item_container" bindtap="toCoupon">
+      <view class="line_item">
+        <view class="line_include_item_container history_record">
+          <text >优惠卡券</text>
+        </view>
+        <view class="line_include_item_container record_quantity">
+          <text></text>
+        </view>
+        <view class="line_include_item_container record_operation">
+          <image id="operation"  src="../../images/more.png"></image>
+        </view>
+      </view>
+      <view class="split_line"></view>
+    </view> 
+
+		<view class="line_item_container" bindtap="toHistory">
       <view class="line_item">
         <view class="line_include_item_container history_record">
           <text >历史行程</text>
@@ -60,7 +78,7 @@
         </view>
       </view>
       <view class="split_line"></view>
-    </view> 
+    </view>
 
     <view class="line_item_container" bindtap="toAgreement">
       <view class="line_item">

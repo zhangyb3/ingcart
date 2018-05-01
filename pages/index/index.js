@@ -3,8 +3,8 @@ var register = require("../../utils/register.js");
 var config = require("../../utils/config.js");
 var user = require("../../utils/user.js");
 var login = require("../../utils/login.js");
-// var JSEncrypt = require("../../utils/jsencrypt.js");
 var operation = require("../../utils/operation.js");
+var pay = require("../../utils/pay.js");
 
 var app = getApp()
 Page({
@@ -45,24 +45,38 @@ Page({
     
     endUseCarState:0,
 		backFrom:null,
+		pStatus:0,
+
+		status:null,
+		
+		zoneNoticeImg:null,
+		showZoneNotice:false,
   },
 
 // 页面加载
   onLoad: function (parameters) {
     var that=this;
+
+		// that.data.status = parameters.status;
+		that.data.unlockQR = parameters.unlock;
+		that.data.backFrom = parameters.backFrom;
+		// that.data.coupon = parameters.coupon;
+		// that.data.couponCode = parameters.couponCode;
+
     wx.getSystemInfo({
       success: function (res) {
         that.setData({
-          wHeight: res.windowHeight
+          wHeight: res.windowHeight,
+					
         })
         console.log(res.windowHeight)
-        
+				
       }
     })
     
 		wx.setStorageSync('alreadyRegister', 'no');
 
-		this.data.fromPage = parameters.from;
+		// this.data.fromPage = parameters.from;
 		
 		if(this.data.fromPage == 'processing')
 		{
@@ -71,74 +85,99 @@ Page({
 
 		this.data.qrIdFromWX = operation.urlProcess(decodeURIComponent(parameters.q)).id ;
 		
-	
+		that.data.from = parameters.from;
 		
     wx.showShareMenu({
       withShareTicket: true
     });
+
+		
 
   },
 
 // 页面显示
   onShow: function(){
 		var that = this;
-		if(this.data.backFrom == 'charge')
-		{
-			var tempAmount = wx.getStorageSync(user.Amount);
-			wx.showLoading({
-				title: '数据更新中',
-				mask: true,
-				success: function(res) {},
-				fail: function(res) {},
-				complete: function(res) {},
-			});
 
-			var info = null;
-			var intervalId = setInterval(
-				function () { 
-					wx.request({
-						url: config.PytheRestfulServerURL + '/customer/select',
-						data: {
-							customerId: wx.getStorageSync(user.CustomerID)
-						},
-						method: 'GET',
-						dataType: '',
-						success: function (res) {
-							console.log(res);
-							info = res.data.data;
+		operation.normalUpdateCustomerStatus(
+			wx.getStorageSync(user.CustomerID),
+			() => {
+				that.setData({
+					amount: wx.getStorageSync(user.Amount),
+				});
+			},
+		);
+
+		// if(this.data.backFrom == 'charge')
+		// {
+		// 	var tempAmount = wx.getStorageSync(user.Amount);
+		// 	wx.showLoading({
+		// 		title: '数据更新中',
+		// 		mask: true,
+		// 		success: function(res) {},
+		// 		fail: function(res) {},
+		// 		complete: function(res) {},
+		// 	});
+
+		// 	var info = null;
+		// 	var intervalId = setInterval(
+		// 		function () { 
+		// 			wx.request({
+		// 				url: config.PytheRestfulServerURL + '/customer/select',
+		// 				data: {
+		// 					customerId: wx.getStorageSync(user.CustomerID)
+		// 				},
+		// 				method: 'GET',
+		// 				dataType: '',
+		// 				success: function (res) {
+		// 					console.log(res);
+		// 					info = res.data.data;
 							
 
-							wx.setStorageSync(user.CustomerID, info.customerId);
-							wx.setStorageSync(user.Description, info.description);
-							wx.setStorageSync(user.Status, info.status);
-							wx.setStorageSync(user.UsingCar, info.carId);
-							wx.setStorageSync(user.RecordID, info.recordId);
-							wx.setStorageSync(user.UsingCarStatus, info.carStatus);
-							wx.setStorageSync(user.Amount, info.amount);
+		// 					wx.setStorageSync(user.CustomerID, info.customerId);
+		// 					wx.setStorageSync(user.Description, info.description);
+		// 					wx.setStorageSync(user.Status, info.status);
+		// 					wx.setStorageSync(user.UsingCar, info.carId);
+		// 					wx.setStorageSync(user.RecordID, info.recordId);
+		// 					wx.setStorageSync(user.UsingCarStatus, info.carStatus);
+		// 					wx.setStorageSync(user.Amount, info.amount);
+		// 					wx.setStorageSync(user.PStatus, info.pStatus);
 						
-							that.setData({		
-								amount: info.amount,
-							});
+		// 					that.setData({		
+		// 						amount: info.amount,
+		// 						pStatus: info.pStatus,
+		// 					});
 
 							
-						},
-						fail: function (res) { },
-						complete: function (res) {
+		// 				},
+		// 				fail: function (res) { },
+		// 				complete: function (res) {
 
-						},
-					});
+		// 				},
+		// 			});
 
-					console.log('interval', intervalId);
-					if (wx.getStorageSync(user.Amount) != tempAmount) {
-						wx.hideLoading();
-						clearInterval(intervalId);
-					}				
-				},
-				1000
-			);
+		// 			console.log('interval', intervalId);
+		// 			if (wx.getStorageSync(user.Amount) != tempAmount) {
+		// 				wx.hideLoading();
+		// 				clearInterval(intervalId);
+		// 			}				
+		// 		},
+		// 		1000
+		// 	);
 			
 
-		}		
+		// }	
+
+		if (that.data.unlockQR != null && that.data.backFrom == 'payToUse') {
+			wx.navigateTo({
+				url: 'charging?unlock=' + that.data.unlockQR ,
+				success: function (res) { },
+				fail: function (res) { },
+				complete: function (res) { },
+			});
+			
+
+		}	
 
 		wx.getSystemInfo({
 			success: (res) => {
@@ -147,16 +186,81 @@ Page({
 				wx.setStorageSync('platform', res.platform);
 				console.log('platform', res.platform);
 				this.setData({
-					mapHeight: res.windowHeight ,
+					mapHeight: wx.getStorageSync('windowHeight'),
 					holding: false,
 					timing: false,
 				});
 			}
 		});
 
-		if (wx.getStorageSync('alreadyRegister') == 'no' || wx.getStorageSync('reload') == 'yes') 
+		if (that.data.status == 'unlock' ) 
 		{
+			
+			wx.showLoading({
+				title: '数据刷新中...',
+				mask: true,
+				success: function (res) { },
+				fail: function (res) { },
+				complete: function (res) { },
+			});
 
+			var that = this;
+		
+
+			checkUsingCarStatus(that,
+				(checkResult) => {
+					wx.hideLoading();
+					that.data.status = null;
+					refreshPage(that);
+
+
+				},
+			);
+
+		}
+
+		//使用赠券
+		if (that.data.useCoupon == true) 
+		{
+			that.data.useCoupon = false;
+			
+			wx.scanCode({
+				onlyFromCamera: true,
+				success: function (res) {
+					console.log(res);
+					if (res.errMsg == 'scanCode:ok') {
+
+						
+						var parameters = operation.urlProcess(res.result);
+						var qrId = parameters.id;
+
+						wx.getLocation({
+							type: 'gcj02',
+							altitude: true,
+							success: function (res) {
+								wx.setStorageSync(user.Latitude, res.latitude);
+								wx.setStorageSync(user.Longitude, res.longitude);
+							},
+							fail: function (res) { },
+							complete: function (res) { },
+						});
+
+						//去开锁
+						gotoUnlock(that, qrId);
+
+					}
+
+				},
+				fail: function (res) {
+					
+				},
+				complete: function (res) { },
+			});
+		}
+
+		if (wx.getStorageSync('alreadyRegister') == 'no' || wx.getStorageSync('reload') == 'yes' || that.data.from == 'outside' ) 
+		{
+			
 			wx.showLoading({
 				title: '',
 				mask: true,
@@ -174,10 +278,12 @@ Page({
 					checkBluetooth(that);
 					refreshPage(that);
 
+					
+
 					checkUsingCarStatus(that,
 						(checkResult) => {
 							wx.hideLoading();
-
+							
 							refreshPage(that);
 							
 							if(that.data.qrIdFromWX != null)
@@ -191,15 +297,53 @@ Page({
 								});
 							}
 							
+							if (that.data.showZoneNotice == true) {
+								wx.request({
+									url: config.PytheRestfulServerURL + '/prompt/select',
+									data: {
+										description: wx.getStorageSync(user.UsingCarLevel),
+									},
+									method: 'GET',
+									success: function (res) {
+										if (res.data.status == 200) {
+											that.setData({
+												showZoneNotice: true,
+												zoneNoticeImg: config.PytheRestfulServerURL + res.data.data,
+												hotline: res.data.data.hotline,
+											});
+										}
+										
+									},
+									fail: function (res) { },
+									complete: function (res) { },
+								})
+							}
+							
+							if (that.data.unlockQR != null) {
 
+								var qrId = that.data.unlockQR;
+								//去开锁
+								gotoUnlock(that, qrId);
+								that.setData({
+									unlockQR: null,
+									from: null,
+								});
+							}
+
+							
 
 						},
+						(checkResult)=>{
+							
+
+						}
 					);
 
 				}
 			);
 
 		}
+		
 		else
 		{
 			var that = this;
@@ -221,7 +365,39 @@ Page({
 
 					refreshPage(that);
 
-					
+					if (that.data.showZoneNotice == true) {
+						wx.request({
+							url: config.PytheRestfulServerURL + '/prompt/select',
+							data: {
+								description: wx.getStorageSync(user.UsingCarLevel),
+							},
+							method: 'GET',
+							success: function (res) {
+								if (res.data.status == 200) {
+									that.setData({
+										showZoneNotice: that.data.showZoneNotice,
+										zoneNoticeImg: config.PytheRestfulServerURL + res.data.data,
+									});
+								}
+								else {
+									wx.showModal({
+										title: '提示',
+										content: res.data.msg,
+										showCancel: false,
+										confirmText: '我知道了',
+										success: function (res) {
+
+										},
+										fail: function (res) { },
+										complete: function (res) { },
+									})
+								}
+							},
+							fail: function (res) { },
+							complete: function (res) { },
+						})
+					}
+
 
 				},
 				()=>{
@@ -230,8 +406,7 @@ Page({
 			);
 		}
 	
-    
-
+		
     // 创建地图上下文，移动当前位置到地图中心
     this.mapCtx = wx.createMapContext("ingcartMap");
     this.movetoPosition()
@@ -254,46 +429,46 @@ Page({
 					
 					break;
 			}
-      // 点击立即用车，判断当前是否可以用车
-      case 2: 
-        {
-          var that = this;
-					// if (wx.getStorageSync(user.UsingCar) == null || wx.getStorageSync(user.UsingCarStatus) == 2)
-					{
+      //点击立即用车，判断当前是否可以用车
+      // case 2: 
+      //   {
+      //     var that = this;
+			// 		// if (wx.getStorageSync(user.UsingCar) == null || wx.getStorageSync(user.UsingCarStatus) == 2)
+			// 		{
 			
-						wx.scanCode({
-							onlyFromCamera: true,
-							success: function (res) {
-								console.log(res);
-								if (res.errMsg == 'scanCode:ok') {
-									var parameters = operation.urlProcess(res.result); console.log(parameters);
-									var qrId = parameters.id;
+			// 			wx.scanCode({
+			// 				onlyFromCamera: true,
+			// 				success: function (res) {
+			// 					console.log(res);
+			// 					if (res.errMsg == 'scanCode:ok') {
+			// 						var parameters = operation.urlProcess(res.result); console.log(parameters);
+			// 						var qrId = parameters.id;
 
-									wx.getLocation({
-										type: 'gcj02',
-										altitude: true,
-										success: function(res) {
-											wx.setStorageSync(user.Latitude, res.latitude);
-											wx.setStorageSync(user.Longitude, res.longitude);
-										},
-										fail: function(res) {},
-										complete: function(res) {},
-									});
+			// 						wx.getLocation({
+			// 							type: 'gcj02',
+			// 							altitude: true,
+			// 							success: function(res) {
+			// 								wx.setStorageSync(user.Latitude, res.latitude);
+			// 								wx.setStorageSync(user.Longitude, res.longitude);
+			// 							},
+			// 							fail: function(res) {},
+			// 							complete: function(res) {},
+			// 						});
 
-									//去开锁
-									gotoUnlock(that,qrId);
+			// 						//去开锁
+			// 						gotoUnlock(that,qrId);
 
-								}
+			// 					}
 
-							},
-							fail: function (res) { },
-							complete: function (res) { },
-						})
-					}
+			// 				},
+			// 				fail: function (res) { },
+			// 				complete: function (res) { },
+			// 			})
+			// 		}
           
           
-          break;
-        }
+      //     break;
+      //   }
       // 点击保障控件，跳转到报障页
       case 3: wx.navigateTo({
           url: '../maintenance/call'
@@ -508,39 +683,14 @@ Page({
 												timing: false,
 												isShowendUseTip: false,
 											});
-											//刷新
-											wx.request({
-												url: config.PytheRestfulServerURL + '/customer/select',
-												data: {
-													customerId: wx.getStorageSync(user.CustomerID)
-												},
-												method: 'GET',
-												dataType: '',
-												success: function (res) {
-													console.log(res);
-													var info;
-													info = res.data.data;
-
-
-													wx.setStorageSync(user.CustomerID, info.customerId);
-													wx.setStorageSync(user.Description, info.description);
-													wx.setStorageSync(user.Status, info.status);
-													wx.setStorageSync(user.UsingCar, info.carId);
-													wx.setStorageSync(user.RecordID, info.recordId);
-													wx.setStorageSync(user.UsingCarStatus, info.carStatus);
-													wx.setStorageSync(user.Amount, info.amount);
-
+											operation.normalUpdateCustomerStatus(
+												wx.getStorageSync(user.CustomerID),
+												() => {
 													that.setData({
-														amount: info.amount,
+														amount: wx.getStorageSync(user.Amount),
 													});
-
-
 												},
-												fail: function (res) { },
-												complete: function (res) {
-
-												},
-											});
+											);
 										}
 										else {
 											wx.showModal({
@@ -548,13 +698,12 @@ Page({
 												content: res.data.msg,
 												showCancel: false,
 												confirmText: '我知道了',
-												confirmColor: '',
 												success: function (res) { },
 												fail: function (res) { },
 												complete: function (res) { },
 											})
 										}
-
+										
 									},
 									fail: function (res) {
 										wx.hideLoading();
@@ -600,6 +749,59 @@ Page({
       complete: function(res) {},
     })
   },
+
+	payToUse:function(e){
+		var that= this;
+		var originalAmount = wx.getStorageSync(user.Amount);
+
+		that.setData({
+			isNotEnough: false,
+		});
+
+		//直接去付款而非充值
+		pay.requestOrder(that, that.data.price, 0,
+			(prepayResultSet) => {
+
+				var prepayResultStr = prepayResultSet.data;
+				var prepayResult = JSON.parse(prepayResultStr);
+				//统一下单成功
+				if (prepayResult.return_code == 'SUCCESS'
+					&& prepayResult.result_code == 'SUCCESS') {
+
+
+					
+
+					//调用微信支付
+					pay.orderPay(that, prepayResult,
+						(payResultSet) => {
+							
+							var payResult = payResultSet.errMsg;
+							//支付成功，更新数据库纪录
+							if (payResult == 'requestPayment:ok') {
+								var pages = getCurrentPages();
+								var indexPage = pages[0];
+								indexPage.data.backFrom = 'payToUse';
+
+								
+
+								wx.redirectTo({
+									url: 'index/charging?unlock=' + that.data.unlockQR + '&backFrom=payToUse',
+									success: function(res) {},
+									fail: function(res) {},
+									complete: function(res) {},
+								})
+								
+								
+													
+							}
+							
+						},
+						() => { });
+				}
+			},
+			() => { });
+
+	},
 
 	confirmArrearage:function(e){
 		var that = this;
@@ -667,6 +869,57 @@ Page({
 		});
 		showControls(this);
   },
+
+
+	//cover-view版扫码开锁
+	scanToUnlock:function(e){
+		
+			var that = this;
+			// if (wx.getStorageSync(user.UsingCar) == null || wx.getStorageSync(user.UsingCarStatus) == 2)
+			{
+
+				wx.scanCode({
+					onlyFromCamera: true,
+					success: function (res) {
+						console.log(res);
+						if (res.errMsg == 'scanCode:ok') {
+							var parameters = operation.urlProcess(res.result); console.log(parameters);
+							var qrId = parameters.id;
+
+							wx.getLocation({
+								type: 'gcj02',
+								altitude: true,
+								success: function (res) {
+									wx.setStorageSync(user.Latitude, res.latitude);
+									wx.setStorageSync(user.Longitude, res.longitude);
+								},
+								fail: function (res) { },
+								complete: function (res) { },
+							});
+
+							//去开锁
+							gotoUnlock(that, qrId);
+
+						}
+
+					},
+					fail: function (res) { },
+					complete: function (res) { },
+				});
+
+			}
+
+	},
+
+
+	//隐藏景区提示框
+	disappearZoneNotice:function(e){
+		var that = this;
+		that.setData({
+			showZoneNotice:false,
+			zoneNoticeImg:null,
+		});
+	},
 
   onUnload:function(){
 
@@ -765,18 +1018,18 @@ function showControls(the){
 				},
 				clickable: true
 			},
-			{
-				id: 2,
-				iconPath: '/images/use.png',
-				position: {
-					left: wx.getStorageSync('windowWidth') / 2 - 105,
-					top: wx.getStorageSync('windowHeight') - 12 -80,
+			// {
+			// 	id: 2,
+			// 	iconPath: '/images/use.png',
+			// 	position: {
+			// 		left: wx.getStorageSync('windowWidth') / 2 - 105,
+			// 		top: wx.getStorageSync('windowHeight') - 12 -80,
 					
-					width: 210,
-					height: 51
-				},
-				clickable: true
-			},
+			// 		width: 210,
+			// 		height: 51
+			// 	},
+			// 	clickable: true
+			// },
 			// {
 			// 	id: 3,
 			// 	iconPath: '/images/warn.png',
@@ -889,6 +1142,9 @@ function refreshUsingMinutes(the){
 						usingMinutes: result.data.time,
 						mapHeight: wx.getStorageSync('windowHeight')  ,
 						price: wx.getStorageSync(user.UsingCarPrice),
+						giving: wx.getStorageSync(user.UsingCarGiving),
+						hotline: wx.getStorageSync('hotline'),
+						pStatus: wx.getStorageSync(user.PStatus),
 					});
 					//此时图标不可点
 					that.data.markerClickable = false;
@@ -909,6 +1165,7 @@ function refreshUsingMinutes(the){
 				that.setData({
 					amount: wx.getStorageSync(user.Amount),
 					price: wx.getStorageSync(user.UsingCarPrice),
+					pStatus: wx.getStorageSync(user.PStatus),
 				});
 			},
 		);
@@ -942,6 +1199,7 @@ function refreshHoldingMinutes(the) {
 						price: result.data.price,
 						duration: result.data.time,
 						mapHeight: wx.getStorageSync('windowHeight') ,
+						pStatus: wx.getStorageSync(user.PStatus),
 					});
 					//此时图标可点
 					that.data.markerClickable = true;
@@ -978,12 +1236,18 @@ function checkUsingCarStatus(the, success, fail)
 							timing: false,
 							holdingMinutes: result.data.time,
 							mapHeight: wx.getStorageSync('windowHeight') - 20,
+							pStatus: wx.getStorageSync(user.PStatus),
 						});
 						//此时图标不可点
 						that.data.markerClickable = false;
 						var myVar = setInterval(
-							function () { refreshHoldingMinutes(that) },
-							1000 * 3);
+							function () { 
+								refreshHoldingMinutes(that);
+								if (wx.getStorageSync(user.UsingCarStatus) != 2){
+									clearInterval(myVar);
+								}
+							},
+							1000 * 2);
 
 						typeof success == "function" && success('checked');
 					}
@@ -995,6 +1259,7 @@ function checkUsingCarStatus(the, success, fail)
 							price: result.data.price,
 							duration: result.data.time,
 							mapHeight: wx.getStorageSync('windowHeight') ,
+							pStatus: wx.getStorageSync(user.PStatus),
 						});
 						//此时图标不可点
 						that.data.markerClickable = false;
@@ -1014,7 +1279,8 @@ function checkUsingCarStatus(the, success, fail)
 				wx.getStorageSync(user.UsingCar),
 				(result) => {
 					
-					if (result.status == 200) {
+					if (result.status == 200) 
+					{
 						that.data.usingMinutes = result.data.time;
 						that.setData({
 							timing: true,
@@ -1022,14 +1288,26 @@ function checkUsingCarStatus(the, success, fail)
 							usingMinutes: result.data.time,
 							mapHeight: wx.getStorageSync('windowHeight')  ,
 							price: wx.getStorageSync(user.UsingCarPrice),
+							giving: wx.getStorageSync(user.UsingCarGiving),
+							hotline: wx.getStorageSync('hotline'),
+							pStatus: wx.getStorageSync(user.PStatus),
 						});
 						//此时图标不可点
 						that.data.markerClickable = false;
 						var myVar = setInterval(
-							function () { refreshUsingMinutes(that) },
+							function () { 
+								refreshUsingMinutes(that);
+								if (wx.getStorageSync(user.UsingCarStatus) != 1) {
+									clearInterval(myVar);
+								}
+							},
 							1000 * 10);
 
 						typeof success == "function" && success('checked');
+					}
+					else
+					{
+						typeof success == "function" && success('checked but wrong');
 					}
 				},
 			);
@@ -1050,6 +1328,7 @@ function checkUsingCarStatus(the, success, fail)
 				timing: false,
 				holding: false,
 				mapHeight: wx.getStorageSync('windowHeight') ,
+				pStatus: wx.getStorageSync(user.PStatus),
 			});
 			//此时图标可点
 			that.data.markerClickable = true;
@@ -1102,8 +1381,7 @@ function stopUnload(the){
 	var that = the;
 	wx.showModal({
 		content: '阻止退出',
-		confirmText: '',
-		confirmColor: '',
+		confirmText: '确定',
 		success: function(res) {
 			stopUnload(that);
 		},
@@ -1116,12 +1394,24 @@ function stopUnload(the){
 function gotoUnlock(the, qrId, success, fail)
 {
 	var that = the;
+	var type = 0;
+	var code = 'no';
+	if (that.data.coupon == 'oneDayTicket' && that.data.couponCode != null)
+	{
+	
+		type = 1;
+		code = that.data.couponCode;
+		
+	}
+	wx.setStorageSync('using_coupon_code', code);
+
 	wx.request({
 		url: config.PytheRestfulServerURL + '/qr/unlock/prepare',
 		data: {
 			customerId: wx.getStorageSync(user.CustomerID),
-
 			qrId: qrId,
+			type: type,
+			code: code,
 		},
 		method: 'GET',
 		success: function (res) {
@@ -1237,8 +1527,13 @@ function gotoUnlock(the, qrId, success, fail)
 				if (result.status == 300) {
 					that.setData({
 						isNotEnough: true,
+						price: result.data.price,
+						giving: result.data.giving,
 						hints: result.data.annotation,
+						pStatus: wx.getStorageSync(user.PStatus),
+						unlockQR: qrId,
 					});
+					
 
 
 				}
@@ -1250,7 +1545,6 @@ function gotoUnlock(the, qrId, success, fail)
 						content: result.msg,
 						showCancel: false,
 						confirmText: '我知道了',
-						confirmColor: '',
 						success: function (res) {
 
 						},

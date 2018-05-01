@@ -432,9 +432,20 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 											fail: function(res) {},
 											complete: function(res) {},
 										});
+
+										var pages = getCurrentPages();
+										var indexPage = pages[0];
+										indexPage.data.status = 'unlock';
+										indexPage.data.unlockQR = null;
+										indexPage.data.backFrom = null;
+										indexPage.data.showZoneNotice = true;
+										// wx.reLaunch({
+										// 	url: 'index?status=unlock',
+										// });
 										wx.navigateBack({
-											delta: 1,
+											delta: 5,
 										});
+										
 									}
 								},
 								1000 * 5,
@@ -528,7 +539,11 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 											
 											
 											//更新开锁状态
-											
+											var couponCode = null;
+											if (wx.getStorageSync('using_coupon_code') != 'no')
+											{
+												couponCode = wx.getStorageSync('using_coupon_code');
+											}
 											wx.request({
 												url: UNLOCK_URL,
 												data: {
@@ -536,10 +551,11 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 													customerId: wx.getStorageSync(user.CustomerID),
 													longitude: wx.getStorageSync(user.Longitude),
 													latitude: wx.getStorageSync(user.Latitude),
+													code: couponCode,
 												},
 												method: 'POST',
 												success: function (res) { 
-
+													wx.setStorageSync('using_coupon_code', null);
 													normalUpdateCustomerStatus(
 														wx.getStorageSync(user.CustomerID),
 														() => {
@@ -548,8 +564,17 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 																unlock_progress: false,
 															});
 
+															var pages = getCurrentPages();
+															var indexPage = pages[0];
+															indexPage.data.status = 'unlock';
+															indexPage.data.unlockQR = null;
+															indexPage.data.backFrom = null;
+															indexPage.data.showZoneNotice = true;
+															// wx.reLaunch({
+															// 	url: 'index?status=unlock',
+															// });
 															wx.navigateBack({
-																delta: 1,
+																delta: 5,
 															});
 														
 														});
@@ -721,6 +746,7 @@ function checkUsingMinutes(carId, success, fail) {
       method: 'GET',
       success: function (res) {
         var result = res;
+				
         normalUpdateCustomerStatus(
           wx.getStorageSync(user.CustomerID),
           () => {
@@ -812,7 +838,12 @@ function normalUpdateCustomerStatus(customerId, success, fail)
 			wx.setStorageSync(user.Level, info.level);
 			wx.setStorageSync(user.Amount, info.amount);
 
+			wx.setStorageSync(user.UsingCarLevel, info.description);
 			wx.setStorageSync(user.UsingCarPrice, info.price);
+			wx.setStorageSync(user.UsingCarGiving, info.giving);
+			wx.setStorageSync(user.PStatus, info.pStatus);
+
+			wx.setStorageSync('hotline', info.hotline);
 
       typeof success == "function" && success(res.data);
     },
@@ -970,6 +1001,11 @@ function loginSystem(the, success, fail) {
 							title: '已登录',
 							duration: 1200
 						});
+
+						that.setData({							
+							amount: wx.getStorageSync(user.Amount),
+						});
+						
 						typeof success == "function" && success('login success');
 						
 					}
@@ -980,7 +1016,7 @@ function loginSystem(the, success, fail) {
 						logoutSystem: wx.getStorageSync('logoutSystem'),
 						alreadyRegister: wx.getStorageSync('alreadyRegister'),
 						amount: wx.getStorageSync(user.Amount),
-						price: wx.getStorageSync(user.UsingCarPrice),
+						
 					});
 
 				},

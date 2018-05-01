@@ -7,6 +7,7 @@ var config = require("../../utils/config.js");
 var user = require("../../utils/user.js");
 var login = require("../../utils/login.js");
 var WXBizDataCrypt = require('../../utils/decode.js');
+var operation = require('../../utils/operation.js');
 
 Page({
   data: {
@@ -60,6 +61,7 @@ Page({
 
 
 	getPhoneNumber: function (e) {
+		var that = this;
 		console.log(e.detail.errMsg);
 		console.log(e.detail.iv);
 		console.log(e.detail.encryptedData);
@@ -121,13 +123,23 @@ Page({
 						//判断注册是否成功，成功则返回index页面
 						wx.setStorageSync('alreadyRegister', 'yes');
 
-
-						wx.reLaunch({
-							url: '../index/index',
+						wx.showLoading({
+							title: '登录中',
+							mask: true,
 							success: function (res) { },
 							fail: function (res) { },
 							complete: function (res) { },
 						})
+						operation.loginSystem(
+							that,
+							() => {
+								wx.hideLoading();
+								wx.navigateBack({
+									delta: 5,
+								})
+
+							}
+						);
 
 
 					}

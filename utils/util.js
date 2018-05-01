@@ -61,8 +61,30 @@ function encode(input) {
   return output;
 }  
 
+function formatDay(time) {
+	let _time = time
+	if (typeof _time !== 'number' || _time < 0) {
+		return _time
+	}
+	if (_time.toString().length === 10) {
+		_time = parseInt(_time.toString().concat('000'))
+	}
+
+	let date = new Date(_time)
+
+	return ([
+		date.getFullYear(), 
+		date.getMonth() + 1,
+		date.getDate()
+	]).map(function (item) {
+		let _item = item.toString()
+		return _item[1] ? _item : '0'.concat(_item)
+	}).join("-")
+}
+
 module.exports = {
   formatTime: formatTime,
   replaceStr: replaceStr,
-  encode: encode
+  encode: encode,
+	formatDay: formatDay
 }

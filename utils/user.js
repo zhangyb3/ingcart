@@ -23,7 +23,10 @@ module.exports = {
     UsingCarStatus: "UsingCarStatus",
 		UsingCarDevice: "UsingCarDevice",
 		UsingCarPrice: "UsingCarPrice",
+		UsingCarGiving: "UsingCarGiving",
+		UsingCarLevel: "UsingCarLevel",
 		Level: "Level",
 		PhoneNum: "PhoneNum",
 		Amount: "Amount",
+		PStatus: "PStatus",
 }

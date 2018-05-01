@@ -2,9 +2,11 @@
   "pages":[
     "pages/index/index",
 		"pages/index/processing",
+		"pages/index/charging",
     "pages/maintenance/call",
     "pages/bill/list",
     "pages/my/display",
+		"pages/my/coupon",
     "pages/my/history",
 		"pages/my/record_repair",
     "pages/my/userRepair",

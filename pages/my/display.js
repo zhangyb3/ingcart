@@ -95,6 +95,15 @@ Page({
     })
   },
 
+	toCoupon: function () {
+		wx.navigateTo({
+			url: 'coupon',
+			success: function (res) { },
+			fail: function (res) { },
+			complete: function (res) { },
+		})
+	},
+
   toHistory: function() {
     wx.navigateTo({
       url: 'history',

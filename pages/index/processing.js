@@ -72,7 +72,6 @@ Page({
 			);
 
 			
-
 		}
 
 		
@@ -122,12 +121,18 @@ Page({
 							complete: function(res) {},
 						})
 
-						wx.reLaunch({
-							url: 'index?from=processing',
-							success: function (res) { },
-							fail: function (res) { },
-							complete: function (res) { },
-						})
+						var pages = getCurrentPages();
+						var indexPage = pages[0];
+						indexPage.data.fromPage = 'processing';
+						wx.navigateBack({
+							delta: 5,
+						});
+						// wx.reLaunch({
+						// 	url: 'index?from=processing',
+						// 	success: function (res) { },
+						// 	fail: function (res) { },
+						// 	complete: function (res) { },
+						// })
 
 						
 

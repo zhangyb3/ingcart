@@ -101,14 +101,14 @@
           <cover-view class='tab-column' bindtap='toRepair'>
             <cover-view class='tabCenter'>
               <cover-image src='../../images/repair.png'></cover-image>
-              <cover-view class=''>报 修 </cover-view> 
+              <cover-view class=''>报修 </cover-view> 
             </cover-view>
           </cover-view> 
 
           <cover-view class='tab-column' bindtap='toActivity'>
             <cover-view class='tabCenter' style='float:right'>
               <cover-image src='../../images/favourActivity.png'></cover-image>
-              <cover-view class=''>优 惠 活 动 </cover-view> 
+              <cover-view class=''>优惠活动 </cover-view> 
             </cover-view>
           </cover-view>  
            
@@ -119,12 +119,12 @@
      <!-- 用车时显示 用车中 信息 -->
 
      <cover-view class='using-info' wx:if="{{timing}}">
-           <cover-view class='using-title'><cover-view class='forPadding'>用车中（客服电话：0755-29648606）</cover-view> </cover-view>
+           <cover-view class='using-title'><cover-view class='forPadding'>用车中（客服电话：{{hotline}}）</cover-view> </cover-view>
 
            <cover-view class='info-aboutUsing' style=''>
 
                  <cover-view class='info-ingcart' style='text-align:left;'>
-                      <cover-view class='price-ingcart'>{{price}}</cover-view>
+                      <cover-view class='price-ingcart'>{{price - giving}}</cover-view>
                       <cover-view class='price-small'>元/天</cover-view>
                  </cover-view>
                  <cover-view class='info-ingcart'>
@@ -142,11 +142,11 @@
                  <cover-view class='wran-tip'>1、如您已离园，请电话联络客服结束您的行程。</cover-view>
                  <cover-view class='wran-tip' style='margin:8px 0 10px;'>2、同一个账号当天内可多次扫码解锁使用该车。</cover-view>
 
-                 <cover-view class='sure-end'>
+                 <cover-view class='sure-end' hidden="{{pStatus != 1}}">
                       
-									<!-- <form  bindsubmit="customerFinishUsing" report-submit='true' > -->
-										<!-- <cover-view class='sure-end-btn' bindtap='customerFinishUsing'>确定结束用车</cover-view> -->
-									<!-- </form> -->
+									 <!-- <form  bindsubmit="customerFinishUsing" report-submit='true'  >  -->
+										 <cover-view class='sure-end-btn' bindtap='customerFinishUsing'>确定结束用车</cover-view> 
+									 <!-- </form>  -->
 								 </cover-view>
            </cover-view>
 
@@ -156,14 +156,14 @@
            </view> -->
      </cover-view>
      <!-- 不用车时 显示余额信息 -->
-     <cover-view class='balance' wx:if="{{timing == false}}" >
+     <!-- <cover-view class='balance' wx:if="{{timing == false}}" >
 
 
-          <cover-view class='current-money'><cover-view class='forPadding'>当前余额：{{amount}}元</cover-view></cover-view>
+           <cover-view class='current-money'><cover-view class='forPadding'>当前余额：{{amount}}元</cover-view></cover-view> 
 
 
-          <cover-view class='recharge' bindtap='toRecharge'>去充值</cover-view>
-     </cover-view>
+           <cover-view class='recharge' bindtap='toRecharge'></cover-view> 
+     </cover-view> -->
    </cover-view>
 
   <!-- 充值提示弹窗 暂时隐藏 当扫码时余额不足时弹出-->
@@ -172,11 +172,14 @@
                <cover-view class='layer-content'>
                      <cover-view class='layer-title'><cover-view style='padding:0 30rpx;box-sizing:border-box;line-height:30px;'>余额不足</cover-view> </cover-view>
 
-                     <cover-view style='text-align:center;'>当前余额</cover-view>
+                     <cover-view style='text-align:center;'>还需充值（元）</cover-view>
 
                      <cover-view class='balance-info'>
-                         <cover-view class='balance-show'> {{amount}} </cover-view>
-                        	<cover-view class='money-unit'> 元 </cover-view>  
+										 	<!-- <cover-view style="margin:auto auto;display: flex;flex-direction: row;align-items:center;justify-content:center;"> -->
+												<cover-view class='balance-show'> {{price}} </cover-view>
+                        	 <!-- <cover-view class='money-unit'> 元 </cover-view> -->
+											 <!-- </cover-view> -->
+                            
                      </cover-view>
 
                      <cover-view class='balance-illustration'>
@@ -186,7 +189,8 @@
                            
                      </cover-view>
 
-                     <cover-view class='iKnow'  bindtap='toRecharge'>知道了，去充值</cover-view>
+                     <!-- <cover-view class='iKnow'  bindtap='toRecharge'>知道了，去充值</cover-view> -->
+										 <cover-view class='iKnow'  bindtap='payToUse'>去付款</cover-view>
 										
 										<cover-image class="close_notify" src="../../images/close.png"  bindtap="confirmArrearage" />
                </cover-view>
@@ -194,7 +198,14 @@
    </cover-view>
    <!-- 后期修改 添加于2018-02-23 09:58 --> 
 
+		<cover-image style='width:470rpx;height:117.5rpx;position:fixed;bottom:38px;left:50%;transform:translateX(-50%);' src='/images/use.png' bindtap='scanToUnlock'></cover-image>
 
+		<cover-view class='layer-map' wx:if='{{showZoneNotice == true && zoneNoticeImg != null}}' bindtap='disappearZoneNotice'>
+			<cover-view class='layer-img-background'>
+				<cover-image src="{{zoneNoticeImg}}">
+				</cover-image>
+			</cover-view>
+		</cover-view>
   
   </map>
 

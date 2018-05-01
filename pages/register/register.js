@@ -5,6 +5,7 @@ var config = require("../../utils/config.js");
 var user = require("../../utils/user.js");
 var login = require("../../utils/login.js");
 var WXBizDataCrypt = require('../../utils/decode.js');
+var operation = require("../../utils/operation.js");
 
 Page({
 
@@ -81,14 +82,26 @@ Page({
     wx.setStorageSync('verificationCode', verificationCode);
   },
   customerRegister:function(e){
+		var that = this;
     register.commitRegister(this,
 			(res)=>{
-				wx.reLaunch({
-					url: '../index/index',
-					success: function(res) {},
-					fail: function(res) {},
-					complete: function(res) {},
+				wx.showLoading({
+					title: '登录中',
+					mask: true,
+					success: function (res) { },
+					fail: function (res) { },
+					complete: function (res) { },
 				})
+				operation.loginSystem(
+					that,
+					() => {
+						wx.hideLoading();
+						wx.navigateBack({
+							delta: 5,
+						})
+
+					}
+				);
 			}
 		);
   },

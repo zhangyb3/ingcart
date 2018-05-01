@@ -1,0 +1,25 @@
+<scroll-view class='pageView' scroll-y style='min-height:{{deviceHeight}}px;'>
+
+  <block class='excerpt-list' wx:for='{{coupons}}'  wx:key='unique'>
+
+		<view class='activity-content' data-coupon='{{item}}' bindtap='useCoupon' >
+
+          <image id="coupon_img" wx:if="{{item.status == 0}}" mode='widthFix' src='/images/couponTemplate.png'></image> 
+          <view id="coupon_content" wx:if="{{item.status == 0}}">
+							<view>本优惠券可免费抵用车一次</view> 
+							<view>本券仅限当天使用</view>
+							<view style="font-size:20rpx;color:gray;">有效期至{{item.stopTime}}</view>
+					</view>
+
+					<image id="coupon_img" wx:if="{{item.status == 1}}" mode='widthFix' src='/images/couponTemplated.png'></image>
+					<view id="coupon_content" wx:if="{{item.status == 1}}">
+							<view>本优惠券已使用</view> 
+							<view><text decode="true">&nbsp;</text></view>
+							<view style="font-size:20rpx;color:gray;">有效期至{{item.stopTime}}</view>
+					</view>
+
+    </view> 
+
+	</block>
+
+</scroll-view>

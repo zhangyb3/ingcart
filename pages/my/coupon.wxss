@@ -1,0 +1,44 @@
+.pageView{
+  background-color: #fff;
+  padding:30rpx;
+  box-sizing: border-box;
+}
+.pageView image{
+  width:100%;
+}
+
+.withOutAct{
+  display: flex;
+  flex-direction: column;
+  background-color:#f1f1f1;
+}
+
+.withOutAct-content{
+  margin:auto auto;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+
+.activity-content{
+  /* border-radius:6px; */
+	margin-bottom:15px;overflow: hidden;
+  /* box-shadow: 1px 1px 3px 1px rgba(0,0,0,0.1),-1px -1px 3px 1px rgba(0,0,0,0.1); */
+	position: relative;
+}
+
+.activity-box{width:100%;padding:0 20px; box-sizing: border-box;height:40px;}
+.activity-title{width:80%;float:left;line-height:40px;}
+.activity-box .activity-go{width:20px;height:20px;display: block;float:right;margin-top:10px;}
+
+#coupon_img{
+	position: relative;
+}
+
+#coupon_content{
+	position: absolute;
+	left: 40%;
+	top: 40rpx;
+	line-height: 30rpx;
+	font-size: 24rpx;
+}

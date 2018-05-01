@@ -58,7 +58,7 @@
 }
 
 .tabCenter {
-  display: inline-block;
+  display: block;
   height: 100%;
 }
 
@@ -159,7 +159,8 @@
 .recharge {
   color: #fff;
   width: 25%;
-  background-color: #f93;
+  /* background-color: #f93; */
+	background-color: #f1f1f1;
   text-align: center;
   float: left;
   height: 100%;
@@ -194,6 +195,13 @@
 	position: relative;
 }
 
+.layer-img-background {
+  padding: 100rpx 0 30rpx;
+  width: 80%;
+  margin: auto auto;
+	position: relative;
+}
+
 .layer-title {
   color: #f93;
   font-size: 30rpx;
@@ -205,14 +213,15 @@
 }
 
 .balance-info {
-   margin: 5px 0px 30px; 
-  text-align: center;
+    /* margin: 5px 0px 30px;   */
+   text-align: center; 
 	width: 100%;
-	
+	margin-top: 5px;
+	margin-bottom: 30px;
 }
 
 .balance-show {
-   display: inline-block; 
+   display: block; 
   color: #f93;
   font-size: 32px;
 	
@@ -221,9 +230,10 @@
 
 .money-unit {
   font-size: 28rpx;
-   display: inline-block; 
+   display: flex; 
   margin-left: 5px;
-  line-height: 22px;
+	margin-top: 10px;
+  line-height: 30px;
 }
 
 .balance-illustration {
