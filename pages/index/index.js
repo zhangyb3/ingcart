@@ -1,17 +1,18 @@
-
+var app = getApp();
 var register = require("../../utils/register.js");
 var config = require("../../utils/config.js");
 var user = require("../../utils/user.js");
 var login = require("../../utils/login.js");
 var operation = require("../../utils/operation.js");
 var pay = require("../../utils/pay.js");
+var IngcartSdk = require('../../lib/ingcart-lock-manager');
 
 var app = getApp()
 Page({
   data: {
     scale: 18,
-    latitude: 0,
-    longitude: 0,
+		latitude: 22.60204,
+		longitude: 113.978616,
 
     timing: false,
     usingMinutes: 0,
@@ -51,11 +52,17 @@ Page({
 		
 		zoneNoticeImg:null,
 		showZoneNotice:false,
+		waitGprsOn: false,
+		gprsOn: false,
+
+		hotline:'',
   },
 
 // 页面加载
   onLoad: function (parameters) {
     var that=this;
+		getUserLocation(that);
+		
 
 		// that.data.status = parameters.status;
 		that.data.unlockQR = parameters.unlock;
@@ -84,7 +91,7 @@ Page({
 		}
 
 		this.data.qrIdFromWX = operation.urlProcess(decodeURIComponent(parameters.q)).id ;
-		
+		console.log("qrIdFromWX!!!!!!!!!!!!!!!!!!!!!!!!!", this.data.qrIdFromWX);
 		that.data.from = parameters.from;
 		
     wx.showShareMenu({
@@ -97,16 +104,16 @@ Page({
 
 // 页面显示
   onShow: function(){
-		var that = this;
 
-		operation.normalUpdateCustomerStatus(
-			wx.getStorageSync(user.CustomerID),
-			() => {
-				that.setData({
-					amount: wx.getStorageSync(user.Amount),
-				});
-			},
-		);
+		var that = this;
+		refreshPage(that);
+
+		that.setData({
+			latitude: wx.getStorageSync(user.Latitude) || that.data.latitude,
+			longitude: wx.getStorageSync(user.Longitude) || that.data.longitude,
+		});
+		
+		
 
 		// if(this.data.backFrom == 'charge')
 		// {
@@ -169,13 +176,79 @@ Page({
 		// }	
 
 		if (that.data.unlockQR != null && that.data.backFrom == 'payToUse') {
-			wx.navigateTo({
-				url: 'charging?unlock=' + that.data.unlockQR ,
+			// wx.navigateTo({
+			// 	url: 'charging?unlock=' + that.data.unlockQR ,
+			// 	success: function (res) { },
+			// 	fail: function (res) { },
+			// 	complete: function (res) { },
+			// });
+			
+			wx.showLoading({
+				title: '充值到账中...',
+				mask: true,
 				success: function (res) { },
 				fail: function (res) { },
 				complete: function (res) { },
 			});
 			
+			var that = this;
+			var originalAmount = that.data.originalAmount;
+			var count = 0;
+			var checkAmountIntervalId = setInterval(
+				function () {
+					count++;
+					wx.request({
+						url: config.PytheRestfulServerURL + '/customer/select',
+						data: {
+							customerId: wx.getStorageSync(user.CustomerID)
+						},
+						method: 'GET',
+						dataType: '',
+						success: function (res) {
+							
+							// wx.hideLoading();
+							console.log(res);
+							var info = res.data.data;
+							that.data.account = info;
+							that.setData({
+								amount: info.amount,
+								pStatus: info.pStatus,
+							});
+							//充值到账
+							if (info.amount > originalAmount) 
+							{
+								wx.hideLoading();
+								clearInterval(checkAmountIntervalId);
+								var qrId = that.data.unlockQR;
+
+								//去开锁
+								gotoUnlock(that, qrId);
+
+							}
+							
+						},
+						fail: function (res) { },
+						complete: function (res) {
+							
+						},
+					})
+					if(count > 30)
+					{
+						wx.hideLoading();
+						clearInterval(checkAmountIntervalId);
+						wx.showModal({
+							title: '提示',
+							content: '充值暂未到账，请稍后重试',
+							showCancel: false,
+							confirmText: '我知道了',
+							success: function(res) {},
+							fail: function(res) {},
+							complete: function(res) {},
+						})
+					}
+				},
+				1000
+			);
 
 		}	
 
@@ -193,27 +266,31 @@ Page({
 			}
 		});
 
-		if (that.data.status == 'unlock' ) 
+		if (wx.getStorageSync(user.UsingCarStatus) == 1 || that.data.status == 'unlock' ) 
 		{
 			
-			wx.showLoading({
-				title: '数据刷新中...',
-				mask: true,
-				success: function (res) { },
-				fail: function (res) { },
-				complete: function (res) { },
-			});
+			
+			// wx.showLoading({
+			// 	title: '数据刷新中...',
+			// 	mask: true,
+			// 	success: function (res) { },
+			// 	fail: function (res) { },
+			// 	complete: function (res) { },
+			// });
 
 			var that = this;
 		
-
+			
 			checkUsingCarStatus(that,
 				(checkResult) => {
-					wx.hideLoading();
-					that.data.status = null;
+					// wx.hideLoading();
 					refreshPage(that);
 
-
+					that.setData({
+						timing: true,
+						hotling:''||wx.getStorageSync('hotline'),
+					});
+					
 				},
 			);
 
@@ -258,6 +335,18 @@ Page({
 			});
 		}
 
+		if(wx.getStorageSync('unlock_mode') == 'gprs' && wx.getStorageSync('never_show_gprs_notice') == true)
+		{
+			if (wx.getStorageSync('unlockingQR').length == 8)
+			{
+				that.setData({
+					waitGprsOn: true,
+					waitGprsOnNoticeImg: config.PytheRestfulServerURL + '/xcx/wait_gprs_on_new.png',
+				});	
+			}
+			wx.setStorageSync('never_show_gprs_notice', false);
+		}
+
 		if (wx.getStorageSync('alreadyRegister') == 'no' || wx.getStorageSync('reload') == 'yes' || that.data.from == 'outside' ) 
 		{
 			
@@ -273,12 +362,12 @@ Page({
 			operation.loginSystem(
 				this,
 				() => {
-
+					
 					wx.hideLoading();
 					checkBluetooth(that);
 					refreshPage(that);
 
-					
+					// app.ingcartLockManager = new IngcartSdk.IngcartLockManager(app.options);
 
 					checkUsingCarStatus(that,
 						(checkResult) => {
@@ -290,6 +379,7 @@ Page({
 							{
 								
 								var qrId = that.data.qrIdFromWX;
+								console.log("!!!!!!!!!!!!qrIdFromWX!!!!!!!!", this.data.qrIdFromWX);
 								//去开锁
 								gotoUnlock(that, qrId);
 								that.setData({
@@ -350,6 +440,17 @@ Page({
 			
 			checkBluetooth(that);
 			
+			if (that.data.qrIdFromWX != null && wx.getStorageSync('alreadyRegister') == 'yes') 
+			{
+
+				var qrId = that.data.qrIdFromWX;
+				//去开锁
+				gotoUnlock(that, qrId);
+				that.setData({
+					qrIdFromWX: null,
+				});
+			}
+			
 			// wx.showLoading({
 			// 	title: '加载中',
 			// 	mask: true,
@@ -361,7 +462,7 @@ Page({
 
 			checkUsingCarStatus(that,
 				(checkResult) => {
-					wx.hideLoading();
+					// wx.hideLoading();
 
 					refreshPage(that);
 
@@ -379,25 +480,13 @@ Page({
 										zoneNoticeImg: config.PytheRestfulServerURL + res.data.data,
 									});
 								}
-								else {
-									wx.showModal({
-										title: '提示',
-										content: res.data.msg,
-										showCancel: false,
-										confirmText: '我知道了',
-										success: function (res) {
-
-										},
-										fail: function (res) { },
-										complete: function (res) { },
-									})
-								}
+								
 							},
 							fail: function (res) { },
 							complete: function (res) { },
 						})
 					}
-
+					
 
 				},
 				()=>{
@@ -411,7 +500,7 @@ Page({
     this.mapCtx = wx.createMapContext("ingcartMap");
     this.movetoPosition()
 
-	
+		
 		
   },
 
@@ -606,134 +695,142 @@ Page({
 				wx.setStorageSync(user.Latitude, res.latitude);
 				wx.setStorageSync(user.Longitude, res.longitude);
 
-				if (wx.getStorageSync(user.UsingCarStatus) >= 1) 
-				{
-					var lockStatusResult = null;
-
-					var int = setTimeout(
-						function () { 
-							if(lockStatusResult == null)
-							{
-								wx.hideLoading();
-								//20秒后依然查不到锁状态，放弃，断开连接，并刷新页面
-								wx.closeBLEConnection({
-									deviceId: wx.getStorageSync(user.UsingCarDevice),
-									success: function(res) {},
-									fail: function(res) {},
-									complete: function(res) {},
-								})
-								// wx.showModal({
-								// 	title: '提示',
-								// 	content: '暂时无法查询锁的信息，请稍后重试',
-								// 	showCancel: false,
-								// 	confirmText: '我知道了',
-								// 	success: function(res) {
-								// 		if(res.confirm)
-								// 		{
-								// 			that.onShow();
-								// 		}
-								// 	},
-								// 	fail: function(res) {},
-								// 	complete: function(res) {},
-								// })
-							}
-						},
-						1000 * 20
-					);
-
-					//检查用车的锁状态
-					// operation.checkLockStatus(that,
-					// 	(result) => {
-					// 		lockStatusResult = result;
-					// 		wx.hideLoading();
-							
-
-					// 		if (lockStatusResult == 0)
-					// 		{
-					// 			//锁未关闭，不予结算
-					// 			wx.showModal({
-					// 				title: '提示',
-					// 				content: '请先关闭车锁',
-					// 				showCancel: false,
-					// 				confirmText: '我知道了',
-					// 				success: function(res) {},
-					// 				fail: function(res) {},
-					// 				complete: function(res) {},
-					// 			})
-					// 		}
-					// 		else if (lockStatusResult == 1)
-					// 		{
-					// 			//锁已关闭，可以结算
-
-								wx.request({
-									url: config.PytheRestfulServerURL + '/customer/urgent/lock/',
-									data: {
-										recordId: wx.getStorageSync(user.RecordID),
-										carId: wx.getStorageSync(user.UsingCar),
-										customerId: wx.getStorageSync(user.CustomerID),
-										longitude: wx.getStorageSync(user.Longitude),
-										latitude: wx.getStorageSync(user.Latitude),
-										formId: formId,
-									},
-									method: 'POST',
-									success: function (res) {
-										wx.hideLoading();
-										if (res.data.status == 200) {
-											that.setData({
-												timing: false,
-												isShowendUseTip: false,
-											});
-											operation.normalUpdateCustomerStatus(
-												wx.getStorageSync(user.CustomerID),
-												() => {
-													that.setData({
-														amount: wx.getStorageSync(user.Amount),
-													});
-												},
-											);
-										}
-										else {
-											wx.showModal({
-												title: '提示',
-												content: res.data.msg,
-												showCancel: false,
-												confirmText: '我知道了',
-												success: function (res) { },
-												fail: function (res) { },
-												complete: function (res) { },
-											})
-										}
-										
-									},
-									fail: function (res) {
-										wx.hideLoading();
-									},
-									complete: function (res) { },
-								});
-
-
-
-					// 		}
-					// 		else
-					// 		{
-
-					// 		}
-
-					// 	}, 
-					// 	(result)=>{
-					// 		wx.hideLoading();
-							
-					// 	}
-					// )
-						
-				}
-
-				
-
 			},
-			fail: function(res) {},
-			complete: function(res) {},
-		})
+			fail: function(res) {
+				
+			},
+			complete: function(res) {
+			
+			},
+		});
+
+		if (wx.getStorageSync(user.UsingCarStatus) >= 1) {
+			var lockStatusResult = null;
+
+			var int = setTimeout(
+				function () {
+					if (lockStatusResult == null) {
+						wx.hideLoading();
+						//20秒后依然查不到锁状态，放弃，断开连接，并刷新页面
+						wx.closeBLEConnection({
+							deviceId: wx.getStorageSync(user.UsingCarDevice),
+							success: function (res) { },
+							fail: function (res) { },
+							complete: function (res) { },
+						})
+						// wx.showModal({
+						// 	title: '提示',
+						// 	content: '暂时无法查询锁的信息，请稍后重试',
+						// 	showCancel: false,
+						// 	confirmText: '我知道了',
+						// 	success: function(res) {
+						// 		if(res.confirm)
+						// 		{
+						// 			that.onShow();
+						// 		}
+						// 	},
+						// 	fail: function(res) {},
+						// 	complete: function(res) {},
+						// })
+					}
+				},
+				1000 * 20
+			);
+
+			//检查用车的锁状态
+			// operation.checkLockStatus(that,
+			// 	(result) => {
+			// 		lockStatusResult = result;
+			// 		wx.hideLoading();
+
+
+			// 		if (lockStatusResult == 0)
+			// 		{
+			// 			//锁未关闭，不予结算
+			// 			wx.showModal({
+			// 				title: '提示',
+			// 				content: '请先关闭车锁',
+			// 				showCancel: false,
+			// 				confirmText: '我知道了',
+			// 				success: function(res) {},
+			// 				fail: function(res) {},
+			// 				complete: function(res) {},
+			// 			})
+			// 		}
+			// 		else if (lockStatusResult == 1)
+			// 		{
+			// 			//锁已关闭，可以结算
+
+			
+			setTimeout(
+				function(){
+					wx.request({
+						url: config.PytheRestfulServerURL + '/customer/urgent/lock/',
+						data: {
+							recordId: wx.getStorageSync(user.RecordID),
+							carId: wx.getStorageSync(user.UsingCar),
+							customerId: wx.getStorageSync(user.CustomerID),
+							longitude: wx.getStorageSync(user.Longitude),
+							latitude: wx.getStorageSync(user.Latitude),
+							formId: formId,
+						},
+						method: 'POST',
+						success: function (res) {
+							wx.hideLoading();
+							that.setData({
+								timing: false,
+								isShowendUseTip: false,
+							});
+							if (res.data.status == 200) {
+								
+								operation.normalUpdateCustomerStatus(
+									wx.getStorageSync(user.CustomerID),
+									() => {
+										that.setData({
+											amount: wx.getStorageSync(user.Amount),
+										});
+									},
+								);
+							}
+							else {
+								wx.showModal({
+									title: '提示',
+									content: res.data.msg,
+									showCancel: false,
+									confirmText: '我知道了',
+									success: function (res) { },
+									fail: function (res) { },
+									complete: function (res) { },
+								})
+							}
+
+						},
+						fail: function (res) {
+							wx.hideLoading();
+						},
+						complete: function (res) { },
+					});
+				},
+				2000
+			);
+
+
+			// 		}
+			// 		else
+			// 		{
+
+			// 		}
+
+			// 	}, 
+			// 	(result)=>{
+			// 		wx.hideLoading();
+
+			// 	}
+			// )
+
+		}
+
+
 	
 	},
 
@@ -752,11 +849,19 @@ Page({
 
 	payToUse:function(e){
 		var that= this;
-		var originalAmount = wx.getStorageSync(user.Amount);
+		that.data.originalAmount = wx.getStorageSync(user.Amount);
 
 		that.setData({
 			isNotEnough: false,
 		});
+
+		// wx.showLoading({
+		// 	title: '账单处理中...',
+		// 	mask: true,
+		// 	success: function(res) {},
+		// 	fail: function(res) {},
+		// 	complete: function(res) {},
+		// });
 
 		//直接去付款而非充值
 		pay.requestOrder(that, that.data.price, 0,
@@ -784,13 +889,13 @@ Page({
 
 								
 
-								wx.redirectTo({
-									url: 'index/charging?unlock=' + that.data.unlockQR + '&backFrom=payToUse',
-									success: function(res) {},
-									fail: function(res) {},
-									complete: function(res) {},
-								})
-								
+								// wx.redirectTo({
+								// 	url: 'index/charging?unlock=' + that.data.unlockQR + '&backFrom=payToUse',
+								// 	success: function(res) {},
+								// 	fail: function(res) {},
+								// 	complete: function(res) {},
+								// })
+								// gotoUnlock(that, that.data.unlockQR);
 								
 													
 							}
@@ -873,42 +978,8 @@ Page({
 
 	//cover-view版扫码开锁
 	scanToUnlock:function(e){
-		
-			var that = this;
-			// if (wx.getStorageSync(user.UsingCar) == null || wx.getStorageSync(user.UsingCarStatus) == 2)
-			{
-
-				wx.scanCode({
-					onlyFromCamera: true,
-					success: function (res) {
-						console.log(res);
-						if (res.errMsg == 'scanCode:ok') {
-							var parameters = operation.urlProcess(res.result); console.log(parameters);
-							var qrId = parameters.id;
-
-							wx.getLocation({
-								type: 'gcj02',
-								altitude: true,
-								success: function (res) {
-									wx.setStorageSync(user.Latitude, res.latitude);
-									wx.setStorageSync(user.Longitude, res.longitude);
-								},
-								fail: function (res) { },
-								complete: function (res) { },
-							});
-
-							//去开锁
-							gotoUnlock(that, qrId);
-
-						}
-
-					},
-					fail: function (res) { },
-					complete: function (res) { },
-				});
-
-			}
-
+		var that = this;
+		scanToUnlock(that);
 	},
 
 
@@ -921,9 +992,40 @@ Page({
 		});
 	},
 
+	//gprs提示
+	showGprsNotice:function(e){
+		var that = this;
+		that.setData({
+			waitGprsOn: false,
+			gprsOn: true,
+			gprsOnNoticeImg: config.PytheRestfulServerURL + '/xcx/gprs_on_to_unlock.png',
+		});
+	},
+
+	//删除gprs提示
+	disappearGprsNotice:function(e){
+		var that = this;
+		that.setData({
+			waitGprsOn: false,
+			gprsOn: false,
+		});
+		// scanToUnlock(that);
+	},
+
+	//拨打热线
+	callHotline:function(e){
+		var that = this;
+		wx.makePhoneCall({
+			phoneNumber: that.data.hotline,
+			success: function(res) {},
+			fail: function(res) {},
+			complete: function(res) {},
+		})
+	},
+
   onUnload:function(){
 
-		// stopUnload(this);
+		app.ingcartLockManager = null;
 
     wx.closeBluetoothAdapter({
       success: function(res) {},
@@ -945,9 +1047,32 @@ Page({
   
   // 报修
   toRepair: function () {
-    wx.navigateTo({
-      url: '../maintenance/call',
-    })
+		var that = this;
+		wx.showModal({
+			title: '',
+			content: '如果行程中不能开锁，请拨打' + (that.data.hotline || '4001-151-606'),
+			showCancel: true,
+			cancelText: '取消',
+			confirmText: '拨打热线',
+			success: function (res) {
+				if (res.cancel) {
+
+				}
+				if (res.confirm) {
+					wx.makePhoneCall({
+						phoneNumber: that.data.hotline || '4001-151-606',
+						success: function (res) { },
+						fail: function (res) { },
+						complete: function (res) { },
+					})
+				}
+			},
+			fail: function (res) { },
+			complete: function (res) { },
+		});
+    // wx.navigateTo({
+    //   url: '../maintenance/call',
+    // })
   },
   
   // 去充值
@@ -955,9 +1080,9 @@ Page({
     this.setData({
       isNotEnough: false,
     });
-    wx.navigateTo({
-      url: '../my/rechargePage',
-    });
+    // wx.navigateTo({
+    //   url: '../my/rechargePage',
+    // });
 
   },
 
@@ -998,7 +1123,8 @@ function refreshPage(the){
   // 3.设置地图控件的位置及大小，通过设备宽高定位
   showControls(that);
 
-  
+  //4.运动轨迹画线
+	showPolyline(that);
 
 }
 
@@ -1047,7 +1173,7 @@ function showControls(the){
 				iconPath: '/images/marker.png',
 				position: {
 					left: wx.getStorageSync('windowWidth') / 2 - 18,
-					top: wx.getStorageSync('windowHeight') / 2 - 36 -20,
+					top: wx.getStorageSync('windowHeight') / 2 - 36,
 					
 					width: 36,
 					height: 36
@@ -1067,6 +1193,33 @@ function showControls(the){
 			// 	clickable: true
 			// }
 		]
+	});
+}
+
+function showPolyline(the) {
+	var that = the;
+	that.setData({
+		polyline: 
+			[
+				{
+					points: 
+						[
+							{
+							latitude: 24.780254,
+							longitude: 113.699559
+
+							}, 
+							{
+								longitude: 113.701855,
+								latitude: 23.779778
+							}
+						],
+						color: "#ff0000",
+						width: 5,
+						dottedLine: true,
+						arrowLine: true,
+				},
+			], 
 	});
 }
 
@@ -1291,6 +1444,7 @@ function checkUsingCarStatus(the, success, fail)
 							giving: wx.getStorageSync(user.UsingCarGiving),
 							hotline: wx.getStorageSync('hotline'),
 							pStatus: wx.getStorageSync(user.PStatus),
+							carId: wx.getStorageSync(user.UsingCar),
 						});
 						//此时图标不可点
 						that.data.markerClickable = false;
@@ -1351,7 +1505,6 @@ function checkBluetooth(the){
 		success: function (res) 
 		{ 
 			
-			
 			typeof success == "function" && success('open');
 		},
 		fail: function (res) {
@@ -1375,6 +1528,10 @@ function checkBluetooth(the){
 		 },
 	});
 
+  //万一进来时没打开蓝牙
+	if (app.ingcartLockManager == null) {
+		// app.ingcartLockManager = new IngcartSdk.IngcartLockManager(app.options);
+	}
 }
 
 function stopUnload(the){
@@ -1410,6 +1567,7 @@ function gotoUnlock(the, qrId, success, fail)
 		data: {
 			customerId: wx.getStorageSync(user.CustomerID),
 			qrId: qrId,
+			carId: qrId,
 			type: type,
 			code: code,
 		},
@@ -1422,95 +1580,114 @@ function gotoUnlock(the, qrId, success, fail)
 				operation.qr2mac(qrId,
 					(result) => {
 
-						var carId = result.id;
+						var carId = result.mac;
 						var customerId = wx.getStorageSync(user.CustomerID);
 						var recordId = wx.getStorageSync(user.RecordID);
 
-
-						if (wx.getStorageSync('platform') == 'ios') {
-							//据说每次都要先关闭再打开适配器清理缓存,试一下
-							wx.closeBluetoothAdapter({
-								success: function (res) {
-
-									wx.openBluetoothAdapter({
-										success: function (res) {
-
-											//开锁
-											wx.startBluetoothDevicesDiscovery({
-												services: ['FEE7'],
-												allowDuplicatesKey: true,
-												interval: 0,
-												success: function (res) {
-
-
-												},
-												fail: function (res) {
-
-												},
-												complete: function (res) {
-
-												},
-											});
-
-											setTimeout(
-												function () {
-													wx.navigateTo({
-														url: 'processing?from=index&carId=' + carId + '&qrId=' + qrId + '&operation=unlock',
-														success: function (res) { },
-														fail: function (res) {
-
-														},
-														complete: function (res) { },
-													});
-												},
-												1000
-											);
-
-										},
-										fail: function (res) {
-
-										},
-										complete: function (res) { },
-									});
-
-								},
+						if(qrId.length == 8 )
+						{
+							
+							wx.navigateTo({
+								url: 'processing?from=index&carId=' + qrId + '&qrId=' + qrId + '&operation=unlock',
+								success: function (res) { },
 								fail: function (res) {
 
 								},
-								complete: function (res) {
-								},
-							})
-
-
-						}
-						else {
-							//android版开锁
-							wx.closeBluetoothAdapter({
-								success: function (res) {
-
-									wx.openBluetoothAdapter({
-										success: function (res) {
-
-											wx.navigateTo({
-												url: 'processing?from=index&carId=' + carId + '&qrId=' + qrId + '&operation=unlock',
-												success: function (res) { },
-												fail: function (res) {
-
-												},
-												complete: function (res) { },
-											});
-
-										},
-										fail: function (res) { },
-										complete: function (res) { },
-									})
-								},
-								fail: function (res) { },
 								complete: function (res) { },
-							})
+							});
+						}
+						else
+						{
+							
+							if (wx.getStorageSync('platform') == 'ios') {
+								//据说每次都要先关闭再打开适配器清理缓存,试一下
+								wx.closeBluetoothAdapter({
+									success: function (res) {
+
+										wx.openBluetoothAdapter({
+											success: function (res) {
+
+												//开锁
+												wx.startBluetoothDevicesDiscovery({
+													services: ['FEE7'],
+													allowDuplicatesKey: true,
+													interval: 0,
+													success: function (res) {
+
+
+													},
+													fail: function (res) {
+
+													},
+													complete: function (res) {
+
+													},
+												});
+
+												setTimeout(
+													function () {
+														wx.hideLoading();
+														wx.navigateTo({
+															url: 'processing?from=index&carId=' + carId + '&qrId=' + qrId + '&operation=unlock',
+															success: function (res) { },
+															fail: function (res) {
+
+															},
+															complete: function (res) { },
+														});
+													},
+													1000
+												);
+
+											},
+											fail: function (res) {
+
+											},
+											complete: function (res) { },
+										});
+
+									},
+									fail: function (res) {
+
+									},
+									complete: function (res) {
+									},
+								})
+
+
+							}
+							else {
+								//android版开锁
+								wx.closeBluetoothAdapter({
+									success: function (res) {
+
+										wx.openBluetoothAdapter({
+											success: function (res) {
+												wx.hideLoading();
+												wx.navigateTo({
+													url: 'processing?from=index&carId=' + carId + '&qrId=' + qrId + '&operation=unlock',
+													success: function (res) { },
+													fail: function (res) {
+
+													},
+													complete: function (res) { },
+												});
+
+											},
+											fail: function (res) { },
+											complete: function (res) { },
+										})
+									},
+									fail: function (res) { },
+									complete: function (res) { },
+								})
+
+							}
+
 
 						}
 
+						
 					},
 					(result) => {
 						wx.showModal({
@@ -1565,5 +1742,89 @@ function gotoUnlock(the, qrId, success, fail)
 
 		}
 	});
+
+}
+
+
+function getUserLocation(the) {
+	console.log('location !!!!!!!!!!!!!!!');
+	var that = the;
+	wx.getLocation({
+		type: "gcj02",
+		success: (res) => {
+			wx.setStorageSync(user.Latitude, res.latitude);
+			wx.setStorageSync(user.Longitude, res.longitude);
+		},
+		fail: (res) => {
+			wx.showModal({
+				title: '提示',
+				content: '如果不能提供位置，将无法使用很多功能',
+				showCancel: true,
+				cancelText: '拒绝',
+				confirmText: '接受',
+				success: function (res) {
+					if (res.cancel) {
+						wx.setStorageSync(user.Latitude, 22.60204);
+						wx.setStorageSync(user.Longitude, 113.978616);
+					}
+					else
+					{
+						console.log('!!!!!!!!!!!!!!! unload !!!!!!!!!!!!!!!!');
+						wx.openSetting({
+							success: function(res) {
+								//if(data.authSetting["scope.userLocation"] == true)
+								{
+									getUserLocation(that);
+									that.onShow();
+								}
+							},
+							fail: function(res) {},
+							complete: function(res) {},
+						})
+					}
+				},
+				fail: function (res) { },
+				complete: function (res) { },
+			})
+		}
+	});
+}
+
+function scanToUnlock(the){
+
+	var that = the;
+	// if (wx.getStorageSync(user.UsingCar) == null || wx.getStorageSync(user.UsingCarStatus) == 2)
+	{
+
+		wx.scanCode({
+			onlyFromCamera: true,
+			success: function (res) {
+				console.log(res);
+				if (res.errMsg == 'scanCode:ok') {
+					var parameters = operation.urlProcess(res.result); console.log(parameters);
+					var qrId = parameters.id;
+
+					wx.getLocation({
+						type: 'gcj02',
+						altitude: true,
+						success: function (res) {
+							wx.setStorageSync(user.Latitude, res.latitude);
+							wx.setStorageSync(user.Longitude, res.longitude);
+						},
+						fail: function (res) { },
+						complete: function (res) { },
+					});
+
+					//去开锁
+					gotoUnlock(that, qrId);
+
+				}
+
+			},
+			fail: function (res) { },
+			complete: function (res) { },
+		});
+
+	}
 
 }

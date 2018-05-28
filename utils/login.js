@@ -131,9 +131,10 @@ var remoteLogin = (success, fail) => {
             wx.request({
                 url: LOGIN_URL,
                 data: {
-                    code: loginRes.code
+                    code: loginRes.code,
                     // AppID: config.AppID,
                     // AppSecret: config.AppSecret,
+										userType: 0,//用户类型为0
                 },
                 complete: function (res) {
                     if (res.statusCode != 200) {//失败
@@ -157,22 +158,24 @@ var remoteLogin = (success, fail) => {
                         wx.setStorageSync('SessionID', res.data.data.session_id);
                         wx.setStorageSync('OpenID', res.data.data.openid);
                         wx.setStorageSync('SessionKey', res.data.data.session_key);
-
+												console.log(wx.getStorageSync('SessionKey').length);
+												console.log('session key : ' + wx.getStorageSync('SessionKey'));
                         console.log('openid : ' + wx.getStorageSync('OpenID'));
+												
                         wx.getUserInfo({
                           withCredentials: true,
                           success: function(res) {},
                           fail: function(res) {},
                           complete: function(res) {
-
+														console.log("encryptedData", res.encryptedData);
                             var session_key = wx.getStorageSync("SessionKey");
                             var encryptedData = res.encryptedData;
                             var iv = res.iv;
 
-                            var pc = new WXBizDataCrypt(config.AppID,session_key)
-                            var result = pc.decryptData(encryptedData,iv);
-                            console.log("!!!decode: " + JSON.stringify(result));
-                            wx.setStorageSync(user.UnionID, result.unionId);
+                            // var pc = new WXBizDataCrypt(config.AppID,session_key)
+                            // var result = pc.decryptData(encryptedData,iv);
+                            // console.log("!!!decode: " + JSON.stringify(result));
+                            // wx.setStorageSync(user.UnionID, result.unionId);
                             
                             typeof success == "function" && success();
                           },

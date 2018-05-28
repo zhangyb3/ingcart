@@ -221,6 +221,77 @@ Page({
 
 	},
 
+	getUserInfo: function (e) {
+		wx.login({
+			success: function (loginRes) {
+				console.log("登录获取code", loginRes);
+				wx.setStorage({
+					key: user.js_code,
+					data: loginRes.code,
+				});
+
+
+				wx.request({
+					url: config.PytheRestfulServerURL + '/wxSession/request',
+					data: {
+						code: loginRes.code,
+						// AppID: config.AppID,
+						// AppSecret: config.AppSecret,
+						userType: 0,//用户版为0
+					},
+					complete: function (res) {
+						if (res.statusCode != 200) {//失败
+							console.error("登录失败", res);
+							var data = res.data || { msg: '无法请求服务器' };
+							if (typeof fail == "function") {
+								fail();
+							} else {
+								wx.showModal({
+									title: '提示',
+									content: data.msg,
+									showCancel: false
+								});
+							}
+						} else {//成功
+
+							var login_result = res.data.data;
+
+							console.log("登录成功", res);
+
+							wx.setStorageSync('SessionID', res.data.data.session_id);
+							wx.setStorageSync('OpenID', res.data.data.openid);
+							wx.setStorageSync('SessionKey', res.data.data.session_key);
+
+							console.log('session key : ' + wx.getStorageSync('SessionKey'));
+							console.log('openid : ' + wx.getStorageSync('OpenID'));
+
+							wx.getUserInfo({
+								withCredentials: true,
+								success: function (res) { },
+								fail: function (res) { },
+								complete: function (res) {
+									console.log("encryptedData", res.encryptedData);
+									var session_key = wx.getStorageSync("SessionKey");
+									var encryptedData = res.encryptedData;
+									var iv = res.iv;
+
+									var pc = new WXBizDataCrypt(config.AppID, session_key)
+									var result = pc.decryptData(encryptedData, iv);
+									console.log("!!!decode: " + JSON.stringify(result));
+									wx.setStorageSync(user.UnionID, result.unionId);
+
+
+								},
+							})
+
+
+						}
+					}
+				})
+			}
+		})
+	},
+
   /**
    * 生命周期函数--监听页面隐藏
    */

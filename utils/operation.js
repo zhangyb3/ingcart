@@ -1,8 +1,10 @@
-
+var app = getApp();
 var config = require('./config')
 var user = require('./user')
 var login = require('./login')
 var register = require('./register')
+
+var IngcartSdk = require('../lib/ingcart-lock-manager');
 
 //二维码ID换MAC
 const QR_TO_MAC_URL = `${config.PytheRestfulServerURL}/use/QR2MAC`;
@@ -25,7 +27,7 @@ const HOLD_URL = `${config.PytheRestfulServerURL}/use/hold`;
 //结束用车，计费
 const COMPUTEFEE_URL = `${config.PytheRestfulServerURL}/use/computeFee`;
 
-//更新客户状态
+//客户状态
 const UPDATE_CUSTOMER_STATUS_URL = `${config.PytheRestfulServerURL}/customer/select`;
 
 //服务通知支付状态
@@ -115,9 +117,11 @@ function getLockToken(carId, success, fail) {
 
   encryptFrame(wx.arrayBufferToBase64(buffer), carId,
     (result) => {
+			console.log("encrypte frame success !!!!!!!!!!!!!!!!!!!!");
       typeof success == "function" && success(result);
     },
     (result) => {
+			console.log("encrypte frame fail !!!!!!!!!!!!!!!!!!!!!!!");
       typeof fail == "function" && fail(result);
     })
 
@@ -184,7 +188,7 @@ function unlock(the, customerId, carId, qrId, success, fail){
 	if (wx.getStorageSync('platform') == 'android') {
 		deviceId = carId;
 		//直接开锁
-		unlockOperation(that, deviceId, carId,
+		unlockOperation(that, deviceId, carId, qrId,
 			(res) => {
 				typeof success == "function" && success(res.data);
 			},
@@ -221,7 +225,7 @@ function unlock(the, customerId, carId, qrId, success, fail){
 						}
 
 						//找到目标，停止查找，开锁
-						unlockOperation(that, deviceId, carId,
+						unlockOperation(that, deviceId, carId, qrId,
 							(res) => {
 								typeof success == "function" && success(res.data);
 							},
@@ -346,7 +350,7 @@ function connectDevice(the, deviceId, success, fail){
 	});
 }
 
-function unlockOperation(the, deviceId, carId, success, fail, complete){
+function unlockOperation(the, deviceId, carId, qrId, success, fail, complete){
 	var that = the;
 	wx.createBLEConnection({
 		deviceId: deviceId,
@@ -386,9 +390,10 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 
 							//读取锁连接后的随机令牌
 							getLockToken(
-								carId,
+								// carId,
+								qrId,
 								(encryptedFrameStr) => {
-
+									console.log('getting token !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
 									wx.writeBLECharacteristicValue({
 										deviceId: deviceId,
 										serviceId: wx.getStorageSync('ServiceID'),
@@ -439,6 +444,8 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 										indexPage.data.unlockQR = null;
 										indexPage.data.backFrom = null;
 										indexPage.data.showZoneNotice = true;
+										indexPage.data.useCoupon = false;
+										indexPage.data.couponCode = null;
 										// wx.reLaunch({
 										// 	url: 'index?status=unlock',
 										// });
@@ -462,7 +469,9 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 
 								//解密载有令牌的通信帧
 								decryptFrame(
-									wx.arrayBufferToBase64(encryptedTokenFrame), carId,
+									wx.arrayBufferToBase64(encryptedTokenFrame), 
+									// carId,
+									qrId,
 									(res) => {
 										console.log('decrypt token frame: ', res);
 										var tokenFrameHexStr = (ab2hex(wx.base64ToArrayBuffer(res)));
@@ -492,7 +501,8 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 
 											//后台用token+密码组成加密帧
 											getUnlockFrame(
-												carId,
+												// carId,
+												qrId,
 												wx.getStorageSync('token'),
 												(encryptedFrameStr) => {
 
@@ -505,7 +515,7 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 														success: function (res) {
 															console.log('write to unlock: ', res);
 															
-															typeof success == "function" && success('unlock');
+															// typeof success == "function" && success('unlock');
 														},
 														fail: function (res) { },
 														complete: function (res) { },
@@ -525,7 +535,7 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 										{
 											//开锁成功
 											
-
+											
 											wx.closeBLEConnection({
 												deviceId: deviceId,
 												success: function (res) {
@@ -544,14 +554,17 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 											{
 												couponCode = wx.getStorageSync('using_coupon_code');
 											}
+											console.log("7head!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 											wx.request({
 												url: UNLOCK_URL,
 												data: {
+													qrId: qrId,
 													carId: carId,
 													customerId: wx.getStorageSync(user.CustomerID),
 													longitude: wx.getStorageSync(user.Longitude),
 													latitude: wx.getStorageSync(user.Latitude),
 													code: couponCode,
+													ble: 1,
 												},
 												method: 'POST',
 												success: function (res) { 
@@ -570,11 +583,13 @@ function unlockOperation(the, deviceId, carId, success, fail, complete){
 															indexPage.data.unlockQR = null;
 															indexPage.data.backFrom = null;
 															indexPage.data.showZoneNotice = true;
+															indexPage.data.useCoupon = false;
+															indexPage.data.couponCode = null;
 															// wx.reLaunch({
 															// 	url: 'index?status=unlock',
 															// });
 															wx.navigateBack({
-																delta: 5,
+																delta: 1,
 															});
 														
 														});
@@ -969,7 +984,8 @@ function loginSystem(the, success, fail) {
 					console.log('check register : ' + JSON.stringify(userRegisterResult));
 					//如果没注册过，则注册
 					var registerInfo = userRegisterResult.data.data;
-					if (registerInfo == null) {
+					if (registerInfo == null) 
+					{
 						wx.setStorageSync('alreadyRegister', 'no');
 						wx.setStorageSync('logoutSystem', 'no');
 
@@ -982,7 +998,8 @@ function loginSystem(the, success, fail) {
 						})
 					}
 
-					else {
+					else 
+					{
 						wx.setStorageSync('alreadyRegister', 'yes');
 						wx.setStorageSync(user.CustomerID, registerInfo.customerId);
 						wx.setStorageSync(user.Description, registerInfo.description);
@@ -997,6 +1014,9 @@ function loginSystem(the, success, fail) {
 						wx.setStorageSync(user.PhoneNum, registerInfo.phoneNum);
 						wx.setStorageSync(user.Amount, registerInfo.amount);
 
+						wx.setStorageSync(user.Token, registerInfo.token);
+						wx.setStorageSync('ybToken', registerInfo.ybToken);
+
 						wx.showToast({
 							title: '已登录',
 							duration: 1200
@@ -1005,11 +1025,55 @@ function loginSystem(the, success, fail) {
 						that.setData({							
 							amount: wx.getStorageSync(user.Amount),
 						});
-						
-						typeof success == "function" && success('login success');
-						
-					}
 
+						
+
+						//登录成功，初始化锁管理器
+						
+						// wx.request({
+						// 	url: 'https://abj-elogic-test1-cap.yunba.io/check_captcha',
+						// 	data: {
+						// 		appkey: "5af943b55332c642348031b8",
+						// 		phone: wx.getStorageSync(user.Token),
+						// 		captcha: "",
+						// 	},
+						// 	method: 'POST',
+						// 	success: function(res) {
+						// 		console.log(res);
+						// 		if(res.statusCode == 200)
+						// 		{
+									
+						// 			app.appkey = "5af943b55332c642348031b8";
+						// 			app.options = {
+						// 				appkey: "5af943b55332c642348031b8",
+						// 				token: res.data.token,
+						// 			};
+						// 			console.log(app.options);
+									
+						// 		}
+						// 		console.log('init lock manager !!!!!!!!!!!!!!!!!!!!',app.options);
+						// 		app.ingcartLockManager = new IngcartSdk.IngcartLockManager(app.options);
+
+						// 		typeof success == "function" && success('login success');
+						// 	},
+						// 	fail: function(res) {},
+						// 	complete: function(res) {},
+						// });
+						
+						{
+
+							app.appkey = "5af943b55332c642348031b8";
+							app.options = {
+								appkey: "5af943b55332c642348031b8",
+								token: wx.getStorageSync('ybToken'),
+							};
+							console.log(app.options);
+
+						}
+						console.log('init lock manager !!!!!!!!!!!!!!!!!!!!', app.options);
+						app.ingcartLockManager = new IngcartSdk.IngcartLockManager(app.options);
+												
+					}
 
 
 					that.setData({
@@ -1018,6 +1082,7 @@ function loginSystem(the, success, fail) {
 						amount: wx.getStorageSync(user.Amount),
 						
 					});
+					typeof success == "function" && success('login success');
 
 				},
 				(userRegisterResult) => {
@@ -1042,6 +1107,7 @@ function qr2mac(qrId, success, fail){
 		url: QR_TO_MAC_URL,
 		data: {
 			qrId: qrId,
+			carId: qrId,
 		},
 		method: 'POST',
 		success: function(res) {
@@ -1437,6 +1503,27 @@ function checkLockStatusOperation(the, deviceId, carId, success, fail)
 	});
 }
 
+function reportMobileModelFault(the, qrId, phoneNum, model, success, fail){
+	var that = the;
+	wx.request({
+		url: config.PytheRestfulServerURL + '/insert/fault',
+		data: {
+			car_id: qrId,
+			phone_num: phoneNum,
+			phone_model: model,
+		},
+		method: 'POST',
+		success: function(res) {
+			console.log("report fault", res.data);
+			typeof success == "function" && success(res.data.data);
+		},
+		fail: function(res) {
+			typeof fail == "function" && fail(res.data.data);
+		},
+		complete: function(res) {},
+	})
+}
+
 module.exports = {
 
 	UNLOCK_URL: UNLOCK_URL,
@@ -1469,4 +1556,5 @@ module.exports = {
 	managerLock: managerLock,
 	checkLockStatus: checkLockStatus,
 
+	reportMobileModelFault: reportMobileModelFault,
 }

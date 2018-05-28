@@ -51,7 +51,8 @@
   display: block;
   height: 48px;
   color: #777;
-  width: 33.33%;
+   width: 33.33%; 
+	/* width: 50%; */
   float: left;
   text-align: center;
   /* line-height: 48px; */
@@ -196,7 +197,7 @@
 }
 
 .layer-img-background {
-  padding: 100rpx 0 30rpx;
+  padding: 150rpx 0 30rpx;
   width: 80%;
   margin: auto auto;
 	position: relative;
@@ -318,4 +319,10 @@ cover-view {
   background-color:#f93;
   color:#fff;
   border-radius:6px;
+}
+
+.tab-column-hint{
+	line-height: 24px;
+	font-size: 32rpx;
+	color: #f93;
 }

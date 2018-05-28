@@ -98,12 +98,14 @@
             </cover-view>
           </cover-view> 
 
-          <cover-view class='tab-column' bindtap='toRepair'>
-            <cover-view class='tabCenter'>
-              <cover-image src='../../images/repair.png'></cover-image>
-              <cover-view class=''>报修 </cover-view> 
-            </cover-view>
-          </cover-view> 
+           <cover-view class='tab-column' bindtap='toRepair'>
+            <!-- <cover-view class='tabCenter'> -->
+              <!-- <cover-image src='../../images/repair.png'></cover-image>  -->
+              <!-- <cover-view class=''>报修 </cover-view>  -->
+							<cover-view class='tab-column-hint' wx:if="{{timing == true}}">车号：{{carId}}</cover-view>
+							<cover-view class='tab-column-hint' wx:if="{{timing == false}}">客服电话：4001-151-606</cover-view>
+            <!-- </cover-view> -->
+          </cover-view>  
 
           <cover-view class='tab-column' bindtap='toActivity'>
             <cover-view class='tabCenter' style='float:right'>
@@ -118,8 +120,8 @@
      
      <!-- 用车时显示 用车中 信息 -->
 
-     <cover-view class='using-info' wx:if="{{timing}}">
-           <cover-view class='using-title'><cover-view class='forPadding'>用车中（客服电话：{{hotline}}）</cover-view> </cover-view>
+     <cover-view class='using-info' wx:if="{{timing == true}}">
+           <cover-view class='using-title' bindtap='callHotline'><cover-view class='forPadding'>用车中（客服电话：{{hotline}}）</cover-view> </cover-view>
 
            <cover-view class='info-aboutUsing' style=''>
 
@@ -139,7 +141,7 @@
            <cover-view style='height:1px;background-color:#e6e6e6;'></cover-view>
            <cover-view class='endUse-tip' wx:if='{{isShowendUseTip}}'>
                  <cover-view class='endUse-tip-title'>提示 <cover-image src='/images/close.png' bindtap='closeUseTip'></cover-image></cover-view>
-                 <cover-view class='wran-tip'>1、如您已离园，请电话联络客服结束您的行程。</cover-view>
+                 <cover-view class='wran-tip'>1、使用完推车后，请返还共享推车租赁中心。</cover-view>
                  <cover-view class='wran-tip' style='margin:8px 0 10px;'>2、同一个账号当天内可多次扫码解锁使用该车。</cover-view>
 
                  <cover-view class='sure-end' hidden="{{pStatus != 1}}">
@@ -203,6 +205,20 @@
 		<cover-view class='layer-map' wx:if='{{showZoneNotice == true && zoneNoticeImg != null}}' bindtap='disappearZoneNotice'>
 			<cover-view class='layer-img-background'>
 				<cover-image src="{{zoneNoticeImg}}">
+				</cover-image>
+			</cover-view>
+		</cover-view>
+
+		<cover-view class='layer-map' wx:if='{{waitGprsOn == true && timing == false}}' >
+			<cover-view class='layer-img-background'>
+				<cover-image src="{{waitGprsOnNoticeImg}}" bindtap='showGprsNotice'>
+				</cover-image>
+			</cover-view>
+		</cover-view>
+
+		<cover-view class='layer-map' wx:if='{{gprsOn == true }}' bindtap='disappearGprsNotice'>
+			<cover-view class='layer-img-background'>
+				<cover-image src="{{gprsOnNoticeImg}}">
 				</cover-image>
 			</cover-view>
 		</cover-view>

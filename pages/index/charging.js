@@ -46,13 +46,13 @@ Page({
 			
 			that.data.backFrom = null;
 			var originalAmount = wx.getStorageSync(user.Amount);
-			wx.showLoading({
-				title: '准备开锁...',
-				mask: true,
-				success: function (res) { },
-				fail: function (res) { },
-				complete: function (res) { },
-			})
+			// wx.showLoading({
+			// 	title: '准备开锁...',
+			// 	mask: true,
+			// 	success: function (res) { },
+			// 	fail: function (res) { },
+			// 	complete: function (res) { },
+			// })
 
 			var checkAmountIntervalId = setInterval(
 				function () {

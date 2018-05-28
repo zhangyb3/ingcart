@@ -20,7 +20,7 @@
 
         </view>
         <view class="action-submit">
-             <button class="submit-btn" loading="{{loading}}" bindtap="customerRegister" >开始</button> 
+             <button class="submit-btn" loading="{{loading}}" bindtap="customerRegister" open-type="getUserInfo" bindgetuserinfo="getUserInfo">开始</button> 
         </view>
 
 				

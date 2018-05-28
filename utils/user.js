@@ -29,4 +29,5 @@ module.exports = {
 		PhoneNum: "PhoneNum",
 		Amount: "Amount",
 		PStatus: "PStatus",
+		Token: "Token",
 }

@@ -81,7 +81,36 @@ Page({
 			hotline: wx.getStorageSync('hotline'),
 		});
 
+		wx.showModal({
+			title: '',
+			content: '如果行程中不能开锁，请别立即报修，拨打' + (that.data.hotline || '4001-151-606'),
+			showCancel: true,
+			cancelText: '取消',
+			confirmText: '拨打热线',
+			success: function (res) {
+				if (res.cancel) {
+
+				}
+				if (res.confirm) {
+					wx.makePhoneCall({
+						phoneNumber: that.data.hotline || '4001-151-606',
+						success: function (res) { },
+						fail: function (res) { },
+						complete: function (res) { },
+					})
+				}
+			},
+			fail: function (res) { },
+			complete: function (res) { },
+		})
+
   },
+
+	onShow: function (e) {
+		var that = this;
+		
+
+	},
 
   getRect: function () {
     var that = this;
