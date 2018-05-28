@@ -15,7 +15,7 @@ const CHARGE_CONFIRM_URL = `${config.PytheRestfulServerURL}/account/wxChargeConf
 /**
  * 充值下单
  */
-function requestOrder(the, chargeFee, giving, success,fail) {
+function requestOrder(the, phoneNum, chargeFee, giving, success,fail) {
   var sessionID = wx.getStorageSync(user.SessionID);
   var openID = wx.getStorageSync(user.OpenID);
 
@@ -29,6 +29,7 @@ function requestOrder(the, chargeFee, giving, success,fail) {
     openId: openID,
 		customerId: wx.getStorageSync(user.CustomerID),
 		giving: giving,
+		phoneNum: phoneNum,
   };
 
 

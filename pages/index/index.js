@@ -864,7 +864,7 @@ Page({
 		// });
 
 		//直接去付款而非充值
-		pay.requestOrder(that, that.data.price, 0,
+		pay.requestOrder(that, wx.getStorageSync(user.PhoneNum), that.data.price, 0,
 			(prepayResultSet) => {
 
 				var prepayResultStr = prepayResultSet.data;
