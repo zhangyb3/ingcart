@@ -1480,6 +1480,11 @@ function checkUsingCarStatus(the, success, fail)
 			);
 		}
 
+		else if (wx.getStorageSync(user.UsingCarStatus) == 3)
+		{
+			
+		}
+
 		else {
 			that.setData({
 				timing: false,
