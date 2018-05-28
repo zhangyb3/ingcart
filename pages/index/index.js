@@ -1453,6 +1453,9 @@ function checkUsingCarStatus(the, success, fail)
 								refreshUsingMinutes(that);
 								if (wx.getStorageSync(user.UsingCarStatus) != 1) {
 									clearInterval(myVar);
+									that.setData({
+										timing: false,
+									});
 								}
 							},
 							1000 * 10);
