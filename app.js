@@ -40,8 +40,7 @@ App({
     // wx.setStorageSync('logoutSystem', 'yes');
 
 		
-		wx.setStorageSync('unlock_mode', 'ble');
-		wx.setStorageSync('never_show_gprs_notice', true);
+		
 		
 		// this.ingcartLockManager = new IngcartSdk.IngcartLockManager(options);
 

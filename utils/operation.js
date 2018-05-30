@@ -761,12 +761,13 @@ function checkUsingMinutes(carId, success, fail) {
       method: 'GET',
       success: function (res) {
         var result = res;
-				
-        normalUpdateCustomerStatus(
-          wx.getStorageSync(user.CustomerID),
-          () => {
-            typeof success == "function" && success(result.data);
-          });
+				console.log(res.data.data);
+        // normalUpdateCustomerStatus(
+        //   wx.getStorageSync(user.CustomerID),
+        //   () => {
+        //     typeof success == "function" && success(result.data);
+        //   });
+				typeof success == "function" && success(result.data);
       },
       fail: function (res) {
         typeof fail == "function" && fail(res.data);

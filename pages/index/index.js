@@ -83,6 +83,9 @@ Page({
     
 		wx.setStorageSync('alreadyRegister', 'no');
 
+		wx.setStorageSync('unlock_mode', 'ble');
+		wx.setStorageSync('never_show_gprs_notice', true);
+
 		// this.data.fromPage = parameters.from;
 		
 		if(this.data.fromPage == 'processing')
@@ -1312,16 +1315,16 @@ function refreshUsingMinutes(the){
 			},
 		); 
 
-		operation.normalUpdateCustomerStatus(
-			wx.getStorageSync(user.CustomerID),
-			() => {
-				that.setData({
-					amount: wx.getStorageSync(user.Amount),
-					price: wx.getStorageSync(user.UsingCarPrice),
-					pStatus: wx.getStorageSync(user.PStatus),
-				});
-			},
-		);
+		// operation.normalUpdateCustomerStatus(
+		// 	wx.getStorageSync(user.CustomerID),
+		// 	() => {
+		// 		that.setData({
+		// 			amount: wx.getStorageSync(user.Amount),
+		// 			price: wx.getStorageSync(user.UsingCarPrice),
+		// 			pStatus: wx.getStorageSync(user.PStatus),
+		// 		});
+		// 	},
+		// );
 
 	}
   
