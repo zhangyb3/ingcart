@@ -251,6 +251,10 @@ Page({
 							clearInterval(checkUnlockingQR);
 							wx.setStorageSync('unlock_mode', 'gprs');
 							wx.setStorageSync(that.data.qrId, null);
+							var pages = getCurrentPages();
+							var indexPage = pages[0];
+							indexPage.data.unlockQR = null;
+							indexPage.data.backFrom = null;
 							wx.navigateBack({
 								delta: 1,
 							})
