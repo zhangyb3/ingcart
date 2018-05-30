@@ -10,7 +10,7 @@ var IngcartSdk = require('../../lib/ingcart-lock-manager');
 var app = getApp()
 Page({
   data: {
-    scale: 18,
+    scale: 15,
 		latitude: 22.60204,
 		longitude: 113.978616,
 
@@ -287,10 +287,10 @@ Page({
 			checkUsingCarStatus(that,
 				(checkResult) => {
 					// wx.hideLoading();
-					refreshPage(that);
+					// refreshPage(that);
 
 					that.setData({
-						timing: true,
+						// timing: true,
 						hotling:''||wx.getStorageSync('hotline'),
 					});
 					
@@ -376,7 +376,7 @@ Page({
 						(checkResult) => {
 							wx.hideLoading();
 							
-							refreshPage(that);
+							// refreshPage(that);
 							
 							if(that.data.qrIdFromWX != null)
 							{
@@ -461,13 +461,13 @@ Page({
 			// 	fail: function (res) { },
 			// 	complete: function (res) { },
 			// });
-			refreshPage(that);
+			// refreshPage(that);
 
 			checkUsingCarStatus(that,
 				(checkResult) => {
 					// wx.hideLoading();
 
-					refreshPage(that);
+					// refreshPage(that);
 
 					if (that.data.showZoneNotice == true) {
 						wx.request({
@@ -786,14 +786,14 @@ Page({
 							});
 							if (res.data.status == 200) {
 								
-								operation.normalUpdateCustomerStatus(
-									wx.getStorageSync(user.CustomerID),
-									() => {
-										that.setData({
-											amount: wx.getStorageSync(user.Amount),
-										});
-									},
-								);
+								// operation.normalUpdateCustomerStatus(
+								// 	wx.getStorageSync(user.CustomerID),
+								// 	() => {
+								// 		that.setData({
+								// 			amount: wx.getStorageSync(user.Amount),
+								// 		});
+								// 	},
+								// );
 							}
 							else {
 								wx.showModal({
@@ -938,28 +938,28 @@ Page({
     {
       //无操作
     }
-    if(marker.type == 1 && this.data.markerClickable == true)
-    {
-      var that = this;
-      //显示店面详情
-      wx.request({
-        url: config.PytheRestfulServerURL + '/store/detail',
-        data: {
-          storeId: marker.id
-        },
-        method: 'GET',
-        success: function(res) {
-          that.setData({
-            show_store_detail: true,
-						holding: false,
-            check_store: res.data.data,
-						mapHeight: wx.getStorageSync('windowHeight') - 120 ,
-          });
-        },
-        fail: function(res) {},
-        complete: function(res) {},
-      })
-    }
+    // if(marker.type == 1 && this.data.markerClickable == true)
+    // {
+    //   var that = this;
+    //   //显示店面详情
+    //   wx.request({
+    //     url: config.PytheRestfulServerURL + '/store/detail',
+    //     data: {
+    //       storeId: marker.id
+    //     },
+    //     method: 'GET',
+    //     success: function(res) {
+    //       that.setData({
+    //         show_store_detail: true,
+		// 				holding: false,
+    //         check_store: res.data.data,
+		// 				mapHeight: wx.getStorageSync('windowHeight') - 120 ,
+    //       });
+    //     },
+    //     fail: function(res) {},
+    //     complete: function(res) {},
+    //   })
+    // }
   },
 
 
@@ -1289,7 +1289,7 @@ function refreshUsingMinutes(the){
 		operation.checkUsingMinutes(
 			wx.getStorageSync(user.UsingCar),
 			(result) => {
-				
+				console.log('check status !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
 				if (result.status == 200) {
 					that.data.usingMinutes = result.data.time;
 					that.setData({
@@ -1297,9 +1297,9 @@ function refreshUsingMinutes(the){
 						// holding: false,
 						usingMinutes: result.data.time,
 						mapHeight: wx.getStorageSync('windowHeight')  ,
-						price: wx.getStorageSync(user.UsingCarPrice),
+						price: result.data.price,
 						giving: wx.getStorageSync(user.UsingCarGiving),
-						hotline: wx.getStorageSync('hotline'),
+						hotline: result.data.hotline,
 						pStatus: wx.getStorageSync(user.PStatus),
 					});
 					//此时图标不可点
@@ -1443,9 +1443,9 @@ function checkUsingCarStatus(the, success, fail)
 							holding: false,
 							usingMinutes: result.data.time,
 							mapHeight: wx.getStorageSync('windowHeight')  ,
-							price: wx.getStorageSync(user.UsingCarPrice),
+							price: result.data.price,
 							giving: wx.getStorageSync(user.UsingCarGiving),
-							hotline: wx.getStorageSync('hotline'),
+							hotline: result.data.hotline,
 							pStatus: wx.getStorageSync(user.PStatus),
 							carId: wx.getStorageSync(user.UsingCar),
 						});

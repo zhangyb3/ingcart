@@ -1018,6 +1018,8 @@ function loginSystem(the, success, fail) {
 						wx.setStorageSync(user.Token, registerInfo.token);
 						wx.setStorageSync('ybToken', registerInfo.ybToken);
 
+						wx.setStorageSync(user.PStatus, registerInfo.PStatus);
+
 						wx.showToast({
 							title: '已登录',
 							duration: 1200
