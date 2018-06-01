@@ -1020,6 +1020,8 @@ function loginSystem(the, success, fail) {
 
 						wx.setStorageSync(user.PStatus, registerInfo.PStatus);
 
+						wx.setStorageSync(user.Hotspot, registerInfo.hotspot);
+
 						wx.showToast({
 							title: '已登录',
 							duration: 1200

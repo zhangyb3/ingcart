@@ -56,6 +56,10 @@ Page({
 		gprsOn: false,
 
 		hotline:'',
+
+		hotspotOn: false,
+		showHotspotNotice: true,
+		notifyLock: false,
   },
 
 // 页面加载
@@ -178,7 +182,151 @@ Page({
 
 		// }	
 
-		if (that.data.unlockQR != null && that.data.backFrom == 'payToUse') {
+		if (wx.getStorageSync('alreadyRegister') == 'no' || wx.getStorageSync('reload') == 'yes' || that.data.from == 'outside') {
+
+			wx.showLoading({
+				title: '',
+				mask: true,
+				success: function (res) { },
+				fail: function (res) { },
+				complete: function (res) { },
+			});
+
+			var that = this;
+			operation.loginSystem(
+				this,
+				() => {
+
+					wx.hideLoading();
+					checkBluetooth(that);
+					refreshPage(that);
+
+					// app.ingcartLockManager = new IngcartSdk.IngcartLockManager(app.options);
+
+					checkUsingCarStatus(that,
+						(checkResult) => {
+							wx.hideLoading();
+
+							// refreshPage(that);
+
+							if (that.data.qrIdFromWX != null && wx.getStorageSync('alreadyRegister') == 'yes') {
+
+								var qrId = that.data.qrIdFromWX;
+								console.log("!!!!!!!!!!!!qrIdFromWX!!!!!!!!", this.data.qrIdFromWX);
+								//去开锁
+								gotoUnlock(that, qrId);
+								that.setData({
+									qrIdFromWX: null,
+								});
+							}
+
+							if (that.data.showZoneNotice == true) {
+								wx.request({
+									url: config.PytheRestfulServerURL + '/prompt/select',
+									data: {
+										description: wx.getStorageSync(user.UsingCarLevel),
+									},
+									method: 'GET',
+									success: function (res) {
+										if (res.data.status == 200) {
+											that.setData({
+												showZoneNotice: true,
+												zoneNoticeImg: config.PytheRestfulServerURL + res.data.data,
+												hotline: res.data.data.hotline,
+											});
+										}
+
+									},
+									fail: function (res) { },
+									complete: function (res) { },
+								})
+							}
+
+							if (that.data.unlockQR != null) {
+
+								var qrId = that.data.unlockQR;
+								//去开锁
+								gotoUnlock(that, qrId);
+								that.setData({
+									unlockQR: null,
+									from: null,
+								});
+							}
+
+
+
+						},
+						(checkResult) => {
+
+
+						}
+					);
+
+				}
+			);
+
+		}
+
+		else {
+			var that = this;
+
+			checkBluetooth(that);
+
+			if (that.data.qrIdFromWX != null && wx.getStorageSync('alreadyRegister') == 'yes') {
+
+				var qrId = that.data.qrIdFromWX;
+				//去开锁
+				gotoUnlock(that, qrId);
+				that.setData({
+					qrIdFromWX: null,
+				});
+			}
+
+			// wx.showLoading({
+			// 	title: '加载中',
+			// 	mask: true,
+			// 	success: function (res) { },
+			// 	fail: function (res) { },
+			// 	complete: function (res) { },
+			// });
+			// refreshPage(that);
+
+			checkUsingCarStatus(that,
+				(checkResult) => {
+					// wx.hideLoading();
+
+					// refreshPage(that);
+
+					if (that.data.showZoneNotice == true) {
+						wx.request({
+							url: config.PytheRestfulServerURL + '/prompt/select',
+							data: {
+								description: wx.getStorageSync(user.UsingCarLevel),
+							},
+							method: 'GET',
+							success: function (res) {
+								if (res.data.status == 200) {
+									that.setData({
+										showZoneNotice: that.data.showZoneNotice,
+										zoneNoticeImg: config.PytheRestfulServerURL + res.data.data,
+									});
+								}
+
+							},
+							fail: function (res) { },
+							complete: function (res) { },
+						})
+					}
+
+
+				},
+				() => {
+					wx.hideLoading();
+				}
+			);
+		}
+
+		if (wx.getStorageSync(user.CustomerID) != null && that.data.unlockQR != null && that.data.backFrom == 'payToUse') {
 			// wx.navigateTo({
 			// 	url: 'charging?unlock=' + that.data.unlockQR ,
 			// 	success: function (res) { },
@@ -197,46 +345,13 @@ Page({
 			var that = this;
 			var originalAmount = that.data.originalAmount;
 			var count = 0;
+			
 			var checkAmountIntervalId = setInterval(
 				function () {
 					count++;
-					wx.request({
-						url: config.PytheRestfulServerURL + '/customer/select',
-						data: {
-							customerId: wx.getStorageSync(user.CustomerID)
-						},
-						method: 'GET',
-						dataType: '',
-						success: function (res) {
-							
-							// wx.hideLoading();
-							console.log(res);
-							var info = res.data.data;
-							that.data.account = info;
-							that.setData({
-								amount: info.amount,
-								pStatus: info.pStatus,
-							});
-							//充值到账
-							if (info.amount > originalAmount) 
-							{
-								wx.hideLoading();
-								clearInterval(checkAmountIntervalId);
-								var qrId = that.data.unlockQR;
+					console.log('check bill !!!!!!!!!!!!!!!', count);
 
-								//去开锁
-								gotoUnlock(that, qrId);
-
-							}
-							
-						},
-						fail: function (res) { },
-						complete: function (res) {
-							
-						},
-					})
-					if(count > 30)
-					{
+					if (count > 5) {
 						wx.hideLoading();
 						clearInterval(checkAmountIntervalId);
 						wx.showModal({
@@ -244,14 +359,57 @@ Page({
 							content: '充值暂未到账，请稍后重试',
 							showCancel: false,
 							confirmText: '我知道了',
-							success: function(res) {},
-							fail: function(res) {},
-							complete: function(res) {},
+							success: function (res) { },
+							fail: function (res) { },
+							complete: function (res) { },
 						})
 					}
+
+					wx.request({
+						url: config.PytheRestfulServerURL + '/wx/query/order',
+						data: {
+							customerId: wx.getStorageSync(user.CustomerID),
+							out_trade_no: wx.getStorageSync('last_out_trade_no'),
+						},
+						method: 'POST',
+						success: function (res) {
+							console.log(wx.getStorageSync(user.CustomerID), wx.getStorageSync('last_out_trade_no'));
+							if(res.data.status == 200)
+							{
+								wx.hideLoading();
+								clearInterval(checkAmountIntervalId);
+								var qrId = that.data.unlockQR;
+
+								//去开锁
+								gotoUnlock(that, qrId);
+							}
+							else
+							{
+								console.log('pay error !!!!!!!!!!!!!!!',res.data);
+								// wx.showModal({
+								// 	title: '提示',
+								// 	content: res.data.status.toString(),
+								// 	showCancel: false,
+								// 	confirmText: '我知道了',
+								// 	success: function(res) {},
+								// 	fail: function(res) {},
+								// 	complete: function(res) {},
+								// })
+							}
+							
+
+						},
+						fail: function (res) { },
+						complete: function (res) {
+
+						},
+					});
+
 				},
 				1000
 			);
+
+			
 
 		}	
 
@@ -350,154 +508,7 @@ Page({
 			wx.setStorageSync('never_show_gprs_notice', false);
 		}
 
-		if (wx.getStorageSync('alreadyRegister') == 'no' || wx.getStorageSync('reload') == 'yes' || that.data.from == 'outside' ) 
-		{
-			
-			wx.showLoading({
-				title: '',
-				mask: true,
-				success: function (res) { },
-				fail: function (res) { },
-				complete: function (res) { },
-			});
 
-			var that = this;
-			operation.loginSystem(
-				this,
-				() => {
-					
-					wx.hideLoading();
-					checkBluetooth(that);
-					refreshPage(that);
-
-					// app.ingcartLockManager = new IngcartSdk.IngcartLockManager(app.options);
-
-					checkUsingCarStatus(that,
-						(checkResult) => {
-							wx.hideLoading();
-							
-							// refreshPage(that);
-							
-							if(that.data.qrIdFromWX != null)
-							{
-								
-								var qrId = that.data.qrIdFromWX;
-								console.log("!!!!!!!!!!!!qrIdFromWX!!!!!!!!", this.data.qrIdFromWX);
-								//去开锁
-								gotoUnlock(that, qrId);
-								that.setData({
-									qrIdFromWX: null,
-								});
-							}
-							
-							if (that.data.showZoneNotice == true) {
-								wx.request({
-									url: config.PytheRestfulServerURL + '/prompt/select',
-									data: {
-										description: wx.getStorageSync(user.UsingCarLevel),
-									},
-									method: 'GET',
-									success: function (res) {
-										if (res.data.status == 200) {
-											that.setData({
-												showZoneNotice: true,
-												zoneNoticeImg: config.PytheRestfulServerURL + res.data.data,
-												hotline: res.data.data.hotline,
-											});
-										}
-										
-									},
-									fail: function (res) { },
-									complete: function (res) { },
-								})
-							}
-							
-							if (that.data.unlockQR != null) {
-
-								var qrId = that.data.unlockQR;
-								//去开锁
-								gotoUnlock(that, qrId);
-								that.setData({
-									unlockQR: null,
-									from: null,
-								});
-							}
-
-							
-
-						},
-						(checkResult)=>{
-							
-
-						}
-					);
-
-				}
-			);
-
-		}
-		
-		else
-		{
-			var that = this;
-			
-			checkBluetooth(that);
-			
-			if (that.data.qrIdFromWX != null && wx.getStorageSync('alreadyRegister') == 'yes') 
-			{
-
-				var qrId = that.data.qrIdFromWX;
-				//去开锁
-				gotoUnlock(that, qrId);
-				that.setData({
-					qrIdFromWX: null,
-				});
-			}
-			
-			// wx.showLoading({
-			// 	title: '加载中',
-			// 	mask: true,
-			// 	success: function (res) { },
-			// 	fail: function (res) { },
-			// 	complete: function (res) { },
-			// });
-			// refreshPage(that);
-
-			checkUsingCarStatus(that,
-				(checkResult) => {
-					// wx.hideLoading();
-
-					// refreshPage(that);
-
-					if (that.data.showZoneNotice == true) {
-						wx.request({
-							url: config.PytheRestfulServerURL + '/prompt/select',
-							data: {
-								description: wx.getStorageSync(user.UsingCarLevel),
-							},
-							method: 'GET',
-							success: function (res) {
-								if (res.data.status == 200) {
-									that.setData({
-										showZoneNotice: that.data.showZoneNotice,
-										zoneNoticeImg: config.PytheRestfulServerURL + res.data.data,
-									});
-								}
-								
-							},
-							fail: function (res) { },
-							complete: function (res) { },
-						})
-					}
-					
-
-				},
-				()=>{
-					wx.hideLoading();
-				}
-			);
-		}
-	
 		
     // 创建地图上下文，移动当前位置到地图中心
     this.mapCtx = wx.createMapContext("ingcartMap");
@@ -1026,6 +1037,57 @@ Page({
 		})
 	},
 
+
+	//热点还车退押金
+	hotspotReturnDeposit:function(e){
+		var that = this;
+		wx.request({
+			url: config.PytheRestfulServerURL + '/manage/urgent/refund/',
+			data: {
+				phoneNum: wx.getStorageSync(user.UsingCar),
+				managerId: -1,
+			},
+			method: 'POST',
+			success: function(res) {
+				if(res.data.status == 200)
+				{
+					that.setData({
+						showHotspotNotice: false,
+						hotspotOn: false,
+						notifyLock: true,
+					});
+				}
+			},
+			fail: function(res) {},
+			complete: function(res) {},
+		})
+	},
+
+	//热点不管
+	hotspotHoldOn: function (e) {
+		var that = this;
+		that.setData({
+			showHotspotNotice: false,
+		});
+		var templeIgnoreHotspot = setTimeout(
+			function(){
+				that.setData({
+					showHotspotNotice: true,
+				});
+			},
+			1000*60*2
+		);
+	},
+
+	//取消锁车提示
+	disappearLockNotice: function (e) {
+		var that = this;
+		that.setData({
+			notifyLock: false,
+		});
+		
+	},
+
   onUnload:function(){
 
 		app.ingcartLockManager = null;
@@ -1302,6 +1364,21 @@ function refreshUsingMinutes(the){
 						hotline: result.data.hotline,
 						pStatus: wx.getStorageSync(user.PStatus),
 					});
+					wx.setStorageSync(user.Hotspot, result.data.hotspot);
+					if (wx.getStorageSync(user.Hotspot) == 1) {
+						that.setData({
+							hotspotOn: true,
+							// showHotspotNotice: true,
+						});
+						
+					}
+					if (wx.getStorageSync(user.Hotspot) == 0) {
+						that.setData({
+							hotspotOn: false,
+							// showHotspotNotice: true,
+						});
+
+					}
 					//此时图标不可点
 					that.data.markerClickable = false;
 
@@ -1327,6 +1404,8 @@ function refreshUsingMinutes(the){
 		// );
 
 	}
+
+	
   
 }
 
@@ -1449,6 +1528,21 @@ function checkUsingCarStatus(the, success, fail)
 							pStatus: wx.getStorageSync(user.PStatus),
 							carId: wx.getStorageSync(user.UsingCar),
 						});
+						wx.setStorageSync(user.Hotspot, result.data.hotspot);
+						if (wx.getStorageSync(user.Hotspot) == 1) {
+							that.setData({
+								hotspotOn: true,
+								// showHotspotNotice: true,
+							});
+							
+						}
+						if (wx.getStorageSync(user.Hotspot) == 0) {
+							that.setData({
+								hotspotOn: false,
+								// showHotspotNotice: true,
+							});
+
+						}
 						//此时图标不可点
 						that.data.markerClickable = false;
 						var myVar = setInterval(
@@ -1463,6 +1557,8 @@ function checkUsingCarStatus(the, success, fail)
 							},
 							1000 * 10);
 
+						
+						
 						typeof success == "function" && success('checked');
 					}
 					else

@@ -30,4 +30,5 @@ module.exports = {
 		Amount: "Amount",
 		PStatus: "PStatus",
 		Token: "Token",
+		Hotspot:"Hotspot",
 }

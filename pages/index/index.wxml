@@ -126,7 +126,7 @@
            <cover-view class='info-aboutUsing' style=''>
 
                  <cover-view class='info-ingcart' style='text-align:left;'>
-                      <cover-view class='price-ingcart'>{{price - giving}}</cover-view>
+                      <cover-view class='price-ingcart'>{{price}}</cover-view>
                       <cover-view class='price-small'>元/天</cover-view>
                  </cover-view>
                  <cover-view class='info-ingcart'>
@@ -222,6 +222,25 @@
 				</cover-image>
 			</cover-view>
 		</cover-view>
+
+		<cover-view class='layer-map' style="" wx:if='{{hotspotOn == true && showHotspotNotice == true}}' >
+			<cover-view class='layer-img-background'>
+				<cover-image src="../../images/hotspot_refund.png">
+				</cover-image>
+				<cover-view style="display:flex;flex-direction:row;">
+					<cover-image src='../../images/hotspot_return_deposit.png' bindtap='hotspotReturnDeposit'></cover-image>
+					<cover-image src='../../images/hotspot_hold_on.png' bindtap='hotspotHoldOn'></cover-image>
+				</cover-view>
+			</cover-view>
+		</cover-view>
+
+		<cover-view class='layer-map' wx:if='{{notifyLock == true }}' bindtap='disappearLockNotice'>
+			<cover-view class='layer-img-background'>
+				<cover-image src='../../images/notify_lock.png'>
+				</cover-image>
+			</cover-view>
+		</cover-view>
+
   
   </map>
 

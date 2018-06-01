@@ -83,7 +83,7 @@
 .using-title {
   border-top: 1px solid #f1f1f1;
   line-height: 32px;
- 
+	background-color: #fff;
 }
 
 .info-aboutUsing {
@@ -91,6 +91,7 @@
   padding: 20rpx 40rpx;
   box-sizing: border-box;
   letter-spacing: 1px;
+	background-color: #fff;
 }
 
 .info-ingcart {
@@ -283,6 +284,7 @@ cover-view {
 
 .endUse-tip{
   padding:0 40rpx;
+	background-color: #fff;
 }
 
 .endUse-tip-title{
