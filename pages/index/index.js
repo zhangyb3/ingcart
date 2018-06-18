@@ -5,7 +5,7 @@ var user = require("../../utils/user.js");
 var login = require("../../utils/login.js");
 var operation = require("../../utils/operation.js");
 var pay = require("../../utils/pay.js");
-var IngcartSdk = require('../../lib/ingcart-lock-manager');
+var IngcartSdk = require('../../lib/ingcart-lock-manager'); 
 
 var app = getApp()
 Page({
@@ -60,6 +60,8 @@ Page({
 		hotspotOn: false,
 		showHotspotNotice: true,
 		notifyLock: false,
+
+		selfReturn: false,
   },
 
 // 页面加载
@@ -209,7 +211,8 @@ Page({
 
 							// refreshPage(that);
 
-							if (that.data.qrIdFromWX != null && wx.getStorageSync('alreadyRegister') == 'yes') {
+							if (that.data.qrIdFromWX != null && wx.getStorageSync('alreadyRegister') == 'yes'
+								&& that.data.qrIdFromWX != '0000000') {
 
 								var qrId = that.data.qrIdFromWX;
 								console.log("!!!!!!!!!!!!qrIdFromWX!!!!!!!!", this.data.qrIdFromWX);
@@ -272,7 +275,8 @@ Page({
 
 			checkBluetooth(that);
 
-			if (that.data.qrIdFromWX != null && wx.getStorageSync('alreadyRegister') == 'yes') {
+			if (that.data.qrIdFromWX != null && wx.getStorageSync('alreadyRegister') == 'yes'
+				&& that.data.qrIdFromWX != '0000000') {
 
 				var qrId = that.data.qrIdFromWX;
 				//去开锁
@@ -463,7 +467,7 @@ Page({
 			that.data.useCoupon = false;
 			
 			wx.scanCode({
-				onlyFromCamera: true,
+				onlyFromCamera: false,
 				success: function (res) {
 					console.log(res);
 					if (res.errMsg == 'scanCode:ok') {
@@ -471,6 +475,12 @@ Page({
 						
 						var parameters = operation.urlProcess(res.result);
 						var qrId = parameters.id;
+
+
+						//特殊锁处理
+						if (qrId.slice(0, 'MCA'.length) == 'MCA') {
+							qrId = qrId.substring(3);
+						}
 
 						wx.getLocation({
 							type: 'gcj02',
@@ -508,6 +518,13 @@ Page({
 			wx.setStorageSync('never_show_gprs_notice', false);
 		}
 
+		if (that.data.selfReturn == true || that.data.qrIdFromWX == '0000000')
+		{
+			that.setData({
+				selfReturn: true,
+				qrIdFromWX: null,
+			});
+		}
 
 		
     // 创建地图上下文，移动当前位置到地图中心
@@ -540,7 +557,7 @@ Page({
 			// 		{
 			
 			// 			wx.scanCode({
-			// 				onlyFromCamera: true,
+			// 				onlyFromCamera: false,
 			// 				success: function (res) {
 			// 					console.log(res);
 			// 					if (res.errMsg == 'scanCode:ok') {
@@ -797,14 +814,9 @@ Page({
 							});
 							if (res.data.status == 200) {
 								
-								// operation.normalUpdateCustomerStatus(
-								// 	wx.getStorageSync(user.CustomerID),
-								// 	() => {
-								// 		that.setData({
-								// 			amount: wx.getStorageSync(user.Amount),
-								// 		});
-								// 	},
-								// );
+								that.setData({
+									selfReturn: false,
+								});
 							}
 							else {
 								wx.showModal({
@@ -1086,6 +1098,88 @@ Page({
 			notifyLock: false,
 		});
 		
+	},
+
+	//自行还车扫码停止计费
+	selfReturnToRefund: function () {
+		wx.showLoading({
+			title: '结束行程中...',
+			mask: true,
+			success: function (res) { },
+			fail: function (res) { },
+			complete: function (res) { },
+		})
+		var that = this;
+
+		var date = new Date();
+		if (wx.getStorageSync(user.UsingCar) > 0) {
+			wx.request({
+				url: config.PytheRestfulServerURL + '/manage/urgent/refund/',//小程序版退费
+				data: {
+					phoneNum: wx.getStorageSync(user.UsingCar),
+					date: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':00',
+					managerId: -1,
+				},
+				method: 'POST',
+				success: function (res) {
+					wx.hideLoading();
+					that.setData({
+						selfReturn: false,
+					});
+					if (res.data.status == 200) {
+						wx.showToast({
+							title: res.data.msg,
+							icon: '',
+							image: '',
+							duration: 5000,
+							mask: true,
+							success: function (res) { },
+							fail: function (res) { },
+							complete: function (res) { },
+						})
+
+					}
+					if (res.data.status == 400) {
+						wx.showModal({
+							title: '提示',
+							content: res.data.msg,
+							showCancel: false,
+							confirmText: '我知道了',
+							success: function (res) { },
+							fail: function (res) { },
+							complete: function (res) { },
+						})
+					}
+				},
+				fail: function (res) { },
+				complete: function (res) { },
+			});
+		}
+		else {
+			wx.hideLoading();
+			that.setData({
+				selfReturn: false,
+			});
+			wx.showModal({
+				title: '提示',
+				content: '用户尚无行程，押金退款失败',
+				showCancel: false,
+				confirmText: '我知道了',
+				success: function (res) { },
+				fail: function (res) { },
+				complete: function (res) { },
+			})
+		}
+
+
+
+	},
+
+	selfReturnHoldOn:function(){
+		var that = this;
+		that.setData({
+			selfReturn: false,
+		});
 	},
 
   onUnload:function(){
@@ -1904,26 +1998,40 @@ function scanToUnlock(the){
 	{
 
 		wx.scanCode({
-			onlyFromCamera: true,
+			onlyFromCamera: false,
 			success: function (res) {
 				console.log(res);
 				if (res.errMsg == 'scanCode:ok') {
 					var parameters = operation.urlProcess(res.result); console.log(parameters);
 					var qrId = parameters.id;
 
-					wx.getLocation({
-						type: 'gcj02',
-						altitude: true,
-						success: function (res) {
-							wx.setStorageSync(user.Latitude, res.latitude);
-							wx.setStorageSync(user.Longitude, res.longitude);
-						},
-						fail: function (res) { },
-						complete: function (res) { },
-					});
+					//特殊锁处理
+					if (qrId.slice(0, 'MCA'.length) == 'MCA') {
+						qrId = qrId.substring(3);
+					}
 
-					//去开锁
-					gotoUnlock(that, qrId);
+					if (qrId == '0000000') {
+						that.setData({
+							selfReturn: true,
+						});
+						
+					}
+					else{
+						wx.getLocation({
+							type: 'gcj02',
+							altitude: true,
+							success: function (res) {
+								wx.setStorageSync(user.Latitude, res.latitude);
+								wx.setStorageSync(user.Longitude, res.longitude);
+							},
+							fail: function (res) { },
+							complete: function (res) { },
+						});
+
+						//去开锁
+						gotoUnlock(that, qrId);
+					}
+					
 
 				}
 

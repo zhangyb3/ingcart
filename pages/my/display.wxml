@@ -80,6 +80,21 @@
       <view class="split_line"></view>
     </view>
 
+		<view class="line_item_container" bindtap="selfReturn" >
+      <view class="line_item">
+        <view class="line_include_item_container history_record">
+          <text >定点还车退押金</text>
+        </view>
+        <view class="line_include_item_container record_quantity">
+          <text></text>
+        </view>
+        <view class="line_include_item_container record_operation">
+          <image id="operation"  src="../../images/more.png"></image>
+        </view>
+      </view>
+      <view class="split_line"></view>
+    </view>
+
     <view class="line_item_container" bindtap="toAgreement">
       <view class="line_item">
         <view class="line_include_item_container history_record">
@@ -233,5 +248,16 @@
     </view>  -->
 
     <button bindtap="switchAccount" class="switchID" >切换账号</button>
+
+		<cover-view class='layer-map' style="" wx:if='{{selfReturn == true}}' >
+			<cover-view class='layer-img-background'>
+				<cover-image src="../../images/self_return_refund.jpg">
+				</cover-image>
+				<cover-view style="display:flex;flex-direction:row;">
+					<cover-image src='../../images/hotspot_return_deposit.png' bindtap='selfReturnToRefund'></cover-image>
+					<cover-image src='../../images/hotspot_hold_on.png' bindtap='selfReturnHoldOn'></cover-image>
+				</cover-view>
+			</cover-view>
+		</cover-view>
     
 </view>

@@ -241,6 +241,17 @@
 			</cover-view>
 		</cover-view>
 
+		<cover-view class='layer-map' style="" wx:if='{{selfReturn == true}}' >
+			<cover-view class='layer-img-background'>
+				<cover-image src="../../images/self_return_refund.jpg">
+				</cover-image>
+				<cover-view style="display:flex;flex-direction:row;">
+					<cover-image src='../../images/hotspot_return_deposit.png' bindtap='selfReturnToRefund'></cover-image>
+					<cover-image src='../../images/hotspot_hold_on.png' bindtap='selfReturnHoldOn'></cover-image>
+				</cover-view>
+			</cover-view>
+		</cover-view>
+
   
   </map>
 

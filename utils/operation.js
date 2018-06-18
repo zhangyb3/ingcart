@@ -286,8 +286,8 @@ function connectDevice(the, deviceId, success, fail){
 									console.log(res);
 									
 								},
-								fail: function (res) { },
-								complete: function (res) { },
+								// fail: function (res) { },
+								// complete: function (res) { },
 							});
 
 							//读取锁连接后的随机令牌
@@ -382,10 +382,10 @@ function unlockOperation(the, deviceId, carId, qrId, success, fail, complete){
 								success: function (res) {
 									console.log(res);
 								},
-								fail: function (res) { 
-									typeof fail == "function" && fail('fallback');
-								},
-								complete: function (res) { },
+								// fail: function (res) { 
+								// 	typeof fail == "function" && fail('fallback');
+								// },
+								// complete: function (res) { },
 							});
 
 							//读取锁连接后的随机令牌
@@ -455,7 +455,7 @@ function unlockOperation(the, deviceId, carId, qrId, success, fail, complete){
 										
 									}
 								},
-								1000 * 5,
+								1000 * 15,
 							);
 
 							wx.onBLECharacteristicValueChange(function (res) {
@@ -495,8 +495,8 @@ function unlockOperation(the, deviceId, carId, qrId, success, fail, complete){
 												success: function (res) {
 
 												},
-												fail: function (res) { },
-												complete: function (res) { },
+												// fail: function (res) { },
+												// complete: function (res) { },
 											});
 
 											//后台用token+密码组成加密帧
@@ -559,7 +559,8 @@ function unlockOperation(the, deviceId, carId, qrId, success, fail, complete){
 												url: UNLOCK_URL,
 												data: {
 													qrId: qrId,
-													carId: carId,
+													// carId: carId,
+													carId: qrId,
 													customerId: wx.getStorageSync(user.CustomerID),
 													longitude: wx.getStorageSync(user.Longitude),
 													latitude: wx.getStorageSync(user.Latitude),
@@ -568,6 +569,7 @@ function unlockOperation(the, deviceId, carId, qrId, success, fail, complete){
 												},
 												method: 'POST',
 												success: function (res) { 
+													console.log('7 head use unlock', qrId);
 													wx.setStorageSync('using_coupon_code', null);
 													normalUpdateCustomerStatus(
 														wx.getStorageSync(user.CustomerID),
@@ -1338,10 +1340,10 @@ function checkLockStatusOperation(the, deviceId, carId, success, fail)
 								success: function (res) {
 									console.log(res);
 								},
-								fail: function (res) {
-									typeof fail == "function" && fail('fallback');
-								},
-								complete: function (res) { },
+								// fail: function (res) {
+								// 	typeof fail == "function" && fail('fallback');
+								// },
+								// complete: function (res) { },
 							});
 
 							//读取锁连接后的随机令牌

@@ -110,3 +110,5 @@ page{
 
 
 @import "../section/line_item.wxss";
+
+@import "../index/index.wxss";

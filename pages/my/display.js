@@ -13,6 +13,8 @@ Page({
     },
 
     cardQuantity: 0,
+
+		selfReturn: false,
   },
 // 页面加载
   onLoad:function(){
@@ -57,6 +59,7 @@ Page({
 					showPhoneNum: showPhoneNum,
 					account: that.data.account,
 					cardQuantity: that.data.cardQuantity,
+					UsingCarStatus: wx.getStorageSync(user.UsingCarStatus),
 				});
       },
       fail: function(res) {},
@@ -173,6 +176,44 @@ Page({
     })
   },
 
+	selfReturn:function(){
+		var that = this;
+		wx.scanCode({
+			onlyFromCamera: true,
+			success: function (res) {
+				console.log(res);
+				if (res.errMsg == 'scanCode:ok') {
+
+
+					var parameters = operation.urlProcess(res.result);
+					var qrId = parameters.id;
+
+					if(qrId == '0000000')
+					{
+						// var pages = getCurrentPages();
+						// var indexPage = pages[0];
+						// indexPage.data.selfReturn = true;
+
+						// wx.navigateBack({
+						// 	delta: 1,
+						// })
+
+						that.setData({
+							selfReturn: true,
+						});
+					}
+				
+
+				}
+
+			},
+			fail: function (res) {
+
+			},
+			complete: function (res) { },
+		});
+	},
+
 	switchAccount:function(){
 		wx.setStorageSync(user.CustomerID, null);
 
@@ -207,6 +248,88 @@ Page({
 			complete: function(res) {},
 		})
 		
+	},
+
+	//自行还车扫码停止计费
+	selfReturnToRefund: function () {
+		wx.showLoading({
+			title: '结束行程中...',
+			mask: true,
+			success: function(res) {},
+			fail: function(res) {},
+			complete: function(res) {},
+		})
+		var that = this;
+
+		var date = new Date();
+		if (wx.getStorageSync(user.UsingCar) > 0) {
+			wx.request({
+				url: config.PytheRestfulServerURL + '/manage/urgent/refund/',//小程序版退费
+				data: {
+					phoneNum: wx.getStorageSync(user.UsingCar),
+					date: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':00',
+					managerId: -1,
+				},
+				method: 'POST',
+				success: function (res) {
+					wx.hideLoading();
+					that.setData({
+						selfReturn: false,
+					});
+					if (res.data.status == 200) {
+						wx.showToast({
+							title: res.data.msg,
+							icon: '',
+							image: '',
+							duration: 5000,
+							mask: true,
+							success: function (res) { },
+							fail: function (res) { },
+							complete: function (res) { },
+						})
+
+					}
+					if (res.data.status == 400) {
+						wx.showModal({
+							title: '提示',
+							content: res.data.msg,
+							showCancel: false,
+							confirmText: '我知道了',
+							success: function (res) { },
+							fail: function (res) { },
+							complete: function (res) { },
+						})
+					}
+				},
+				fail: function (res) { },
+				complete: function (res) { },
+			});
+		}
+		else {
+			wx.hideLoading();
+			that.setData({
+				selfReturn: false,
+			});
+			wx.showModal({
+				title: '提示',
+				content: '用户尚无行程，押金退款失败',
+				showCancel: false,
+				confirmText: '我知道了',
+				success: function (res) { },
+				fail: function (res) { },
+				complete: function (res) { },
+			})
+		}
+
+
+
+	},
+
+	selfReturnHoldOn: function () {
+		var that = this;
+		that.setData({
+			selfReturn: false,
+		});
 	},
 
 })
