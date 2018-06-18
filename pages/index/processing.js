@@ -366,7 +366,7 @@ Page({
 						that.data.carId,
 						that.data.qrId,
 						(result) => {
-							clearInterval(nodeLockCheck);
+							// clearInterval(nodeLockCheck);
 
 						},
 						(res) => {
