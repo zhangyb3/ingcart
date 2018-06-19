@@ -3,7 +3,7 @@ var AppID = "wxfa403661fb7b8259";
 
 var MerchantID = "1438382702";
 
-var PytheRestfulServerURL = "https://wx.ingcart.com";
+var PytheRestfulServerURL = "https://xcx.ingcart.com";
 var PytheFileServerURL = 'https://file.pythe.cn';
 // var PytheSearchServerURL = "https://searching.haowen.mobi:8443/search";
 var PytheSearchServerURL = "https://www.haowen.mobi/rest/index/search";

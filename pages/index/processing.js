@@ -46,7 +46,26 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-  
+
+		wx.closeSocket();
+		app.ingcartLockManager.reinit();
+
+		wx.getLocation({
+			type: 'wgs84',
+			altitude: true,
+			success: function(res) {
+				console.log("unlock location", res);
+				if (res.latitude != null) {
+					wx.setStorageSync(user.Latitude, res.latitude);
+				}
+				if (res.longitude != null) {
+					wx.setStorageSync(user.Longitude, res.longitude);
+				}
+				
+			},
+			fail: function(res) {},
+			complete: function(res) {},
+		})
   },
 
   /**
@@ -59,24 +78,14 @@ Page({
 		{
 			var that = this;
 			
+		
 
-			if (that.data.qrId.length == 8 ) 
+			// if (that.data.qrId.length == 8 ) 
 			{
 			
 				wx.setStorageSync('unlockingQR', that.data.qrId);
 				wx.setStorageSync(that.data.qrId, 'unlocking');
-
-
-				wx.getLocation({
-					type: "gcj02",
-					success: (res) => {
-						console.log("unlock location", res);
-						if(res.latitude != null){
-							wx.setStorageSync(user.Latitude, res.latitude);
-						}
-						if (res.longitude != null){
-							wx.setStorageSync(user.Longitude, res.longitude);
-						}
+						
 						
 						var preZero = '';
 						if (that.data.qrId.length == 7) {
@@ -85,52 +94,50 @@ Page({
 						if (that.data.qrId.length == 8) {
 							preZero = '00';
 						}
-						console.log(preZero + that.data.qrId + ',' + res.latitude + ',' + res.longitude);
+						
 
 						if (wx.getStorageSync('unlock_mode') == 'ble') {
 							// 下面这句调用强制使用蓝牙开锁
-							app.ingcartLockManager.unlock(preZero + that.data.qrId, wx.getStorageSync(user.Latitude), wx.getStorageSync(user.Longitude), that.unlockCB, that.unlockFailCB, that.lockCB);
+							app.ingcartLockManager.unlock(preZero + that.data.qrId, wx.getStorageSync(user.Latitude), wx.getStorageSync(user.Longitude), that.unlockCB, that.unlockFailCB, that.lockCB,true);
 						}
-						if (wx.getStorageSync('unlock_mode') == 'gprs') {
-							if (that.data.qrId.length == 7) 
-							{
-								console.log(" node lock !!!!!!!!!!!!!!!!!!!!!");
-								app.ingcartLockManager.unlock(preZero + that.data.qrId, wx.getStorageSync(user.Latitude), wx.getStorageSync(user.Longitude), that.unlockCB, that.unlockFailCB, that.lockCB);
-							}
-							else
-							{
-								console.log('GPRS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-								//这种模式下，每次先用蓝牙开锁，10秒后如果开锁失败改用gprs
-								app.ingcartLockManager.unlock(preZero + that.data.qrId, wx.getStorageSync(user.Latitude), wx.getStorageSync(user.Longitude), that.unlockCB, that.unlockFailCB, that.lockCB,true);
-								var switchCount = 0;
-								that.data.switchInterval = setInterval(
-									function(){
-										if(switchCount > 10)
-										{
-											clearInterval(that.data.switchInterval);
-											console.log('!!!!!!!!!!!!!!! switch to gprs unlock !!!!!!!!!!!!!!!!!');
-											// 下面这句调用强制使用 gprs 开锁，假如蓝牙开不了
-											app.ingcartLockManager.unlock(preZero + that.data.qrId, wx.getStorageSync(user.Latitude), wx.getStorageSync(user.Longitude), that.unlockCB, that.unlockFailCB, that.lockCB, false);
-											that.data.bleUnlock = 0;
-										}
-										else
-										{
-											switchCount++;
-										}
-									},
-									1000
-								);
+						// if (wx.getStorageSync('unlock_mode') == 'gprs') {
+						// 	if (that.data.qrId.length == 7) 
+						// 	{
+						// 		console.log(" node lock !!!!!!!!!!!!!!!!!!!!!");
+						// 		app.ingcartLockManager.unlock(preZero + that.data.qrId, wx.getStorageSync(user.Latitude), wx.getStorageSync(user.Longitude), that.unlockCB, that.unlockFailCB, that.lockCB);
+						// 	}
+						// 	else
+						// 	{
+						// 		console.log('GPRS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+						// 		//这种模式下，每次先用蓝牙开锁，10秒后如果开锁失败改用gprs
+						// 		app.ingcartLockManager.unlock(preZero + that.data.qrId, wx.getStorageSync(user.Latitude), wx.getStorageSync(user.Longitude), that.unlockCB, that.unlockFailCB, that.lockCB,true);
+						// 		var switchCount = 0;
+						// 		that.data.switchInterval = setInterval(
+						// 			function(){
+						// 				if(switchCount > 10)
+						// 				{
+						// 					clearInterval(that.data.switchInterval);
+						// 					console.log('!!!!!!!!!!!!!!! switch to gprs unlock !!!!!!!!!!!!!!!!!');
+						// 					// 下面这句调用强制使用 gprs 开锁，假如蓝牙开不了
+						// 					app.ingcartLockManager.unlock(preZero + that.data.qrId, wx.getStorageSync(user.Latitude), wx.getStorageSync(user.Longitude), that.unlockCB, that.unlockFailCB, that.lockCB, false);
+						// 					that.data.bleUnlock = 0;
+						// 				}
+						// 				else
+						// 				{
+						// 					switchCount++;
+						// 				}
+						// 			},
+						// 			1000
+						// 		);
 								
-							}
+						// 	}
 							
-						}
+						// }
 						that.setData({
 							unlock_progress: true,
 						});
 
-					},
 					
-				});
 
 				var count = 0;
 				var checkUnlockingQR = setInterval(
@@ -204,10 +211,10 @@ Page({
 						{
 
 							clearInterval(checkUnlockingQR);
-							if (wx.getStorageSync('unlock_mode') == 'ble' && that.data.qrId.length == 8) 
-							{
-								wx.setStorageSync('unlock_mode', 'gprs');
-							}
+							// if (wx.getStorageSync('unlock_mode') == 'ble' && that.data.qrId.length == 8) 
+							// {
+							// 	wx.setStorageSync('unlock_mode', 'gprs');
+							// }
 							wx.setStorageSync(that.data.qrId, null);
 							// wx.setStorageSync('unlockingQR', null);
 							wx.showModal({
@@ -253,136 +260,136 @@ Page({
 
 
 			}
-			else
-			{
+			// else
+			// {
 
-				console.log('!!!!!!!!!!! nodelock carId ', that.data.carId);
-				that.setData({
-					unlock_progress: true,
-					percent: 99,
-				});
-				var couponCode = null;
-				if (wx.getStorageSync('using_coupon_code') != 'no') {
-					couponCode = wx.getStorageSync('using_coupon_code');
-				}
+			// 	console.log('!!!!!!!!!!! nodelock carId ', that.data.carId);
+			// 	that.setData({
+			// 		unlock_progress: true,
+			// 		percent: 99,
+			// 	});
+			// 	var couponCode = null;
+			// 	if (wx.getStorageSync('using_coupon_code') != 'no') {
+			// 		couponCode = wx.getStorageSync('using_coupon_code');
+			// 	}
 
-				if (that.data.qrId.length == 9) 
-				{
-					// setTimeout(
-						// function () {
-							wx.request({
-								url: config.PytheRestfulServerURL + '/platform/forward',
-								data: {
-									cmd: 'open',
-									qrId: that.data.qrId,
-									serialnum: 0,
-								},
-								method: 'POST',
-								success: function (res) {
+			// 	if (that.data.qrId.length == 9) 
+			// 	{
+			// 		// setTimeout(
+			// 			// function () {
+			// 				wx.request({
+			// 					url: config.PytheRestfulServerURL + '/platform/forward',
+			// 					data: {
+			// 						cmd: 'open',
+			// 						qrId: that.data.qrId,
+			// 						serialnum: 0,
+			// 					},
+			// 					method: 'POST',
+			// 					success: function (res) {
 
-									if (res.statusCode == 200) {
+			// 						if (res.statusCode == 200) {
 
-										if (res.data.status == 200) {
+			// 							if (res.data.status == 200) {
 											
-											wx.request({
-												url: config.PytheRestfulServerURL + '/use/unlock',
-												data: {
-													qrId: that.data.qrId,
-													carId: that.data.qrId,
-													customerId: wx.getStorageSync(user.CustomerID),
-													latitude: wx.getStorageSync(user.Latitude),
-													longitude: wx.getStorageSync(user.Longitude),
-													code: couponCode,
-													ble: that.data.bleUnlock,
-												},
-												method: 'POST',
-												success: function (res) {
-													clearInterval(that.data.switchInterval);
-													console.log("use unlock: ", res.data.status);
-													if (res.data.status == 200) {
-														clearInterval(checkUnlockingQR);
-														wx.setStorageSync(that.data.qrId, 'unlocked');
-														// wx.setStorageSync('unlockingQR', null);
-														var pages = getCurrentPages();
-														var indexPage = pages[0];
-														indexPage.data.status = 'unlock';
-														indexPage.data.unlockQR = null;
-														indexPage.data.backFrom = null;
-														indexPage.data.showZoneNotice = true;
-														indexPage.data.useCoupon = false;
-														indexPage.data.couponCode = null;
-														indexPage.data.timing = true;
-													}
-													operation.normalUpdateCustomerStatus(
-														wx.getStorageSync(user.CustomerID),
-														() => {
+			// 								wx.request({
+			// 									url: config.PytheRestfulServerURL + '/use/unlock',
+			// 									data: {
+			// 										qrId: that.data.qrId,
+			// 										carId: that.data.qrId,
+			// 										customerId: wx.getStorageSync(user.CustomerID),
+			// 										latitude: wx.getStorageSync(user.Latitude),
+			// 										longitude: wx.getStorageSync(user.Longitude),
+			// 										code: couponCode,
+			// 										ble: that.data.bleUnlock,
+			// 									},
+			// 									method: 'POST',
+			// 									success: function (res) {
+			// 										clearInterval(that.data.switchInterval);
+			// 										console.log("use unlock: ", res.data.status);
+			// 										if (res.data.status == 200) {
+			// 											clearInterval(checkUnlockingQR);
+			// 											wx.setStorageSync(that.data.qrId, 'unlocked');
+			// 											// wx.setStorageSync('unlockingQR', null);
+			// 											var pages = getCurrentPages();
+			// 											var indexPage = pages[0];
+			// 											indexPage.data.status = 'unlock';
+			// 											indexPage.data.unlockQR = null;
+			// 											indexPage.data.backFrom = null;
+			// 											indexPage.data.showZoneNotice = true;
+			// 											indexPage.data.useCoupon = false;
+			// 											indexPage.data.couponCode = null;
+			// 											indexPage.data.timing = true;
+			// 										}
+			// 										operation.normalUpdateCustomerStatus(
+			// 											wx.getStorageSync(user.CustomerID),
+			// 											() => {
 
-															wx.navigateBack({
-																delta: 1,
-															});
-														},
-													);
+			// 												wx.navigateBack({
+			// 													delta: 1,
+			// 												});
+			// 											},
+			// 										);
 
-												},
-												fail: function (res) { },
-												complete: function (res) { },
-											});
-										}
+			// 									},
+			// 									fail: function (res) { },
+			// 									complete: function (res) { },
+			// 								});
+			// 							}
 
-										wx.showModal({
-											title: '提示',
-											content: res.data.msg,
-											showCancel: false,
-											confirmText: '我知道了',
-											success: function (res) {
-												wx.setStorageSync(that.data.qrId, 'unlock_success');
-												clearInterval(checkUnlockingQR);
+			// 							wx.showModal({
+			// 								title: '提示',
+			// 								content: res.data.msg,
+			// 								showCancel: false,
+			// 								confirmText: '我知道了',
+			// 								success: function (res) {
+			// 									wx.setStorageSync(that.data.qrId, 'unlock_success');
+			// 									clearInterval(checkUnlockingQR);
 
-												// if (res.confirm) {
-												// 	wx.navigateBack({
-												// 		delta: 1,
-												// 	})
-												// }
-											},
-											fail: function (res) { },
-											complete: function (res) { },
-										})
-									}
-
-
-								},
-								fail: function (res) { },
-								complete: function (res) { },
-							});
-						// },
-						// 1000 * 10
-					// );
-				}
-
-				else {
-					operation.unlock(
-						that,
-						wx.getStorageSync(user.CustomerID),
-						that.data.carId,
-						that.data.qrId,
-						(result) => {
-							// clearInterval(nodeLockCheck);
-
-						},
-						(res) => {
-							console.log("fail", res);
-
-							wx.navigateBack({
-								delta: 1,
-							})
-						}
-					);
-				}
+			// 									// if (res.confirm) {
+			// 									// 	wx.navigateBack({
+			// 									// 		delta: 1,
+			// 									// 	})
+			// 									// }
+			// 								},
+			// 								fail: function (res) { },
+			// 								complete: function (res) { },
+			// 							})
+			// 						}
 
 
+			// 					},
+			// 					fail: function (res) { },
+			// 					complete: function (res) { },
+			// 				});
+			// 			// },
+			// 			// 1000 * 10
+			// 		// );
+			// 	}
+			// 	else 
+			// 	{
+			// 		operation.unlock(
+			// 			that,
+			// 			wx.getStorageSync(user.CustomerID),
+			// 			that.data.carId,
+			// 			that.data.qrId,
+			// 			(result) => {
+			// 				// clearInterval(nodeLockCheck);
+
+			// 			},
+			// 			(res) => {
+			// 				console.log("fail", res);
+
+			// 				wx.navigateBack({
+			// 					delta: 1,
+			// 				})
+			// 			}
+			// 		);
+			// 	}
 
 
-			}
+
+
+			// }
 			
 
 			

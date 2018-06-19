@@ -178,40 +178,66 @@ Page({
 
 	selfReturn:function(){
 		var that = this;
-		wx.scanCode({
-			onlyFromCamera: true,
-			success: function (res) {
-				console.log(res);
-				if (res.errMsg == 'scanCode:ok') {
+
+		if(wx.getStorageSync(user.Hotspot) == 0)
+		{
+			console.log('!!!!!!!!!! not secure zone !!!!!!!');
+		}
+		if (wx.getStorageSync(user.Hotspot) == 1)
+		{
+			wx.showModal({
+				title: '提示',
+				content: '请关锁。若你已关锁，还无法结束，请稍后数秒重试',
+				showCancel: false,
+				confirmText: '',
+				success: function(res) {},
+				fail: function(res) {},
+				complete: function(res) {},
+			})
+		}
+		if (wx.getStorageSync(user.Hotspot) == 2) 
+		{
+			that.setData({
+				selfReturn: true,
+			});
+		}
+
+		// wx.scanCode({
+		// 	onlyFromCamera: true,
+		// 	success: function (res) {
+		// 		console.log(res);
+		// 		if (res.errMsg == 'scanCode:ok') {
 
 
-					var parameters = operation.urlProcess(res.result);
-					var qrId = parameters.id;
+		// 			var parameters = operation.urlProcess(res.result);
+		// 			var qrId = parameters.id;
 
-					if(qrId == '0000000')
-					{
-						// var pages = getCurrentPages();
-						// var indexPage = pages[0];
-						// indexPage.data.selfReturn = true;
+		// 			if(qrId == '0000000')
+		// 			{
+		// 				// var pages = getCurrentPages();
+		// 				// var indexPage = pages[0];
+		// 				// indexPage.data.selfReturn = true;
 
-						// wx.navigateBack({
-						// 	delta: 1,
-						// })
+		// 				// wx.navigateBack({
+		// 				// 	delta: 1,
+		// 				// })
 
-						that.setData({
-							selfReturn: true,
-						});
-					}
+		// 				that.setData({
+		// 					selfReturn: true,
+		// 				});
+		// 			}
 				
 
-				}
+		// 		}
 
-			},
-			fail: function (res) {
+		// 	},
+		// 	fail: function (res) {
 
-			},
-			complete: function (res) { },
-		});
+		// 	},
+		// 	complete: function (res) { },
+		// });
+
+
 	},
 
 	switchAccount:function(){
