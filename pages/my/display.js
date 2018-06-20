@@ -189,7 +189,7 @@ Page({
 				title: '提示',
 				content: '请关锁。若你已关锁，还无法结束，请稍后数秒重试',
 				showCancel: false,
-				confirmText: '',
+				confirmText: '我知道了',
 				success: function(res) {},
 				fail: function(res) {},
 				complete: function(res) {},

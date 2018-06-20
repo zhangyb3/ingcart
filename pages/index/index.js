@@ -337,88 +337,95 @@ Page({
 			// 	fail: function (res) { },
 			// 	complete: function (res) { },
 			// });
+
+			operation.normalUpdateCustomerStatus(
+				wx.getStorageSync(user.CustomerID),
+				() => {
+					checkUsingCarStatus(that);
+				},
+			);
 			
-			wx.showLoading({
-				title: '充值到账中...',
-				mask: true,
-				success: function (res) { },
-				fail: function (res) { },
-				complete: function (res) { },
-			});
+			// wx.showLoading({
+			// 	title: '充值到账中...',
+			// 	mask: true,
+			// 	success: function (res) { },
+			// 	fail: function (res) { },
+			// 	complete: function (res) { },
+			// });
 			
-			var that = this;
-			var originalAmount = that.data.originalAmount;
-			var count = 0;
+			// var that = this;
+			// var originalAmount = that.data.originalAmount;
+			// var count = 0;
 			
-			var checkAmountIntervalId = setInterval(
-				function () {
-					count++;
-					console.log('check bill !!!!!!!!!!!!!!!', count);
+			// var checkAmountIntervalId = setInterval(
+			// 	function () {
+			// 		count++;
+			// 		console.log('check bill !!!!!!!!!!!!!!!', count);
 
-					if (count > 5) {
-						wx.hideLoading();
-						clearInterval(checkAmountIntervalId);
-						wx.showModal({
-							title: '提示',
-							content: '充值暂未到账，请稍后重试',
-							showCancel: false,
-							confirmText: '我知道了',
-							success: function (res) { 
-								that.data.backFrom = null;
-							},
-							fail: function (res) { },
-							complete: function (res) { },
-						})
-					}
+			// 		if (count > 5) {
+			// 			wx.hideLoading();
+			// 			clearInterval(checkAmountIntervalId);
+			// 			wx.showModal({
+			// 				title: '提示',
+			// 				content: '充值暂未到账，请稍后重试',
+			// 				showCancel: false,
+			// 				confirmText: '我知道了',
+			// 				success: function (res) { 
+			// 					that.data.backFrom = null;
+			// 				},
+			// 				fail: function (res) { },
+			// 				complete: function (res) { },
+			// 			})
+			// 		}
 
-					wx.request({
-						url: config.PytheRestfulServerURL + '/wx/query/order',
-						data: {
-							customerId: wx.getStorageSync(user.CustomerID),
-							out_trade_no: wx.getStorageSync('last_out_trade_no'),
-						},
-						method: 'POST',
-						success: function (res) {
+			// 		wx.request({
+			// 			url: config.PytheRestfulServerURL + '/wx/query/order',
+			// 			data: {
+			// 				customerId: wx.getStorageSync(user.CustomerID),
+			// 				out_trade_no: wx.getStorageSync('last_out_trade_no'),
+			// 			},
+			// 			method: 'POST',
+			// 			success: function (res) {
 
-							console.log(wx.getStorageSync(user.CustomerID), wx.getStorageSync('last_out_trade_no'));
-							if(res.data.status == 200)
-							{
-								wx.hideLoading();
-								clearInterval(checkAmountIntervalId);
-								var qrId = that.data.unlockQR;
+			// 				console.log(wx.getStorageSync(user.CustomerID), wx.getStorageSync('last_out_trade_no'));
+			// 				if(res.data.status == 200)
+			// 				{
+			// 					wx.hideLoading();
+			// 					clearInterval(checkAmountIntervalId);
+			// 					var qrId = that.data.unlockQR;
 
 								
-								//去开锁
-								gotoUnlock(that, qrId);
+			// 					//去开锁
+			// 					gotoUnlock(that, qrId);
 								
 								
 								
-							}
-							else
-							{
-								console.log('pay error !!!!!!!!!!!!!!!',res.data);
-								// wx.showModal({
-								// 	title: '提示',
-								// 	content: res.data.status.toString(),
-								// 	showCancel: false,
-								// 	confirmText: '我知道了',
-								// 	success: function(res) {},
-								// 	fail: function(res) {},
-								// 	complete: function(res) {},
-								// })
-							}
+			// 				}
+			// 				else
+			// 				{
+			// 					console.log('pay error !!!!!!!!!!!!!!!',res.data);
+			// 					// wx.showModal({
+			// 					// 	title: '提示',
+			// 					// 	content: res.data.status.toString(),
+			// 					// 	showCancel: false,
+			// 					// 	confirmText: '我知道了',
+			// 					// 	success: function(res) {},
+			// 					// 	fail: function(res) {},
+			// 					// 	complete: function(res) {},
+			// 					// })
+			// 				}
 							
 
-						},
-						fail: function (res) { },
-						complete: function (res) {
+			// 			},
+			// 			fail: function (res) { },
+			// 			complete: function (res) {
 
-						},
-					});
+			// 			},
+			// 		});
 
-				},
-				1000
-			);
+			// 	},
+			// 	1000
+			// );
 
 			
 
@@ -528,9 +535,15 @@ Page({
 		if (that.data.selfReturn == true || that.data.qrIdFromWX == '0000000')
 		{
 			that.setData({
-				selfReturn: true,
+				// selfReturn: true,
 				qrIdFromWX: null,
 			});
+			if(that.data.pStatus == 2 && wx.getStorageSync(user.Hotspot) == 1 && wx.getStorageSync(user.LockLevel) >= 3)
+			{
+				that.setData({
+					selfReturn: true,
+				});
+			}
 		}
 
 		
@@ -693,17 +706,45 @@ Page({
   // 结束用车
   endUseCar:function(){
     var that=this;
-    if (that.data.endUseCarState==0){
-     that.setData({
-       isShowendUseTip:true,
-       endUseCarState:1    
-     });
-    }else{
-     that.setData({
-       isShowendUseTip: false,
-       endUseCarState:0
-     })
-    }
+
+		if (that.data.pStatus == 1 || that.data.pStatus == 0 )
+		{
+			if (that.data.endUseCarState == 0) {
+				that.setData({
+					isShowendUseTip: true,
+					endUseCarState: 1
+				});
+			}
+			else {
+				that.setData({
+					isShowendUseTip: false,
+					endUseCarState: 0
+				})
+			}
+		}
+		if (that.data.pStatus == 2 )
+		{
+			if (wx.getStorageSync(user.Hotspot) == 1)
+			{
+				that.setData({
+					selfReturn: true,
+				});
+			}
+			else
+			{
+				wx.showModal({
+					title: '提示',
+					content: '车锁未关闭，请关锁后重试',
+					showCancel: false,
+					confirmText: '我知道了',
+					success: function (res) { },
+					fail: function (res) { },
+					complete: function (res) { },
+				});
+			}
+		}
+
+    
   },
 
   // 关闭结束用车提示
@@ -918,6 +959,8 @@ Page({
 							if (payResult == 'requestPayment:ok') {
 								var pages = getCurrentPages();
 								var indexPage = pages[0];
+
+								//屏蔽下面一行指令，不等待用户点击充值完成即在后台调用开锁接口
 								indexPage.data.backFrom = 'payToUse';
 
 								
@@ -1109,75 +1152,106 @@ Page({
 
 	//自行还车扫码停止计费
 	selfReturnToRefund: function () {
-		wx.showLoading({
-			title: '结束行程中...',
-			mask: true,
-			success: function (res) { },
-			fail: function (res) { },
-			complete: function (res) { },
-		})
+		// wx.showLoading({
+		// 	title: '结束行程中...',
+		// 	mask: true,
+		// 	success: function (res) { },
+		// 	fail: function (res) { },
+		// 	complete: function (res) { },
+		// })
 		var that = this;
 
-		var date = new Date();
-		if (wx.getStorageSync(user.UsingCar) > 0) {
-			wx.request({
-				url: config.PytheRestfulServerURL + '/manage/urgent/refund/',//小程序版退费
-				data: {
-					phoneNum: wx.getStorageSync(user.UsingCar),
-					date: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':00',
-					managerId: -1,
-				},
-				method: 'POST',
-				success: function (res) {
-					wx.hideLoading();
-					that.setData({
-						selfReturn: false,
-					});
-					if (res.data.status == 200) {
-						wx.showToast({
-							title: res.data.msg,
-							icon: '',
-							image: '',
-							duration: 5000,
-							mask: true,
-							success: function (res) { },
-							fail: function (res) { },
-							complete: function (res) { },
-						})
+		wx.scanCode({
+			onlyFromCamera: true,
+			success: function (res) {
+				console.log(res);
+				if (res.errMsg == 'scanCode:ok') {
 
-					}
-					if (res.data.status == 400) {
-						wx.showModal({
-							title: '提示',
-							content: res.data.msg,
-							showCancel: false,
-							confirmText: '我知道了',
-							success: function (res) { },
-							fail: function (res) { },
-							complete: function (res) { },
-						})
-					}
-				},
-				fail: function (res) { },
-				complete: function (res) { },
-			});
-		}
-		else {
-			wx.hideLoading();
-			that.setData({
-				selfReturn: false,
-			});
-			wx.showModal({
-				title: '提示',
-				content: '用户尚无行程，押金退款失败',
-				showCancel: false,
-				confirmText: '我知道了',
-				success: function (res) { },
-				fail: function (res) { },
-				complete: function (res) { },
-			})
-		}
 
+					var parameters = operation.urlProcess(res.result);
+					var qrId = parameters.id;
+
+					if(qrId == '0000000')
+					{
+						var date = new Date();
+						//确在用车
+						if (wx.getStorageSync(user.UsingCar) > 0) 
+						{
+							//在还车点附近
+							if(wx.getStorageSync(user.Hotspot) == 1 && wx.getStorageSync(user.LockLevel) >= 3)
+							{
+								wx.request({
+									url: config.PytheRestfulServerURL + '/manage/urgent/refund/',//小程序版退费
+									data: {
+										phoneNum: wx.getStorageSync(user.UsingCar),
+										date: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':00',
+										managerId: -1,
+									},
+									method: 'POST',
+									success: function (res) {
+										wx.hideLoading();
+										that.setData({
+											selfReturn: false,
+										});
+										if (res.data.status == 200) {
+											wx.showToast({
+												title: res.data.msg,
+												icon: '',
+												image: '',
+												duration: 5000,
+												mask: true,
+												success: function (res) { },
+												fail: function (res) { },
+												complete: function (res) { },
+											})
+
+										}
+										if (res.data.status == 400) {
+											wx.showModal({
+												title: '提示',
+												content: res.data.msg,
+												showCancel: false,
+												confirmText: '我知道了',
+												success: function (res) { },
+												fail: function (res) { },
+												complete: function (res) { },
+											})
+										}
+									},
+									fail: function (res) { },
+									complete: function (res) { },
+								});
+							}
+							else
+							{
+								console.log('other situation !!!!!!!!!!');
+							}
+							
+						}
+						//没有行程
+						else 
+						{
+							wx.hideLoading();
+							that.setData({
+								selfReturn: false,
+							});
+							wx.showModal({
+								title: '提示',
+								content: '用户尚无行程，押金退款失败',
+								showCancel: false,
+								confirmText: '我知道了',
+								success: function (res) { },
+								fail: function (res) { },
+								complete: function (res) { },
+							})
+						}
+					}
+
+
+				}
+
+			},
+		});
 
 
 	},
@@ -1463,11 +1537,23 @@ function refreshUsingMinutes(the){
 						price: result.data.price,
 						giving: wx.getStorageSync(user.UsingCarGiving),
 						hotline: result.data.hotline,
-						pStatus: wx.getStorageSync(user.PStatus),
-
+						// pStatus: wx.getStorageSync(user.PStatus),
+						pStatus: result.data.p_status,
 					});
+					wx.setStorageSync(user.LockLevel, result.data.car_level);
 					wx.setStorageSync(user.Hotspot, result.data.hotspot);
-
+					if (wx.getStorageSync(user.Hotspot) == 2) {
+						that.setData({
+							selfReturn: true,
+						});
+					}
+					else {
+						that.setData({
+							selfReturn: false,
+						});
+						
+						
+					}
 					// if (wx.getStorageSync(user.Hotspot) == 1) {
 					// 	that.setData({
 					// 		hotspotOn: true,
@@ -1630,11 +1716,24 @@ function checkUsingCarStatus(the, success, fail)
 							price: result.data.price,
 							giving: wx.getStorageSync(user.UsingCarGiving),
 							hotline: result.data.hotline,
-							pStatus: wx.getStorageSync(user.PStatus),
+							// pStatus: wx.getStorageSync(user.PStatus),
+							pStatus: result.data.p_status,
 							carId: wx.getStorageSync(user.UsingCar),
 						});
+						wx.setStorageSync(user.LockLevel, result.data.car_level);
 						wx.setStorageSync(user.Hotspot, result.data.hotspot);
-
+						if (wx.getStorageSync(user.Hotspot) == 2) {
+							that.setData({
+								selfReturn: true,
+							});
+						}
+						else
+						{
+							that.setData({
+								selfReturn: false,
+							});
+							
+						}
 						// if (wx.getStorageSync(user.Hotspot) == 1) {
 						// 	that.setData({
 						// 		hotspotOn: true,
@@ -1793,7 +1892,9 @@ function gotoUnlock(the, qrId, success, fail)
 
 				// var continueToUnlock = true;
 
-				that.data.lockLevel = result.data.car_level;
+				that.setData({
+					lockLevel: result.data.car_level,
+				});
 
 				if(that.data.lockLevel >= 3)
 				{
@@ -1826,7 +1927,13 @@ function gotoUnlock(the, qrId, success, fail)
 									success: function(res) {},
 									fail: function(res) {},
 									complete: function(res) {},
-								})
+								});
+								operation.normalUpdateCustomerStatus(
+									wx.getStorageSync(user.CustomerID),
+									() => {
+										checkUsingCarStatus(that);
+									},
+								);
 							}
 							else
 							{

@@ -144,7 +144,7 @@
                  <cover-view class='wran-tip'>1、使用完推车后，请返还共享推车租赁中心。</cover-view>
                  <cover-view class='wran-tip' style='margin:8px 0 10px;'>2、同一个账号当天内可多次扫码解锁使用该车。</cover-view>
 
-                 <cover-view class='sure-end' hidden="{{pStatus != 1}}">
+                 <cover-view class='sure-end' wx:if="{{pStatus == 1 }}">
                       
 									 <!-- <form  bindsubmit="customerFinishUsing" report-submit='true'  >  -->
 										 <cover-view class='sure-end-btn' bindtap='customerFinishUsing'>确定结束用车</cover-view> 

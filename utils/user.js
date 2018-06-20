@@ -31,4 +31,5 @@ module.exports = {
 		PStatus: "PStatus",
 		Token: "Token",
 		Hotspot:"Hotspot",
+		LockLevel: "LockLevel",
 }
