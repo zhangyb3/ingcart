@@ -209,7 +209,24 @@ Page({
 						(checkResult) => {
 							wx.hideLoading();
 
-							// refreshPage(that);
+							if (that.data.pStatus == 2) {
+								if (wx.getStorageSync(user.Hotspot) == 1 && wx.getStorageSync(user.LockLevel) >= 3) {
+									that.setData({
+										selfReturn: true,
+									});
+								}
+								else if (wx.getStorageSync(user.Hotspot) == 0 && wx.getStorageSync(user.LockLevel) >= 3) {
+									wx.showModal({
+										title: '提示',
+										content: '车锁未关闭，请关锁后重试',
+										showCancel: false,
+										confirmText: '我知道了',
+										success: function (res) { },
+										fail: function (res) { },
+										complete: function (res) { },
+									});
+								}
+							}
 
 							if (that.data.qrIdFromWX != null && wx.getStorageSync('alreadyRegister') == 'yes'
 								&& that.data.qrIdFromWX != '0000000') {
@@ -538,12 +555,8 @@ Page({
 				// selfReturn: true,
 				qrIdFromWX: null,
 			});
-			if(that.data.pStatus == 2 && wx.getStorageSync(user.Hotspot) == 1 && wx.getStorageSync(user.LockLevel) >= 3)
-			{
-				that.setData({
-					selfReturn: true,
-				});
-			}
+		
+			
 		}
 
 		
@@ -1152,14 +1165,9 @@ Page({
 
 	//自行还车扫码停止计费
 	selfReturnToRefund: function () {
-		// wx.showLoading({
-		// 	title: '结束行程中...',
-		// 	mask: true,
-		// 	success: function (res) { },
-		// 	fail: function (res) { },
-		// 	complete: function (res) { },
-		// })
+		
 		var that = this;
+
 
 		wx.scanCode({
 			onlyFromCamera: true,
