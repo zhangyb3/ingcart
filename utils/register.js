@@ -23,7 +23,7 @@ var checkRegister = (success,fail) => {
       success: function(res){
         typeof success == "function" && success(res)
       },
-      fail: function() {
+      fail: function(res) {
         typeof success == "function" && fail(res)
       },
       
