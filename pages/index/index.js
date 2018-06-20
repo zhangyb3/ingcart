@@ -62,6 +62,8 @@ Page({
 		notifyLock: false,
 
 		selfReturn: false,
+		selfReturnSuccess: false,
+		selfReturnFail: false,
   },
 
 // 页面加载
@@ -233,28 +235,33 @@ Page({
 														selfReturn: false,
 													});
 													if (res.data.status == 200) {
-														wx.showToast({
-															title: res.data.msg,
-															icon: '',
-															image: '',
-															duration: 5000,
-															mask: true,
-															success: function (res) { },
-															fail: function (res) { },
-															complete: function (res) { },
-														})
-
+														// wx.showToast({
+														// 	title: res.data.msg,
+														// 	icon: '',
+														// 	image: '',
+														// 	duration: 5000,
+														// 	mask: true,
+														// 	success: function (res) { },
+														// 	fail: function (res) { },
+														// 	complete: function (res) { },
+														// })
+														that.setData({
+															selfReturnSuccess: true,
+														});
 													}
 													if (res.data.status == 400) {
-														wx.showModal({
-															title: '提示',
-															content: res.data.msg,
-															showCancel: false,
-															confirmText: '我知道了',
-															success: function (res) { },
-															fail: function (res) { },
-															complete: function (res) { },
-														})
+														// wx.showModal({
+														// 	title: '提示',
+														// 	content: res.data.msg,
+														// 	showCancel: false,
+														// 	confirmText: '我知道了',
+														// 	success: function (res) { },
+														// 	fail: function (res) { },
+														// 	complete: function (res) { },
+														// })
+														that.setData({
+															selfReturnFail: true,
+														});
 													}
 												},
 												fail: function (res) { },
@@ -1237,6 +1244,8 @@ Page({
 		var that = this;
 		that.setData({
 			notifyLock: false,
+			selfReturnSuccess: false,
+			selfReturnFail: false,
 		});
 		
 	},
@@ -1280,28 +1289,33 @@ Page({
 											selfReturn: false,
 										});
 										if (res.data.status == 200) {
-											wx.showToast({
-												title: res.data.msg,
-												icon: '',
-												image: '',
-												duration: 5000,
-												mask: true,
-												success: function (res) { },
-												fail: function (res) { },
-												complete: function (res) { },
-											})
-
+											// wx.showToast({
+											// 	title: res.data.msg,
+											// 	icon: '',
+											// 	image: '',
+											// 	duration: 5000,
+											// 	mask: true,
+											// 	success: function (res) { },
+											// 	fail: function (res) { },
+											// 	complete: function (res) { },
+											// })
+											that.setData({
+												selfReturnSuccess: true,
+											});
 										}
 										if (res.data.status == 400) {
-											wx.showModal({
-												title: '提示',
-												content: res.data.msg,
-												showCancel: false,
-												confirmText: '我知道了',
-												success: function (res) { },
-												fail: function (res) { },
-												complete: function (res) { },
-											})
+											// wx.showModal({
+											// 	title: '提示',
+											// 	content: res.data.msg,
+											// 	showCancel: false,
+											// 	confirmText: '我知道了',
+											// 	success: function (res) { },
+											// 	fail: function (res) { },
+											// 	complete: function (res) { },
+											// })
+											that.setData({
+												selfReturnFail: true,
+											});
 										}
 									},
 									fail: function (res) { },
