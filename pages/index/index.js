@@ -1555,13 +1555,7 @@ function refreshUsingMinutes(the){
 							selfReturn: true,
 						});
 					}
-					else {
-						that.setData({
-							selfReturn: false,
-						});
-						
-						
-					}
+					
 					// if (wx.getStorageSync(user.Hotspot) == 1) {
 					// 	that.setData({
 					// 		hotspotOn: true,
@@ -1735,13 +1729,7 @@ function checkUsingCarStatus(the, success, fail)
 								selfReturn: true,
 							});
 						}
-						else
-						{
-							that.setData({
-								selfReturn: false,
-							});
-							
-						}
+						
 						// if (wx.getStorageSync(user.Hotspot) == 1) {
 						// 	that.setData({
 						// 		hotspotOn: true,
