@@ -254,7 +254,7 @@
 
 		<cover-view class='layer-map' wx:if='{{selfReturnSuccess == true }}' bindtap='disappearLockNotice'>
 			<cover-view class='layer-img-background'>
-				<cover-image src='../../self_return_success.jpg'>
+				<cover-image src='../../images/self_return_success.jpg'>
 				</cover-image>
 			</cover-view>
 		</cover-view>
