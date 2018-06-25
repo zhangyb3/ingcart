@@ -207,7 +207,7 @@ Page({
 						
 						else if (wx.getStorageSync(that.data.qrId) == 'unlock_fail' || 
 							(count > 25 && wx.getStorageSync('unlock_mode') == 'gprs') ||
-							(count > 20 && wx.getStorageSync('unlock_mode') == 'ble'))
+							(count > 12 && wx.getStorageSync('unlock_mode') == 'ble'))
 						{
 
 							clearInterval(checkUnlockingQR);

@@ -113,6 +113,19 @@ Page({
 
   },
 
+	onReady: function(){
+		wx.getLocation({
+			type: 'wgs84',
+			altitude: true,
+			success: function (res) {
+				wx.setStorageSync(user.Latitude, res.latitude);
+				wx.setStorageSync(user.Longitude, res.longitude);
+			},
+			fail: function (res) { },
+			complete: function (res) { },
+		});
+	},
+
 // 页面显示
   onShow: function(){
 
@@ -434,20 +447,55 @@ Page({
 			// 	complete: function (res) { },
 			// });
 
-			operation.normalUpdateCustomerStatus(
-				wx.getStorageSync(user.CustomerID),
-				() => {
-					checkUsingCarStatus(that);
-				},
-			);
+			if (that.data.unlockQR.length == 7) {
+				gotoUnlock(that, that.data.unlockQR);
+			}
+			else
+			{
+				wx.showLoading({
+					title: '进入行程中...',
+					mask: true,
+					success: function (res) { },
+					fail: function (res) { },
+					complete: function (res) { },
+				});
+
+				var count = 0;
+				var checkWebUnlockInterval = setInterval(
+					function () {
+
+
+						operation.normalUpdateCustomerStatus(
+							wx.getStorageSync(user.CustomerID),
+							() => {
+								console.log('update !!!!!!!!!!!!!!!!!!!!!!!!!');
+								checkUsingCarStatus(that,
+									(result) => {
+										if (count >= 2 || wx.getStorageSync(user.UsingCar) > 0) {
+											console.log('count', count);
+											wx.hideLoading();
+										}
+										if (count >= 10 || wx.getStorageSync(user.UsingCar) > 0) {
+
+											clearInterval(checkWebUnlockInterval);
+										}
+									},
+								);
+
+							},
+						);
+
+
+
+						count++;
+
+					},
+					2000
+				);
+			}
+
 			
-			// wx.showLoading({
-			// 	title: '充值到账中...',
-			// 	mask: true,
-			// 	success: function (res) { },
-			// 	fail: function (res) { },
-			// 	complete: function (res) { },
-			// });
+			
 			
 			// var that = this;
 			// var originalAmount = that.data.originalAmount;
@@ -1983,7 +2031,7 @@ function gotoUnlock(the, qrId, success, fail)
 				that.setData({
 					lockLevel: result.data.car_level,
 				});
-
+				console.log('lock level',that.data.lockLevel);
 				if(that.data.lockLevel >= 3)
 				{
 					wx.showLoading({
@@ -2002,10 +2050,10 @@ function gotoUnlock(the, qrId, success, fail)
 						},
 						method: 'POST',
 						success: function(res) {
-							
+							wx.hideLoading();
 							if(res.data.status == 200)
 							{
-								wx.hideLoading();
+								
 								wx.showToast({
 									title: res.data.msg,
 									icon: '',
@@ -2028,21 +2076,34 @@ function gotoUnlock(the, qrId, success, fail)
 								wx.hideLoading();
 
 								console.log("redirect to progress page !!!!!!!!!!!!!!!!");
-								setTimeout(
-									function(){
+								//用蓝牙开锁
+								{
+									console.log("progress page", qrId);
+									doUnlock(that, qrId);
+								}
+
+								var count = 0;
+								var checkWebUnlockInterval = setInterval(
+									function () {
 										wx.hideLoading();
 										
-										checkUsingCarStatus(that,
-											(result)=>{
+										operation.normalUpdateCustomerStatus(
+											wx.getStorageSync(user.CustomerID),
+											() => {
 
-												
-												{
-													console.log("progress page",qrId);
-													doUnlock(that, qrId);
-												}
+												checkUsingCarStatus(that,
+													(result) => {
+														if (count >= 10 || wx.getStorageSync(user.UsingCar) > 0) {
+															clearInterval(checkWebUnlockInterval);
+														}
+													},
+												);
 
 											},
 										);
+
+
+										count++;
 
 									},
 									2000
@@ -2052,7 +2113,9 @@ function gotoUnlock(the, qrId, success, fail)
 							
 						},
 						fail: function(res) {},
-						complete: function(res) {},
+						complete: function(res) {
+							wx.hideLoading();
+						},
 					})
 				}
 
