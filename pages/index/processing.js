@@ -80,7 +80,7 @@ Page({
 			
 		
 
-			// if (that.data.qrId.length == 8 ) 
+			if (that.data.qrId.length == 8 ) 
 			{
 			
 				wx.setStorageSync('unlockingQR', that.data.qrId);
@@ -209,7 +209,7 @@ Page({
 							(count > 25 && wx.getStorageSync('unlock_mode') == 'gprs') ||
 							(count > 12 && wx.getStorageSync('unlock_mode') == 'ble'))
 						{
-
+							app.ingcartLockManager.reinit();
 							clearInterval(checkUnlockingQR);
 							// if (wx.getStorageSync('unlock_mode') == 'ble' && that.data.qrId.length == 8) 
 							// {
@@ -260,136 +260,136 @@ Page({
 
 
 			}
-			// else
-			// {
+			else
+			{
 
-			// 	console.log('!!!!!!!!!!! nodelock carId ', that.data.carId);
-			// 	that.setData({
-			// 		unlock_progress: true,
-			// 		percent: 99,
-			// 	});
-			// 	var couponCode = null;
-			// 	if (wx.getStorageSync('using_coupon_code') != 'no') {
-			// 		couponCode = wx.getStorageSync('using_coupon_code');
-			// 	}
+				console.log('!!!!!!!!!!! nodelock carId ', that.data.carId);
+				that.setData({
+					unlock_progress: true,
+					percent: 99,
+				});
+				var couponCode = null;
+				if (wx.getStorageSync('using_coupon_code') != 'no') {
+					couponCode = wx.getStorageSync('using_coupon_code');
+				}
 
-			// 	if (that.data.qrId.length == 9) 
-			// 	{
-			// 		// setTimeout(
-			// 			// function () {
-			// 				wx.request({
-			// 					url: config.PytheRestfulServerURL + '/platform/forward',
-			// 					data: {
-			// 						cmd: 'open',
-			// 						qrId: that.data.qrId,
-			// 						serialnum: 0,
-			// 					},
-			// 					method: 'POST',
-			// 					success: function (res) {
+				// if (that.data.qrId.length == 9) 
+				// {
+				// 	// setTimeout(
+				// 		// function () {
+				// 			wx.request({
+				// 				url: config.PytheRestfulServerURL + '/platform/forward',
+				// 				data: {
+				// 					cmd: 'open',
+				// 					qrId: that.data.qrId,
+				// 					serialnum: 0,
+				// 				},
+				// 				method: 'POST',
+				// 				success: function (res) {
 
-			// 						if (res.statusCode == 200) {
+				// 					if (res.statusCode == 200) {
 
-			// 							if (res.data.status == 200) {
+				// 						if (res.data.status == 200) {
 											
-			// 								wx.request({
-			// 									url: config.PytheRestfulServerURL + '/use/unlock',
-			// 									data: {
-			// 										qrId: that.data.qrId,
-			// 										carId: that.data.qrId,
-			// 										customerId: wx.getStorageSync(user.CustomerID),
-			// 										latitude: wx.getStorageSync(user.Latitude),
-			// 										longitude: wx.getStorageSync(user.Longitude),
-			// 										code: couponCode,
-			// 										ble: that.data.bleUnlock,
-			// 									},
-			// 									method: 'POST',
-			// 									success: function (res) {
-			// 										clearInterval(that.data.switchInterval);
-			// 										console.log("use unlock: ", res.data.status);
-			// 										if (res.data.status == 200) {
-			// 											clearInterval(checkUnlockingQR);
-			// 											wx.setStorageSync(that.data.qrId, 'unlocked');
-			// 											// wx.setStorageSync('unlockingQR', null);
-			// 											var pages = getCurrentPages();
-			// 											var indexPage = pages[0];
-			// 											indexPage.data.status = 'unlock';
-			// 											indexPage.data.unlockQR = null;
-			// 											indexPage.data.backFrom = null;
-			// 											indexPage.data.showZoneNotice = true;
-			// 											indexPage.data.useCoupon = false;
-			// 											indexPage.data.couponCode = null;
-			// 											indexPage.data.timing = true;
-			// 										}
-			// 										operation.normalUpdateCustomerStatus(
-			// 											wx.getStorageSync(user.CustomerID),
-			// 											() => {
+				// 							wx.request({
+				// 								url: config.PytheRestfulServerURL + '/use/unlock',
+				// 								data: {
+				// 									qrId: that.data.qrId,
+				// 									carId: that.data.qrId,
+				// 									customerId: wx.getStorageSync(user.CustomerID),
+				// 									latitude: wx.getStorageSync(user.Latitude),
+				// 									longitude: wx.getStorageSync(user.Longitude),
+				// 									code: couponCode,
+				// 									ble: that.data.bleUnlock,
+				// 								},
+				// 								method: 'POST',
+				// 								success: function (res) {
+				// 									clearInterval(that.data.switchInterval);
+				// 									console.log("use unlock: ", res.data.status);
+				// 									if (res.data.status == 200) {
+				// 										clearInterval(checkUnlockingQR);
+				// 										wx.setStorageSync(that.data.qrId, 'unlocked');
+				// 										// wx.setStorageSync('unlockingQR', null);
+				// 										var pages = getCurrentPages();
+				// 										var indexPage = pages[0];
+				// 										indexPage.data.status = 'unlock';
+				// 										indexPage.data.unlockQR = null;
+				// 										indexPage.data.backFrom = null;
+				// 										indexPage.data.showZoneNotice = true;
+				// 										indexPage.data.useCoupon = false;
+				// 										indexPage.data.couponCode = null;
+				// 										indexPage.data.timing = true;
+				// 									}
+				// 									operation.normalUpdateCustomerStatus(
+				// 										wx.getStorageSync(user.CustomerID),
+				// 										() => {
 
-			// 												wx.navigateBack({
-			// 													delta: 1,
-			// 												});
-			// 											},
-			// 										);
+				// 											wx.navigateBack({
+				// 												delta: 1,
+				// 											});
+				// 										},
+				// 									);
 
-			// 									},
-			// 									fail: function (res) { },
-			// 									complete: function (res) { },
-			// 								});
-			// 							}
+				// 								},
+				// 								fail: function (res) { },
+				// 								complete: function (res) { },
+				// 							});
+				// 						}
 
-			// 							wx.showModal({
-			// 								title: '提示',
-			// 								content: res.data.msg,
-			// 								showCancel: false,
-			// 								confirmText: '我知道了',
-			// 								success: function (res) {
-			// 									wx.setStorageSync(that.data.qrId, 'unlock_success');
-			// 									clearInterval(checkUnlockingQR);
+				// 						wx.showModal({
+				// 							title: '提示',
+				// 							content: res.data.msg,
+				// 							showCancel: false,
+				// 							confirmText: '我知道了',
+				// 							success: function (res) {
+				// 								wx.setStorageSync(that.data.qrId, 'unlock_success');
+				// 								clearInterval(checkUnlockingQR);
 
-			// 									// if (res.confirm) {
-			// 									// 	wx.navigateBack({
-			// 									// 		delta: 1,
-			// 									// 	})
-			// 									// }
-			// 								},
-			// 								fail: function (res) { },
-			// 								complete: function (res) { },
-			// 							})
-			// 						}
-
-
-			// 					},
-			// 					fail: function (res) { },
-			// 					complete: function (res) { },
-			// 				});
-			// 			// },
-			// 			// 1000 * 10
-			// 		// );
-			// 	}
-			// 	else 
-			// 	{
-			// 		operation.unlock(
-			// 			that,
-			// 			wx.getStorageSync(user.CustomerID),
-			// 			that.data.carId,
-			// 			that.data.qrId,
-			// 			(result) => {
-			// 				// clearInterval(nodeLockCheck);
-
-			// 			},
-			// 			(res) => {
-			// 				console.log("fail", res);
-
-			// 				wx.navigateBack({
-			// 					delta: 1,
-			// 				})
-			// 			}
-			// 		);
-			// 	}
+				// 								// if (res.confirm) {
+				// 								// 	wx.navigateBack({
+				// 								// 		delta: 1,
+				// 								// 	})
+				// 								// }
+				// 							},
+				// 							fail: function (res) { },
+				// 							complete: function (res) { },
+				// 						})
+				// 					}
 
 
+				// 				},
+				// 				fail: function (res) { },
+				// 				complete: function (res) { },
+				// 			});
+				// 		// },
+				// 		// 1000 * 10
+				// 	// );
+				// }
+				// else 
+				{
+					operation.unlock(
+						that,
+						wx.getStorageSync(user.CustomerID),
+						that.data.carId,
+						that.data.qrId,
+						(result) => {
+							// clearInterval(nodeLockCheck);
+
+						},
+						(res) => {
+							console.log("fail", res);
+
+							wx.navigateBack({
+								delta: 1,
+							})
+						}
+					);
+				}
 
 
-			// }
+
+
+			}
 			
 
 			

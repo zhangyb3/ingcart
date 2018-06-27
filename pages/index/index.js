@@ -2282,7 +2282,7 @@ function doUnlock(the, qrId){
 			var customerId = wx.getStorageSync(user.CustomerID);
 			var recordId = wx.getStorageSync(user.RecordID);
 
-			// if (qrId.length == 8) 
+			if (qrId.length == 8) 
 			{
 
 				wx.navigateTo({
@@ -2294,96 +2294,96 @@ function doUnlock(the, qrId){
 					complete: function (res) { },
 				});
 			}
-			// else 
-			// {
+			else 
+			{
 
-			// 	if (wx.getStorageSync('platform') == 'ios') {
-			// 		//据说每次都要先关闭再打开适配器清理缓存,试一下
-			// 		wx.closeBluetoothAdapter({
-			// 			success: function (res) {
+				if (wx.getStorageSync('platform') == 'ios') {
+					//据说每次都要先关闭再打开适配器清理缓存,试一下
+					wx.closeBluetoothAdapter({
+						success: function (res) {
 
-			// 				wx.openBluetoothAdapter({
-			// 					success: function (res) {
+							wx.openBluetoothAdapter({
+								success: function (res) {
 
-			// 						//开锁
-			// 						wx.startBluetoothDevicesDiscovery({
-			// 							services: ['FEE7'],
-			// 							allowDuplicatesKey: true,
-			// 							interval: 0,
-			// 							success: function (res) {
-
-
-			// 							},
-			// 							fail: function (res) {
-
-			// 							},
-			// 							complete: function (res) {
-
-			// 							},
-			// 						});
-
-			// 						setTimeout(
-			// 							function () {
-			// 								wx.hideLoading();
-			// 								wx.navigateTo({
-			// 									url: 'processing?from=index&carId=' + carId + '&qrId=' + qrId + '&operation=unlock',
-			// 									success: function (res) { },
-			// 									fail: function (res) {
-
-			// 									},
-			// 									complete: function (res) { },
-			// 								});
-			// 							},
-			// 							1000
-			// 						);
-
-			// 					},
-			// 					fail: function (res) {
-
-			// 					},
-			// 					complete: function (res) { },
-			// 				});
-
-			// 			},
-			// 			fail: function (res) {
-
-			// 			},
-			// 			complete: function (res) {
-			// 			},
-			// 		})
+									//开锁
+									wx.startBluetoothDevicesDiscovery({
+										services: ['FEE7'],
+										allowDuplicatesKey: true,
+										interval: 0,
+										success: function (res) {
 
 
-			// 	}
-			// 	else {
-			// 		//android版开锁
-			// 		wx.closeBluetoothAdapter({
-			// 			success: function (res) {
+										},
+										fail: function (res) {
 
-			// 				wx.openBluetoothAdapter({
-			// 					success: function (res) {
-			// 						wx.hideLoading();
-			// 						wx.navigateTo({
-			// 							url: 'processing?from=index&carId=' + carId + '&qrId=' + qrId + '&operation=unlock',
-			// 							success: function (res) { },
-			// 							fail: function (res) {
+										},
+										complete: function (res) {
 
-			// 							},
-			// 							complete: function (res) { },
-			// 						});
+										},
+									});
 
-			// 					},
-			// 					fail: function (res) { },
-			// 					complete: function (res) { },
-			// 				})
-			// 			},
-			// 			fail: function (res) { },
-			// 			complete: function (res) { },
-			// 		})
+									setTimeout(
+										function () {
+											wx.hideLoading();
+											wx.navigateTo({
+												url: 'processing?from=index&carId=' + carId + '&qrId=' + qrId + '&operation=unlock',
+												success: function (res) { },
+												fail: function (res) {
 
-			// 	}
+												},
+												complete: function (res) { },
+											});
+										},
+										1000
+									);
+
+								},
+								fail: function (res) {
+
+								},
+								complete: function (res) { },
+							});
+
+						},
+						fail: function (res) {
+
+						},
+						complete: function (res) {
+						},
+					})
 
 
-			// }
+				}
+				else {
+					//android版开锁
+					wx.closeBluetoothAdapter({
+						success: function (res) {
+
+							wx.openBluetoothAdapter({
+								success: function (res) {
+									wx.hideLoading();
+									wx.navigateTo({
+										url: 'processing?from=index&carId=' + carId + '&qrId=' + qrId + '&operation=unlock',
+										success: function (res) { },
+										fail: function (res) {
+
+										},
+										complete: function (res) { },
+									});
+
+								},
+								fail: function (res) { },
+								complete: function (res) { },
+							})
+						},
+						fail: function (res) { },
+						complete: function (res) { },
+					})
+
+				}
+
+
+			}
 
 
 		},
