@@ -446,6 +446,7 @@ Page({
 			// 	fail: function (res) { },
 			// 	complete: function (res) { },
 			// });
+			that.data.backFrom == null;
 
 			if (that.data.unlockQR.length == 7) {
 				gotoUnlock(that, that.data.unlockQR);
