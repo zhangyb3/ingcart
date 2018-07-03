@@ -2025,6 +2025,8 @@ function gotoUnlock(the, qrId, success, fail)
 		success: function (res) {
 			var result = res.data;
 			console.log("prepare",result);
+      console.log("zhaozha=======================>>"+res.data)
+      wx.setStorageSync("descriptionOfGood", res.data.data.description)
 			if (result.status == 200) {
 
 				// var continueToUnlock = true;

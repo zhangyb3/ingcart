@@ -33,6 +33,7 @@ success,fail) {
 		giving: giving,
 		phoneNum: phoneNum,
 		carId: carId,
+    description: wx.getStorageSync("descriptionOfGood")
   };
 
 
