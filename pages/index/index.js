@@ -64,6 +64,16 @@ Page({
 		selfReturn: false,
 		selfReturnSuccess: false,
 		selfReturnFail: false,
+    s1countdown: '确定3(s)',
+    test:false,
+    blueFlag: false,
+    showT1: false,
+    showT2: false,
+    scanToUnlockStatus:0,
+    lyqrId:'',
+    zoo:false,
+    wxts:false,
+    wxts2:false,
   },
 
 // 页面加载
@@ -128,10 +138,8 @@ Page({
 
 // 页面显示
   onShow: function(){
-
 		var that = this;
 		refreshPage(that);
-
 		that.setData({
 			latitude: wx.getStorageSync(user.Latitude) || that.data.latitude,
 			longitude: wx.getStorageSync(user.Longitude) || that.data.longitude,
@@ -215,7 +223,7 @@ Page({
 				() => {
 
 					wx.hideLoading();
-					checkBluetooth(that);
+					// checkBluetooth(that);
 					refreshPage(that);
 
 					// app.ingcartLockManager = new IngcartSdk.IngcartLockManager(app.options);
@@ -314,7 +322,17 @@ Page({
 										fail: function (res) { },
 										complete: function (res) { },
 									});
-								}
+                } else if (wx.getStorageSync(user.Hotspot) == 2){
+                  wx.showModal({
+                    title: '提示',
+                    content: '不在还车范围内，请推至还车点',
+                    showCancel: false,
+                    confirmText: '我知道了',
+                    success: function (res) { },
+                    fail: function (res) { },
+                    complete: function (res) { },
+                  });
+                }
 								
 							}
 
@@ -325,11 +343,43 @@ Page({
 
 								var qrId = that.data.qrIdFromWX;
 								console.log("!!!!!!!!!!!!qrIdFromWX!!!!!!!!", this.data.qrIdFromWX);
-								//去开锁
-								gotoUnlock(that, qrId);
-								that.setData({
-									qrIdFromWX: null,
-								});
+                that.setData({
+                  lyqrId: this.data.qrIdFromWX,
+                  showT2:true
+                })
+               
+                // wx.showModal({
+                //   title: '提示',
+                //   content: 'XXXX',
+                //   showCancel: false,
+                //   confirmText: '我知道了',
+                //   success: function (res) {
+                //     wx.request({
+                //       url: config.PytheRestfulServerURL + '/select/lockLevel/carId',
+                //       data: {
+                //         carId: that.data.lyqrId,
+                //       },
+                //       method: 'GET',
+                //       success: function (res) {
+                //         var result = res.data;
+                //         if (result.data == 1) {
+                //           checkBluetooth(that);
+                //         } else {
+                //           gotoUnlock(that, qrId);
+                //         }
+                //       },
+                //       fail: function (res) {
+                //       },
+                //       complete: function (res) {
+                //       }
+                      
+                //     });
+
+                //     that.setData({
+                //       qrIdFromWX: null,
+                //     });
+                //    },
+                // })
 							}
 
 							if (that.data.showZoneNotice == true) {
@@ -382,7 +432,7 @@ Page({
 		else {
 			var that = this;
 
-			checkBluetooth(that);
+			//checkBluetooth(that);
 
 			if (that.data.qrIdFromWX != null && wx.getStorageSync('alreadyRegister') == 'yes'
 				&& that.data.qrIdFromWX != '0000000') {
@@ -572,7 +622,6 @@ Page({
 			// 	1000
 			// );
 
-			
 
 		}	
 
@@ -684,7 +733,6 @@ Page({
     this.mapCtx = wx.createMapContext("ingcartMap");
     this.movetoPosition()
 
-		
 		
   },
 
@@ -843,51 +891,110 @@ Page({
 		if (that.data.pStatus == 1 || that.data.pStatus == 0 )
 		{
 			if (that.data.endUseCarState == 0) {
-				that.setData({
-					isShowendUseTip: true,
-					endUseCarState: 1
-				});
+				// that.setData({
+				// 	isShowendUseTip: true,
+				// 	endUseCarState: 1
+				// });
+        wx.showLoading({
+          title: '正在检测',
+          mask: true,
+          success: function (res) { },
+          fail: function (res) { },
+          complete: function (res) { },
+        })
+        var gstim = setInterval(function () {
+          if (wx.getStorageSync(user.Hotspot) == 1) {
+            clearInterval(gstim);
+            wx.hideLoading();
+            that.setData({
+              isShowendUseTip: true,
+              endUseCarState: 1
+            });
+
+          } else {
+            console.log("fail to unlock!!!!")
+          }
+        }, 3000);
+        setTimeout(function () {
+          clearInterval(gstim);
+          wx.hideLoading();
+          if (wx.getStorageSync(user.Hotspot) == 0) {
+            wx.showModal({
+              title: '提示',
+              content: '车锁未关闭，请关锁稍候重试',
+              showCancel: false,
+              confirmText: '我知道了',
+              success: function (res) { },
+              fail: function (res) { },
+              complete: function (res) { },
+            });
+          } else if (wx.getStorageSync(user.Hotspot) == 2) {
+            wx.showModal({
+              title: '提示',
+              content: '不在还车范围内，请推至还车点',
+              showCancel: false,
+              confirmText: '我知道了',
+              success: function (res) { },
+              fail: function (res) { },
+              complete: function (res) { },
+            });
+          }
+        }, 9000);
 			}
 			else {
 				that.setData({
 					isShowendUseTip: false,
 					endUseCarState: 0
 				})
+
 			}
 		}
 		if (that.data.pStatus == 2 )
 		{
 			wx.showLoading({
-				title: '',
+				title: '正在检测',
 				mask: true,
 				success: function(res) {},
 				fail: function(res) {},
 				complete: function(res) {},
 			})
-			setTimeout(
-				function(){
-					wx.hideLoading();
-
-					if (wx.getStorageSync(user.Hotspot) == 1) {
-						that.setData({
-							selfReturn: true,
-						});
-					}
-					else {
-						wx.showModal({
-							title: '提示',
-							content: '车锁未关闭，请关锁稍候重试',
-							showCancel: false,
-							confirmText: '我知道了',
-							success: function (res) { },
-							fail: function (res) { },
-							complete: function (res) { },
-						});
-					}
-
-				},
-				1500
-			);
+      var gstim = setInterval(function () {
+        if (wx.getStorageSync(user.Hotspot) == 1) {
+          clearInterval(gstim);
+          wx.hideLoading();
+          that.setData({
+            selfReturn: true,
+          });
+         
+        }else{
+            console.log("fail to unlock!!!!")
+        }
+      }, 3000);
+      setTimeout(function () {
+        clearInterval(gstim);
+        wx.hideLoading();
+        if (wx.getStorageSync(user.Hotspot) == 0) {
+          wx.showModal({
+            title: '提示',
+            content: '车锁未关闭，请关锁稍候重试',
+            showCancel: false,
+            confirmText: '我知道了',
+            success: function (res) { },
+            fail: function (res) { },
+            complete: function (res) { },
+          });
+        } else if (wx.getStorageSync(user.Hotspot) == 2){
+          wx.showModal({
+            title: '提示',
+            content: '不在还车范围内，请推至还车点',
+            showCancel: false,
+            confirmText: '我知道了',
+            success: function (res) { },
+            fail: function (res) { },
+            complete: function (res) { },
+          }); 
+        }
+      }, 9000);
 			
 		}
 
@@ -1067,13 +1174,20 @@ Page({
       complete: function(res) {},
     })
   },
+  wxts: function (e) {
+    var that = this;
+    that.setData({
+      isNotEnough: false,
+      wxts: true,
+    });
 
+  },
 	payToUse:function(e){
 		var that= this;
 		that.data.originalAmount = wx.getStorageSync(user.Amount);
 
 		that.setData({
-			isNotEnough: false,
+      wxts:false
 		});
 
 		// wx.showLoading({
@@ -1205,7 +1319,6 @@ Page({
 		scanToUnlock(that);
 	},
 
-
 	//隐藏景区提示框
 	disappearZoneNotice:function(e){
 		var that = this;
@@ -1249,43 +1362,47 @@ Page({
 
 	//热点还车退押金
 	hotspotReturnDeposit:function(e){
-		var that = this;
-		wx.request({
-			url: config.PytheRestfulServerURL + '/manage/urgent/refund/',
-			data: {
-				phoneNum: wx.getStorageSync(user.UsingCar),
-				managerId: -1,
-			},
-			method: 'POST',
-			success: function(res) {
-				if(res.data.status == 200)
-				{
-					that.setData({
-						showHotspotNotice: false,
-						hotspotOn: false,
-						notifyLock: true,
-					});
-				}
-			},
-			fail: function(res) {},
-			complete: function(res) {},
-		})
+    if (this.data.jxcountdown == '退押金') {
+    var that = this;
+    wx.request({
+      url: config.PytheRestfulServerURL + '/manage/urgent/refund/',
+      data: {
+        phoneNum: wx.getStorageSync(user.UsingCar),
+        managerId: -1,
+      },
+      method: 'POST',
+      success: function (res) {
+        if (res.data.status == 200) {
+          that.setData({
+            showHotspotNotice: false,
+            hotspotOn: false,
+            notifyLock: true,
+          });
+        }
+      },
+      fail: function (res) { },
+      complete: function (res) { },
+    })
+    }
+		
 	},
 
 	//热点不管
 	hotspotHoldOn: function (e) {
-		var that = this;
-		that.setData({
-			showHotspotNotice: false,
-		});
-		var templeIgnoreHotspot = setTimeout(
-			function(){
-				that.setData({
-					showHotspotNotice: true,
-				});
-			},
-			1000*60*2
-		);
+    if (this.data.jxcountdown == '继续行程') {
+      var that = this;
+      that.setData({
+        showHotspotNotice: false,
+      });
+      var templeIgnoreHotspot = setTimeout(
+        function () {
+          that.setData({
+            showHotspotNotice: true,
+          });
+        },
+        1000 * 60 * 2
+      );
+    }
 	},
 
 	//取消锁车提示
@@ -1299,11 +1416,21 @@ Page({
 		
 	},
 
+  //取消提示
+  closeZoo: function (e) {
+    var that = this;
+    that.setData({
+      wxts2: false,
+    });
+
+  },
+
 	//自行还车扫码停止计费
 	selfReturnToRefund: function () {
-		
-		var that = this;
 
+
+    
+		var that = this;
 
 		wx.scanCode({
 			onlyFromCamera: true,
@@ -1402,15 +1529,82 @@ Page({
 			},
 		});
 
-
+    
 	},
 
 	selfReturnHoldOn:function(){
-		var that = this;
-		that.setData({
-			selfReturn: false,
-		});
+
+      var that = this;
+      that.setData({
+        selfReturn: false,
+      });
+    
 	},
+
+  showT1: function () {
+      var that = this;
+      that.setData({
+        showT1: true,
+        s1countdown:'确定3(s)',
+        scanToUnlockStatus: '0'
+      });
+      var count = 3;
+      var tim = setInterval(function () {
+        that.setData({
+          s1countdown: '确定' + --count + '(s)'
+        })
+      }, 1000);
+      setTimeout(function () {
+        clearInterval(tim);
+        that.setData({
+          s1countdown: '确定',
+          scanToUnlockStatus:'scanToUnlock'
+        })
+
+      }, 3000);
+  },
+
+  DToUnlock: function () {
+   
+    var that = this;
+    that.setData({
+      showT2:false
+    })
+    wx.request({
+      url: config.PytheRestfulServerURL + '/select/lockLevel/carId',
+      data: {
+        carId: that.data.lyqrId,
+      },
+      method: 'GET',
+      success: function (res) {
+        var result = res.data;
+        if (result.data == 1) {
+          checkBluetooth(that);
+        } else {
+          gotoUnlock(that, that.data.lyqrId);
+        }
+      },
+      fail: function (res) {
+      },
+      complete: function (res) {
+      }
+
+    });
+
+    that.setData({
+      qrIdFromWX: null,
+    });
+
+
+  },
+
+  hiddenT1: function () {
+    var that = this;
+    that.setData({
+      s1countdown: '确定3(s)',
+      showT1: false,
+    });
+  },
 
   onUnload:function(){
 
@@ -1691,11 +1885,11 @@ function refreshUsingMinutes(the){
 					});
 					wx.setStorageSync(user.LockLevel, result.data.car_level);
 					wx.setStorageSync(user.Hotspot, result.data.hotspot);
-					if (wx.getStorageSync(user.Hotspot) == 2) {
-						that.setData({
-							selfReturn: true,
-						});
-					}
+					// if (wx.getStorageSync(user.Hotspot) == 1) {
+					// 	that.setData({
+					// 		selfReturn: true,
+					// 	});
+					// }
 					
 					// if (wx.getStorageSync(user.Hotspot) == 1) {
 					// 	that.setData({
@@ -1865,11 +2059,11 @@ function checkUsingCarStatus(the, success, fail)
 						});
 						wx.setStorageSync(user.LockLevel, result.data.car_level);
 						wx.setStorageSync(user.Hotspot, result.data.hotspot);
-						if (wx.getStorageSync(user.Hotspot) == 2) {
-							that.setData({
-								selfReturn: true,
-							});
-						}
+						// if (wx.getStorageSync(user.Hotspot) == 1) {
+						// 	that.setData({
+						// 		selfReturn: true,
+						// 	});
+						// }
 						
 						// if (wx.getStorageSync(user.Hotspot) == 1) {
 						// 	that.setData({
@@ -1947,40 +2141,68 @@ function checkUsingCarStatus(the, success, fail)
 
 function checkBluetooth(the){
 
-	
-	var that = the;
-	
-	wx.openBluetoothAdapter({
-		success: function (res) 
-		{ 
-			
-			typeof success == "function" && success('open');
-		},
-		fail: function (res) {
-			wx.hideLoading();
-			wx.showModal({
-				title: '蓝牙功能未启用',
-				content: '请先开启手机蓝牙功能以便您使用',
-				showCancel: false,
-				confirmText: '我知道了',
-				success: function (res) {
-					
-				 },
-				fail: function (res) { },
-				complete: function (res) { 
-					checkBluetooth(that);
-				},
-			})
-		},
-		complete: function (res) {
-			// wx.hideLoading();
-		 },
-	});
+    var that = the;
 
-  //万一进来时没打开蓝牙
-	if (app.ingcartLockManager == null) {
-		// app.ingcartLockManager = new IngcartSdk.IngcartLockManager(app.options);
-	}
+    wx.openBluetoothAdapter({
+      success: function (res) {
+
+        typeof success == "function" && success('open');
+        that.setData({
+          blueFlag:true
+        })
+        console.log("检测锁==========>>" + that.data.lyqrId)
+        wx.request({
+          url: config.PytheRestfulServerURL + '/select/lockLevel/carId',
+          data: {
+            carId: that.data.lyqrId,
+          },
+          method: 'GET',
+          success: function (res) {
+            var result = res.data;
+            console.log('lock level zhaozha' + result.data)
+            if (result.data == 1) {
+              gotoUnlock(that, that.data.lyqrId);
+            } 
+            else {
+              console.log('网络开锁失败====》》进入蓝牙开锁')
+              {
+                console.log("progress page", that.data.lyqrId);
+                doUnlock(that, that.data.lyqrId);
+              }
+
+            }
+          },
+          fail: function (res) {
+          },
+          complete: function (res) {
+          }
+        });
+      },
+      fail: function (res) {
+        wx.hideLoading();
+        wx.showModal({
+          title: '蓝牙功能未启用',
+          content: '请先开启手机蓝牙功能以便您使用',
+          showCancel: false,
+          confirmText: '我知道了',
+          success: function (res) {
+
+          },
+          fail: function (res) { },
+          complete: function (res) {
+            checkBluetooth(that);
+          },
+        })
+      },
+      complete: function (res) {
+        // wx.hideLoading();
+      },
+    });
+
+    //万一进来时没打开蓝牙
+    if (app.ingcartLockManager == null) {
+      // app.ingcartLockManager = new IngcartSdk.IngcartLockManager(app.options);
+    }
 }
 
 function stopUnload(the){
@@ -1998,7 +2220,13 @@ function stopUnload(the){
 
 //去开锁
 function gotoUnlock(the, qrId, success, fail)
+
 {
+  console.log('进入开锁......1')
+  if (qrId==null){
+    qrId = this.data.lyqrId
+  }
+  console.log(qrId)
 	var that = the;
 	that.data.backFrom = null;
 	var type = 0;
@@ -2011,7 +2239,7 @@ function gotoUnlock(the, qrId, success, fail)
 		
 	}
 	wx.setStorageSync('using_coupon_code', code);
-
+  console.log('qrId:' + qrId + 'type' + type + 'code' + code +'customerId'+wx.getStorageSync(user.CustomerID))
 	wx.request({
 		url: config.PytheRestfulServerURL + '/qr/unlock/prepare',
 		data: {
@@ -2024,19 +2252,21 @@ function gotoUnlock(the, qrId, success, fail)
 		method: 'GET',
 		success: function (res) {
 			var result = res.data;
-			console.log("prepare",result);
-      console.log("zhaozha=======================>>"+res.data)
-      wx.setStorageSync("descriptionOfGood", res.data.data.description)
+      if (result.data==null){
+        wx.setStorageSync("descriptionOfGood", "")
+      }else{
+        wx.setStorageSync("descriptionOfGood", res.data.data.description)
+      }
 			if (result.status == 200) {
 
 				// var continueToUnlock = true;
-
 				that.setData({
 					lockLevel: result.data.car_level,
 				});
 				console.log('lock level',that.data.lockLevel);
 				if(that.data.lockLevel >= 3)
 				{
+          //checkBluetooth(that);
 					wx.showLoading({
 						title: '开锁中...',
 						mask: true,
@@ -2073,44 +2303,18 @@ function gotoUnlock(the, qrId, success, fail)
 										checkUsingCarStatus(that);
 									},
 								);
+                that.setData({
+                  wxts2:true
+                })
 							}
 							else
 							{
 								wx.hideLoading();
-
 								console.log("redirect to progress page !!!!!!!!!!!!!!!!");
-								//用蓝牙开锁
-								{
-									console.log("progress page", qrId);
-									doUnlock(that, qrId);
-								}
-
-								var count = 0;
-								var checkWebUnlockInterval = setInterval(
-									function () {
-										wx.hideLoading();
-										
-										operation.normalUpdateCustomerStatus(
-											wx.getStorageSync(user.CustomerID),
-											() => {
-
-												checkUsingCarStatus(that,
-													(result) => {
-														if (count >= 10 || wx.getStorageSync(user.UsingCar) > 0) {
-															clearInterval(checkWebUnlockInterval);
-														}
-													},
-												);
-
-											},
-										);
-
-
-										count++;
-
-									},
-									2000
-								);
+                that.setData({
+                  lyqrId: qrId
+                })
+                checkBluetooth(that);
 								
 							}
 							
@@ -2124,6 +2328,7 @@ function gotoUnlock(the, qrId, success, fail)
 
 				else
 				{
+          console.log('进入开锁......2')
 					doUnlock(that, qrId);
 				}
 				
@@ -2221,55 +2426,117 @@ function getUserLocation(the) {
 
 function scanToUnlock(the){
 
-	var that = the;
-	// if (wx.getStorageSync(user.UsingCar) == null || wx.getStorageSync(user.UsingCarStatus) == 2)
-	{
+  var that = the;
 
-		wx.scanCode({
-			onlyFromCamera: false,
-			success: function (res) {
-				console.log(res);
-				if (res.errMsg == 'scanCode:ok') {
-					var parameters = operation.urlProcess(res.result); console.log(parameters);
-					var qrId = parameters.id;
+  // if (wx.getStorageSync(user.UsingCar) == null || wx.getStorageSync(user.UsingCarStatus) == 2)
+  {
 
-					//特殊锁处理
-					if (qrId.slice(0, 'MCA'.length) == 'MCA') {
-						qrId = qrId.substring(3);
-					}
+    wx.scanCode({
+      onlyFromCamera: false,
+      success: function (res) {
+        console.log(res);
+        if (res.errMsg == 'scanCode:ok') {
+          var parameters = operation.urlProcess(res.result); console.log(parameters);
+          var qrId = parameters.id;
+          that.setData({
+            showT1: false
+          })
+          //特殊锁处理
+          if (qrId.slice(0, 'MCA'.length) == 'MCA') {
+            qrId = qrId.substring(3);
+          }
+          if (qrId == '0000000') {
+            that.setData({
+              selfReturn: true,
+            });
 
-					if (qrId == '0000000') {
-						that.setData({
-							selfReturn: true,
-						});
-						
-					}
-					else
-					{
-						wx.getLocation({
-							type: 'wgs84',
-							altitude: true,
-							success: function (res) {
-								wx.setStorageSync(user.Latitude, res.latitude);
-								wx.setStorageSync(user.Longitude, res.longitude);
-							},
-							fail: function (res) { },
-							complete: function (res) { },
-						});
+          }
+          else {
+            wx.getLocation({
+              type: 'wgs84',
+              altitude: true,
+              success: function (res) {
+                wx.setStorageSync(user.Latitude, res.latitude);
+                wx.setStorageSync(user.Longitude, res.longitude);
+              },
+              fail: function (res) { },
+              complete: function (res) { },
+            });
+            console.log(wx.getStorageSync(user.CustomerID))
+            console.log(qrId)
+            that.setData({
+              lyqrId: qrId,
+              selfReturn: false,
+            })
+            wx.request({
+              url: config.PytheRestfulServerURL + '/select/lockLevel/carId',
+              data: {
+                carId: qrId,
+              },
+              method: 'GET',
+              success: function (res) {
+                var result = res.data;
+                console.log('lock level zhaozha' + result.data )
+                if (result.data==1){
+                  if (that.data.blueFlag) {
+                    console.log('lock level zhaozha   0')
+                    gotoUnlock(that, qrId);
+                  } else {
+                    console.log('lock level zhaozha    1' )
+                    checkBluetooth(that);
+                  }
+                }else{
+                  gotoUnlock(that, qrId);
+                }
+              },
+              fail: function (res) {
+              },
+              complete: function (res) {
+              }
+            });
 
-						//去开锁
-						gotoUnlock(that, qrId);
-					}
-					
+            //获取锁类型
+            // wx.request({
+            //   url: config.PytheRestfulServerURL + '/select/lockLevel/carId',
+            //   data: {
+            //     carId: qrId,
+            //   },
+            //   method: 'GET',
+            //   success: function (res) {
+            //     var result = res.data;
+            //     if (result.data == 1) {
+            //       if (that.data.blueFlag) {
+            //         gotoUnlock(that, qrId);
+            //       } else {
+            //         checkBluetooth(that);
+            //       }
+            //     } else {
+            //       //去开锁
+            //       gotoUnlock(that, qrId);
+            //     }
 
-				}
+            //   },
+            //   fail: function (res) {
 
-			},
-			fail: function (res) { },
-			complete: function (res) { },
-		});
+            //   },
+            //   complete: function (res) {
 
-	}
+            //   }
+            // });
+
+          }
+
+
+        }
+
+      },
+      fail: function (res) { },
+      complete: function (res) { },
+    });
+
+  }
+
+
 
 }
 

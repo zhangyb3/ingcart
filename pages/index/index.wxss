@@ -204,6 +204,13 @@
 	position: relative;
 }
 
+.layer-img-background-unlock {
+  padding: 60rpx 0 30rpx;
+  width: 80%;
+  margin: auto auto;
+	position: relative;
+}
+
 .layer-title {
   color: #f93;
   font-size: 30rpx;
