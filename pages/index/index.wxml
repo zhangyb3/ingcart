@@ -80,11 +80,12 @@
     <!-- 后期修改 添加于2018-02-23 09:58 -->
     <cover-view style='position:fixed;width:100%;top:0;left:0;z-index:2;'>
       <cover-view class='index-tab'>
-        <cover-view class='tab-column' bindtap='toMy'>
-          <cover-view class='tabCenter' style='float:left;'>
+        <cover-view class='tab-column' >
+        <!-- bindtap='toMy' -->
+          <!-- <cover-view class='tabCenter' style='float:left;'>
             <cover-image src='../../images/myWallet.png'></cover-image>
             <cover-view class=''>我 </cover-view>
-          </cover-view>
+          </cover-view> -->
         </cover-view>
 
         <cover-view class='tab-column' bindtap='toRepair'>
@@ -96,12 +97,19 @@
           <!-- </cover-view> -->
         </cover-view>
 
-        <cover-view class='tab-column' bindtap='toActivity'>
+         <cover-view class='tab-column' bindtap='toMy'>
+          <cover-view class='tabCenter' style='float:right;padding-right:40rpx;'>
+            <cover-image src='../../images/myWallet.png'></cover-image>
+            <cover-view class=''>我 </cover-view>
+          </cover-view>
+        </cover-view> 
+
+        <!-- <cover-view class='tab-column' bindtap='toActivity'>
           <cover-view class='tabCenter' style='float:right'>
             <cover-image src='../../images/favourActivity.png'></cover-image>
-            <cover-view class=''>优惠活动 </cover-view>
+            <cover-view class=''>活动 </cover-view>
           </cover-view>
-        </cover-view>
+        </cover-view> -->
 
         <!-- <view class='tab-column' bindtap='toActivity'>优惠活动</view>
            <text class='tab-column' bindtap='toMine'>我的</text> -->
@@ -166,7 +174,7 @@
       <cover-view class='layer-flex'>
         <cover-view class='layer-content'>
           <cover-view class='layer-title'>
-            <cover-view style='padding:0 30rpx;box-sizing:border-box;line-height:30px;'>余额不足</cover-view>
+            <cover-view style='padding:0 30rpx;box-sizing:border-box;line-height:30px;'>去充值</cover-view>
           </cover-view>
 
           <cover-view style='text-align:center;'>还需充值（元）</cover-view>
@@ -189,10 +197,21 @@
           <!-- <cover-view class='iKnow'  bindtap='toRecharge'>知道了，去充值</cover-view> -->
           <cover-view class='iKnow' bindtap='wxts'>去付款</cover-view>
 
-          <cover-image class="close_notify" src="../../images/close.png" bindtap="confirmArrearage" />
+          <cover-image class="close_notify" src="../../images/close.png"  bindtap="confirmArrearage" />
         </cover-view>
       </cover-view>
     </cover-view>
+        <!-- <cover-image style='width:120rpx;height:120rpx;position:fixed;bottom:120px;right:0;' src='https://wx.ingcart.com/xcx/fuli.png' bindtap='showFuli' wx:if='{{showTFuli }}'></cover-image>
+
+    <cover-view class='layer-map' wx:if='{{showTFuliTS }}'>
+      <cover-view class='layer-img-background'>
+        <cover-image src="https://wx.ingcart.com/xcx/fulits.png" style='width:600rpx;height:720rpx;'  bindtap="hideFuli" >
+        </cover-image>
+      </cover-view>
+    </cover-view> -->
+
+
+
     <!-- 后期修改 添加于2018-02-23 09:58 -->
 
     <cover-image style='width:470rpx;height:117.5rpx;position:fixed;bottom:38px;left:50%;transform:translateX(-50%);' src='/images/use.png' bindtap='showT1'></cover-image>
@@ -206,7 +225,7 @@
 
     <cover-view class='layer-map' wx:if='{{wxts }}'>
       <cover-view class='layer-img-background'>
-        <cover-image src="../../images/wxts.png"  bindtap="payToUse">
+        <cover-image src="../../images/wxts.png" style='width:600rpx;height:580rpx;'  bindtap="payToUse">
         </cover-image>
       </cover-view>
     </cover-view>
@@ -227,7 +246,7 @@
 
     <cover-view class='layer-map' style="" wx:if='{{hotspotOn == true && showHotspotNotice == true}}'>
       <cover-view class='layer-img-background'>
-        <cover-image src="../../images/hotspot_refund.png">
+        <cover-image src="../../images/hotspot_refund.png" >
         </cover-image>
         <cover-view style="display:flex;flex-direction:row;">
           <cover-image src='../../images/hotspot_return_deposit.png' bindtap='hotspotReturnDeposit'></cover-image>
@@ -245,11 +264,11 @@
 
     <cover-view class='layer-map' style="" wx:if='{{selfReturn == true}}'>
       <cover-view class='layer-img-background'>
-        <cover-image src="../../images/self_return_refund.png">
+        <cover-image src="../../images/self_return_refund.png" style='width:600rpx;height:600rpx;'>
         </cover-image>
         <cover-view style="display:flex;flex-direction:row;">
-          <cover-image src='../../images/hotspot_return_deposit.png' bindtap='selfReturnToRefund'></cover-image>
-          <cover-image src='../../images/hotspot_hold_on.png' bindtap='selfReturnHoldOn'></cover-image>
+          <cover-image src='../../images/hotspot_return_deposit.png' style='width:300rpx;height:100rpx;' bindtap='selfReturnToRefund'></cover-image>
+          <cover-image src='../../images/hotspot_hold_on.png' style='width:300rpx;height:100rpx;' bindtap='selfReturnHoldOn'></cover-image>
         </cover-view>
       </cover-view>
     </cover-view>
@@ -257,7 +276,7 @@
 
     <cover-view class='layer-map' style=""  wx:if='{{showT1 == true}}'>
           <cover-view class='layer-img-background-unlock'>
-        <cover-image src="../../images/unlock_1.png">
+        <cover-image src="../../images/unlock_1.png" style='width:600rpx;height:800rpx;'>
         </cover-image>
         <cover-view style="display:flex;flex-direction:row;background:#ffffff;">
           <cover-view style="width:50%;height:70rpx;background:#ffffff;text-align:center;padding-top:20rpx;color:#999999;font-family:'Microsoft YaHei';border-right:1rpx solid #E5E5E5;border-top:1rpx solid #E5E5E5;" bindtap='hiddenT1'>取消</cover-view>
@@ -270,32 +289,31 @@
 
     <cover-view class='layer-map' style="" wx:if='{{showT2 == true}}'>
       <cover-view class='layer-img-background-unlock'>
-        <cover-image src='../../images/unlock_2.png' bindtap='DToUnlock'>
+        <cover-image src='../../images/unlock_2.png' bindtap='DToUnlock' style='width:600rpx;height:900rpx;'>
         </cover-image>
       </cover-view>
     </cover-view>
 
     <cover-view class='layer-map' wx:if='{{selfReturnSuccess == true }}' bindtap='disappearLockNotice'>
       <cover-view class='layer-img-background'>
-        <cover-image src='../../images/self_return_success.png'>
+        <cover-image src='../../images/self_return_success.png' style='width:600rpx;height:580rpx;'>
         </cover-image>
       </cover-view>
     </cover-view>
 
     <cover-view class='layer-map' wx:if='{{selfReturnFail == true }}' bindtap='disappearLockNotice'>
       <cover-view class='layer-img-background'>
-        <cover-image src='../../images/self_return_fail.jpg'>
+        <cover-image src='../../images/self_return_fail.jpg' style='width:600rpx;height:580rpx;'>
         </cover-image>
       </cover-view>
     </cover-view>
 
      <cover-view class='layer-map' wx:if='{{wxts2 == true }}' bindtap='closeZoo'>
       <cover-view class='layer-img-background'>
-        <cover-image src='../../images/wxts.png'>
+        <cover-image src='../../images/wxts.png' style='width:600rpx;height:580rpx;'>
         </cover-image>
       </cover-view>
     </cover-view> 
-
 
   </map>
 

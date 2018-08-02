@@ -43,7 +43,6 @@ Page({
 		var that = this;
 
 		if (that.data.unlockQR != null && that.data.backFrom == 'payToUse') {
-			
 			that.data.backFrom = null;
 			var originalAmount = wx.getStorageSync(user.Amount);
 			// wx.showLoading({
@@ -73,6 +72,7 @@ Page({
 							});
 							//充值到账
 							if (info.amount > originalAmount) {
+                
 								clearInterval(checkAmountIntervalId);
 								var qrId = that.data.unlockQR;
 
