@@ -1,6 +1,7 @@
 {
   "pages":[
     "pages/index/index",
+    "pages/index/indexPublic",
 		"pages/index/processing",
 		"pages/index/charging",
     "pages/maintenance/call",

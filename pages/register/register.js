@@ -230,7 +230,6 @@ Page({
 					data: loginRes.code,
 				});
 
-
 				wx.request({
 					url: config.PytheRestfulServerURL + '/wxSession/request',
 					data: {
@@ -279,6 +278,7 @@ Page({
 									var result = pc.decryptData(encryptedData, iv);
 									console.log("!!!decode: " + JSON.stringify(result));
 									wx.setStorageSync(user.UnionID, result.unionId);
+                  console.log("zhaozha:===>>" + result.unionId)
 
 
 								},

@@ -172,10 +172,10 @@ var remoteLogin = (success, fail) => {
                             var encryptedData = res.encryptedData;
                             var iv = res.iv;
 
-                            // var pc = new WXBizDataCrypt(config.AppID,session_key)
-                            // var result = pc.decryptData(encryptedData,iv);
-                            // console.log("!!!decode: " + JSON.stringify(result));
-                            // wx.setStorageSync(user.UnionID, result.unionId);
+                            var pc = new WXBizDataCrypt(config.AppID,session_key)
+                            var result = pc.decryptData(encryptedData,iv);
+                            console.log("!!!decode: " + JSON.stringify(result));
+                            wx.setStorageSync(user.UnionID, result.unionId);
                             
                             typeof success == "function" && success();
                           },

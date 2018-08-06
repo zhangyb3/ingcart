@@ -21,33 +21,65 @@ success,fail) {
   var sessionID = wx.getStorageSync(user.SessionID);
   var openID = wx.getStorageSync(user.OpenID);
 
-  var parameters = {
-    session_id: sessionID,
-    mch_id: config.MerchantID,
-    body: "INGCART",
-    total_fee: chargeFee,
-    notify_url: "https://xue.pythe.cn",
-    trade_type: "JSAPI",
-    openId: openID,
-		customerId: wx.getStorageSync(user.CustomerID),
-		giving: giving,
-		phoneNum: phoneNum,
-		carId: carId,
-    description: wx.getStorageSync("descriptionOfGood")
-  };
-
-
-  wx.request({
-    url: CHARGE_ORDER_URL,
-    data: util.encode(JSON.stringify(parameters)),
-    method: 'POST',
+  // var parameters = {
+  //   session_id: sessionID,
+  //   mch_id: config.MerchantID,
+  //   body: "INGCART",
+  //   total_fee: chargeFee,
+  //   notify_url: "https://xue.pythe.cn",
+  //   trade_type: "JSAPI",
+  //   openId: openID,
+	// 	customerId: wx.getStorageSync(user.CustomerID),
+	// 	giving: giving,
+	// 	phoneNum: phoneNum,
+	// 	carId: carId,
+  //   description: wx.getStorageSync("descriptionOfGood")
+  // };
+  wx.getLocation({
+    type: 'wgs84',
     success: function (res) {
-      typeof success == "function" && success(res.data);
-    },
-    fail: function (res) {
-      typeof fail == "function" && fail(res.data);
+      console.log("下单经纬度" + res.latitude + "   " + res.longitude)
+      var parameters = {
+        session_id: sessionID,
+        mch_id: config.MerchantID,
+        body: "INGCART",
+        total_fee: chargeFee,
+        notify_url: "https://xue.pythe.cn",
+        trade_type: "JSAPI",
+        openId: openID,
+        customerId: wx.getStorageSync(user.CustomerID),
+        giving: giving,
+        phoneNum: phoneNum,
+        carId: carId,
+        description: wx.getStorageSync("descriptionOfGood"),
+        phoneLat: res.latitude,
+        phoneLng: res.longitude,
+      };
+      wx.request({
+        url: CHARGE_ORDER_URL,
+        data: util.encode(JSON.stringify(parameters)),
+        method: 'POST',
+        success: function (res) {
+          typeof success == "function" && success(res.data);
+        },
+        fail: function (res) {
+          typeof fail == "function" && fail(res.data);
+        }
+      });
     }
-  });
+  })
+
+  // wx.request({
+  //   url: CHARGE_ORDER_URL,
+  //   data: util.encode(JSON.stringify(parameters)),
+  //   method: 'POST',
+  //   success: function (res) {
+  //     typeof success == "function" && success(res.data);
+  //   },
+  //   fail: function (res) {
+  //     typeof fail == "function" && fail(res.data);
+  //   }
+  // });
 
 
 }

@@ -754,28 +754,38 @@ function computeFee(customerId, carId, recordId, formId, success, fail){
 
 function checkUsingMinutes(carId, success, fail) {
 
-  if (carId != null) {
-    wx.request({
-      url: config.PytheRestfulServerURL + '/use/car/time',
-      data: {
-        carId: carId
-      },
-      method: 'GET',
-      success: function (res) {
-        var result = res;
-				console.log(res.data.data);
-        // normalUpdateCustomerStatus(
-        //   wx.getStorageSync(user.CustomerID),
-        //   () => {
-        //     typeof success == "function" && success(result.data);
-        //   });
-				typeof success == "function" && success(result.data);
-      },
-      fail: function (res) {
-        typeof fail == "function" && fail(res.data);
+  wx.getLocation({
+    type: 'wgs84',
+    success: function (res) {
+      console.log("经纬度：" + res.latitude + "    " + res.longitude)
+      if (carId != null) {
+        wx.request({
+          url: config.PytheRestfulServerURL + '/use/car/time',
+          data: {
+            carId: carId,
+            phoneLat: res.latitude,
+            phoneLng: res.longitude,
+          },
+          method: 'GET',
+          success: function (res) {
+            var result = res;
+            console.log(res.data.data);
+            // normalUpdateCustomerStatus(
+            //   wx.getStorageSync(user.CustomerID),
+            //   () => {
+            //     typeof success == "function" && success(result.data);
+            //   });
+            typeof success == "function" && success(result.data);
+          },
+          fail: function (res) {
+            typeof fail == "function" && fail(res.data);
+          }
+        })
       }
-    })
-  }
+    }
+  })
+
+
 
 
 }
