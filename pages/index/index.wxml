@@ -214,7 +214,7 @@
 
     <!-- 后期修改 添加于2018-02-23 09:58 -->
 
-    <cover-image style='width:470rpx;height:117.5rpx;position:fixed;bottom:38px;left:50%;transform:translateX(-50%);' src='/images/use.png' bindtap='showT1'></cover-image>
+     <cover-image style='width:470rpx;height:117.5rpx;position:fixed;bottom:38px;left:50%;transform:translateX(-50%);' src='/images/use.png' bindtap='showT1'></cover-image> 
 
     <cover-view class='layer-map' wx:if='{{showZoneNotice == true && zoneNoticeImg != null}}' bindtap='disappearZoneNotice'>
       <cover-view class='layer-img-background'>

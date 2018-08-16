@@ -46,7 +46,7 @@ Page({
     
     endUseCarState:0,
 		backFrom:null,
-		pStatus:0,
+		pStatus:4,
 
 		status:null,
 		
@@ -174,7 +174,7 @@ Page({
 						(checkResult) => {
 							wx.hideLoading();
 
-							if (that.data.qrIdFromWX == '0000000' && that.data.pStatus == 2)
+              if (that.data.qrIdFromWX == 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==' && that.data.pStatus == 2)
 							{
 								that.data.qrIdFromWX = null;
 								if(wx.getStorageSync(user.Hotspot) == 1 )
@@ -248,7 +248,9 @@ Page({
 											content: '用户尚无行程，押金退款失败',
 											showCancel: false,
 											confirmText: '我知道了',
-											success: function (res) { },
+											success: function (res) { 
+
+                      },
 											fail: function (res) { },
 											complete: function (res) { },
 										})
@@ -261,7 +263,9 @@ Page({
 										content: '车锁未关闭，请关锁稍候重试',
 										showCancel: false,
 										confirmText: '我知道了',
-										success: function (res) { },
+                    success: function (res) {
+                      that.endUseCar()
+                     },
 										fail: function (res) { },
 										complete: function (res) { },
 									});
@@ -271,7 +275,9 @@ Page({
                     content: '不在还车范围内，请推至还车点',
                     showCancel: false,
                     confirmText: '我知道了',
-                    success: function (res) { },
+                    success: function (res) {
+                      that.endUseCar()
+                     },
                     fail: function (res) { },
                     complete: function (res) { },
                   });
@@ -282,7 +288,7 @@ Page({
 							
 
 							if (that.data.qrIdFromWX != null && wx.getStorageSync('alreadyRegister') == 'yes'
-								&& that.data.qrIdFromWX != '0000000') {
+                && that.data.qrIdFromWX != 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==') {
 
 								var qrId = that.data.qrIdFromWX;
 								console.log("!!!!!!!!!!!!qrIdFromWX!!!!!!!!", this.data.qrIdFromWX);
@@ -378,7 +384,7 @@ Page({
 			//checkBluetooth(that);
 
 			if (that.data.qrIdFromWX != null && wx.getStorageSync('alreadyRegister') == 'yes'
-				&& that.data.qrIdFromWX != '0000000') {
+        && that.data.qrIdFromWX != 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==') {
 
 				var qrId = that.data.qrIdFromWX;
 				//去开锁
@@ -672,125 +678,150 @@ Page({
 		}
 
 
-    wx.showLoading({
-      title: '请稍候',
-    })
-    setTimeout(function () {
-      clearInterval(gstim);
-      wx.hideLoading();
-      if (wx.getStorageSync(user.Hotspot) == 0) {
-        wx.showModal({
-          title: '提示',
-          content: '车锁未关闭，请关锁稍候重试',
-          showCancel: false,
-          confirmText: '我知道了',
-          success: function (res) { },
-          fail: function (res) { },
-          complete: function (res) { },
-        });
-      }else{
-        if (that.data.pStatus == 0) {
-          if (that.data.endUseCarState == 0) {
-            that.setData({
-              isShowendUseTip: true,
-              endUseCarState: 1
-            });
-          } else {
-            that.setData({
-              isShowendUseTip: false,
-              endUseCarState: 0
-            })
-          }
-        }
-        if (that.data.pStatus == 1) {
+    // setTimeout(function () {
+    //   clearInterval(gstim);
+    //   wx.hideLoading();
+        // if (that.data.pStatus == 0) {
+        //   if (that.data.endUseCarState == 0) {
+        //     that.setData({
+        //       isShowendUseTip: true,
+        //       endUseCarState: 1
+        //     });
+        //   } else {
+        //     that.setData({
+        //       isShowendUseTip: false,
+        //       endUseCarState: 0
+        //     })
+        //   }
+        // }
+        // if (that.data.pStatus == 1) {
 
-            wx.showLoading({
-              title: '车锁检测(15秒)',
-              mask: true,
-              success: function (res) { },
-              fail: function (res) { },
-              complete: function (res) { },
-            })
-            var gstim = setInterval(function () {
-              if (wx.getStorageSync(user.Hotspot) == 2) {
-                clearInterval(gstim);
-                wx.hideLoading();
-                that.setData({
-                  autoSelfReturn: true,
-                });
+        //     wx.showLoading({
+        //       title: '车锁检测(15秒)',
+        //       mask: true,
+        //       success: function (res) { },
+        //       fail: function (res) { },
+        //       complete: function (res) { },
+        //     })
+        //     var gstim = setInterval(function () {
+        //       if (wx.getStorageSync(user.Hotspot) == 2) {
+        //         clearInterval(gstim);
+        //         wx.hideLoading();
+        //         that.setData({
+        //           autoSelfReturn: true,
+        //         });
 
-              } else {
-                console.log("fail to unlock!!!!")
-              }
-            }, 3000);
-            setTimeout(function () {
-              clearInterval(gstim);
-              wx.hideLoading();
-              if (wx.getStorageSync(user.Hotspot) == 0) {
-                wx.showModal({
-                  title: '提示',
-                  content: '车锁未关闭，请关锁稍候重试',
-                  showCancel: false,
-                  confirmText: '我知道了',
-                  success: function (res) { },
-                  fail: function (res) { },
-                  complete: function (res) { },
-                });
-              } else if (wx.getStorageSync(user.Hotspot) == 3) {
-                wx.showModal({
-                  title: '提示',
-                  content: '不在还车范围内，请推至还车点',
-                  showCancel: false,
-                  confirmText: '我知道了',
-                  success: function (res) { },
-                  fail: function (res) { },
-                  complete: function (res) { },
-                });
-              }
-            }, 15000);
+        //       } else {
+        //         console.log("fail to unlock!!!!")
+        //       }
+        //     }, 3000);
+        //     setTimeout(function () {
+        //       clearInterval(gstim);
+        //       wx.hideLoading();
+        //       if (wx.getStorageSync(user.Hotspot) == 0) {
+        //         wx.showModal({
+        //           title: '提示',
+        //           content: '车锁未关闭，请关锁稍候重试',
+        //           showCancel: false,
+        //           confirmText: '我知道了',
+        //           success: function (res) {
+        //             that.endUseCar()
+        //             },
+        //           fail: function (res) { },
+        //           complete: function (res) { },
+        //         });
+        //       } else if (wx.getStorageSync(user.Hotspot) == 3) {
+        //         wx.showModal({
+        //           title: '提示',
+        //           content: '不在还车范围内，请推至还车点',
+        //           showCancel: false,
+        //           confirmText: '我知道了',
+        //           success: function (res) {
+        //             that.endUseCar()
+        //            },
+        //           fail: function (res) { },
+        //           complete: function (res) { },
+        //         });
+        //       } 
+        //     }, 15000);
 
 
-        }
-        if (that.data.pStatus == 2) {
-          wx.showLoading({
-            title: '车锁检测(15秒)',
-            mask: true,
-            success: function (res) { },
-            fail: function (res) { },
-            complete: function (res) { },
-          })
-          var gstim = setInterval(function () {
-            if (wx.getStorageSync(user.Hotspot) == 1 || wx.getStorageSync(user.Hotspot) == 2 || wx.getStorageSync(user.Hotspot) == 3) {
-              clearInterval(gstim);
-              wx.hideLoading();
-              clearTimeout(gstimRange);
-              that.setData({
-                selfReturn: true,
-              });
+        // }
+    //   wx.showLoading({
+    //     title: '请稍等',
+    //     mask: true,
+    //     success: function (res) { },
+    //     fail: function (res) { },
+    //     complete: function (res) { },
+    //   })
+    //     if ( that.data.pStatus == 3) {
+    //       wx.showLoading({
+    //         title: '车锁检测(15秒)',
+    //         mask: true,
+    //         success: function (res) { },
+    //         fail: function (res) { },
+    //         complete: function (res) { },
+    //       })
+    //       var gstim = setInterval(function () {
+    //         if (wx.getStorageSync(user.Hotspot) == 1 || wx.getStorageSync(user.Hotspot) == 2 || wx.getStorageSync(user.Hotspot) == 3) {
+    //           clearInterval(gstim);
+    //           wx.hideLoading();
+    //           clearTimeout(gstimRange);
+    //           that.setData({
+    //             selfReturn: true,
+    //           });
 
-            } else {
-              console.log("fail to unlock!!!!")
-            }
-          }, 3000);
-          var gstimRange = setTimeout(function () {
-            clearInterval(gstim);
-            wx.hideLoading();
-            if (wx.getStorageSync(user.Hotspot) == 0) {
-              wx.showModal({
-                title: '提示',
-                content: '车锁未关闭，请关锁稍候重试',
-                showCancel: false,
-                confirmText: '我知道了',
-                success: function (res) { },
-                fail: function (res) { },
-                complete: function (res) { },
-              });
+    //         } else {
+    //           console.log("fail to unlock!!!!")
+    //         }
+    //       }, 3000);
+    //       var gstimRange = setTimeout(function () {
+    //         clearInterval(gstim);
+    //         wx.hideLoading();
+    //         if (wx.getStorageSync(user.Hotspot) == 0) {
+    //           wx.showModal({
+    //             title: '提示',
+    //             content: '车锁未关闭，请关锁稍候重试',
+    //             showCancel: false,
+    //             confirmText: '我知道了',
+    //             success: function (res) {
+    //               that.endUseCar()
+    //              },
+    //             fail: function (res) { },
+    //             complete: function (res) { },
+    //           });
 
-            }
-          }, 15000);
-        }
-      }
-    }, 6000);
+    //         } 
+    //       }, 15000);
+        
+    //   }
+    //     if (that.data.pStatus == 4) {
+    //       wx.showLoading({
+    //         title: '车锁检测(15秒)',
+    //         mask: true,
+    //         success: function (res) { },
+    //         fail: function (res) { },
+    //         complete: function (res) { },
+    //       })
+    //       setTimeout(function () {
+    //         wx.hideLoading()
+    //         wx.showModal({
+    //           title: '提示',
+    //           content: '您还未使用，无法退款',
+    //           showCancel: false,
+    //           confirmText: '去使用',
+    //           success: function (res) {
+    //             wx.navigateTo({
+    //               url: '/pages/index/index'
+    //             })
+    //           },
+    //           fail: function (res) { },
+    //           complete: function (res) { },
+    //         });
+    //       }, 15000);
+
+    //     }
+    // }, 5000);
    
 
     
@@ -954,68 +985,72 @@ Page({
   // 结束用车
   endUseCar:function(){
     var that=this;
-    if (that.data.pStatus == 0){
-      if (that.data.endUseCarState == 0) {
-        that.setData({
-          isShowendUseTip: true,
-          endUseCarState: 1
-        });
-      }else{
-        that.setData({
-          isShowendUseTip: false,
-          endUseCarState: 0
-        })
-      }
-    }
-    if (that.data.pStatus == 1) {
-        wx.showLoading({
-          title: '车锁检测(15秒)',
-          mask: true,
-          success: function (res) { },
-          fail: function (res) { },
-          complete: function (res) { },
-        })
-        var gstim = setInterval(function () {
-          if (wx.getStorageSync(user.Hotspot) == 2) {
-            clearInterval(gstim);
-            wx.hideLoading();
-            that.setData({
-              autoSelfReturn: true,
-            });
+    // if (that.data.pStatus == 0){
+    //   if (that.data.endUseCarState == 0) {
+    //     that.setData({
+    //       isShowendUseTip: true,
+    //       endUseCarState: 1
+    //     });
+    //   }else{
+    //     that.setData({
+    //       isShowendUseTip: false,
+    //       endUseCarState: 0
+    //     })
+    //   }
+    // }
+    // if (that.data.pStatus == 1) {
+    //     wx.showLoading({
+    //       title: '车锁检测(15秒)',
+    //       mask: true,
+    //       success: function (res) { },
+    //       fail: function (res) { },
+    //       complete: function (res) { },
+    //     })
+    //     var gstim = setInterval(function () {
+    //       if (wx.getStorageSync(user.Hotspot) == 2) {
+    //         clearInterval(gstim);
+    //         wx.hideLoading();
+    //         that.setData({
+    //           autoSelfReturn: true,
+    //         });
 
-          } else {
-            console.log("fail to unlock!!!!")
-          }
-        }, 3000);
-        setTimeout(function () {
-          clearInterval(gstim);
-          wx.hideLoading();
-          if (wx.getStorageSync(user.Hotspot) == 0) {
-            wx.showModal({
-              title: '提示',
-              content: '车锁未关闭，请关锁稍候重试',
-              showCancel: false,
-              confirmText: '我知道了',
-              success: function (res) { },
-              fail: function (res) { },
-              complete: function (res) { },
-            });
-          } else if (wx.getStorageSync(user.Hotspot) == 3) {
-            wx.showModal({
-              title: '提示',
-              content: '不在还车范围内，请推至还车点',
-              showCancel: false,
-              confirmText: '我知道了',
-              success: function (res) { },
-              fail: function (res) { },
-              complete: function (res) { },
-            });
-          }
-        }, 15000);
+    //       } else {
+    //         console.log("fail to unlock!!!!")
+    //       }
+    //     }, 3000);
+    //     setTimeout(function () {
+    //       clearInterval(gstim);
+    //       wx.hideLoading();
+    //       if (wx.getStorageSync(user.Hotspot) == 0) {
+    //         wx.showModal({
+    //           title: '提示',
+    //           content: '车锁未关闭，请关锁稍候重试',
+    //           showCancel: false,
+    //           confirmText: '我知道了',
+    //           success: function (res) { 
+    //             that.endUseCar()
+    //           },
+    //           fail: function (res) { },
+    //           complete: function (res) { },
+    //         });
+    //       } else if (wx.getStorageSync(user.Hotspot) == 3) {
+    //         wx.showModal({
+    //           title: '提示',
+    //           content: '不在还车范围内，请推至还车点',
+    //           showCancel: false,
+    //           confirmText: '我知道了',
+    //           success: function (res) {
+    //             that.endUseCar()
+    //            },
+    //           fail: function (res) { },
+    //           complete: function (res) { },
+    //         });
+    //       }
+    //     }, 15000);
      
      
-    }
-		if (that.data.pStatus == 2 )
+    // }
+    if ( that.data.pStatus == 3 )
 		{
 			wx.showLoading({
 				title: '车锁检测(15秒)',
@@ -1046,7 +1081,9 @@ Page({
             content: '车锁未关闭，请关锁稍候重试',
             showCancel: false,
             confirmText: '我知道了',
-            success: function (res) { },
+            success: function (res) {
+              that.endUseCar()
+             },
             fail: function (res) { },
             complete: function (res) { },
           });
@@ -1499,9 +1536,9 @@ Page({
 		var that = this;
 
 
-       var qrId = '0000000';
+    var qrId = 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==';
           
-					if(qrId == '0000000')
+    if (qrId == 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==')
 					{
             that.setData({
               selfReturn:false
@@ -1570,7 +1607,9 @@ Page({
                       content: '车锁未关闭，请关锁稍候重试',
                       showCancel: false,
                       confirmText: '我知道了',
-                      success: function (res) { },
+                      success: function (res) {
+                        that.endUseCar();
+                       },
                       fail: function (res) { },
                       complete: function (res) { },
                     });
@@ -1580,7 +1619,9 @@ Page({
                       content: '不在还车范围内，请推至还车点',
                       showCancel: false,
                       confirmText: '我知道了',
-                      success: function (res) { },
+                      success: function (res) { 
+                        that.endUseCar();
+                      },
                       fail: function (res) { },
                       complete: function (res) { },
                     });
@@ -2002,6 +2043,8 @@ function refreshUsingMinutes(the){
 					});
 					wx.setStorageSync(user.LockLevel, result.data.car_level);
 					wx.setStorageSync(user.Hotspot, result.data.hotspot);
+
+ 
 					// if (wx.getStorageSync(user.Hotspot) == 1) {
 					// 	that.setData({
 					// 		selfReturn: true,
@@ -2176,6 +2219,54 @@ function checkUsingCarStatus(the, success, fail)
 						});
 						wx.setStorageSync(user.LockLevel, result.data.car_level);
 						wx.setStorageSync(user.Hotspot, result.data.hotspot);
+
+
+            if (result.data.p_status == 3) {
+              var gstim = setInterval(function () {
+                if (result.data.hotspot == 1 || result.data.hotspot == 2 || result.data.hotspot == 3) {
+                  clearInterval(gstim);
+                  wx.hideLoading();
+                  clearTimeout(gstimRange);
+                  that.setData({
+                    selfReturn: true,
+                  });
+
+                } else {
+                  wx.showLoading({
+                    title: '车锁检测(15秒)',
+                    mask: true,
+                    success: function (res) { },
+                    fail: function (res) { },
+                    complete: function (res) { },
+                  })
+                  console.log("fail to unlock!!!!")
+                }
+              }, 1000);
+              var gstimRange = setTimeout(function () {
+                clearInterval(gstim);
+                wx.hideLoading();
+                if (result.data.hotspot == 0) {
+                  wx.showModal({
+                    title: '提示',
+                    content: '车锁未关闭，请关锁稍候重试',
+                    showCancel: false,
+                    confirmText: '我知道了',
+                    success: function (res) {
+                      that.endUseCar()
+                    },
+                    fail: function (res) { },
+                    complete: function (res) { },
+                  });
+
+                }
+              }, 15000);
+
+            }
+
+
+
+
+
 						// if (wx.getStorageSync(user.Hotspot) == 1) {
 						// 	that.setData({
 						// 		selfReturn: true,
@@ -2252,6 +2343,25 @@ function checkUsingCarStatus(the, success, fail)
 	}
 	else
 	{
+ 
+
+
+        wx.showModal({
+          title: '提示',
+          content: '您还未使用，无法退款',
+          showCancel: false,
+          confirmText: '去使用',
+          success: function (res) {
+            wx.navigateTo({
+              url: '/pages/index/index'
+            })
+          },
+          fail: function (res) { },
+          complete: function (res) { },
+        });
+
+
+    
 		typeof success == "function" && success('checked');
 	}
 }
@@ -2563,7 +2673,7 @@ function scanToUnlock(the){
           if (qrId.slice(0, 'MCA'.length) == 'MCA') {
             qrId = qrId.substring(3);
           }
-          if (qrId == '0000000') {
+          if (qrId == 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==') {
             that.setData({
               selfReturn: true,
             });

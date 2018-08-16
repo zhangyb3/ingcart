@@ -35,10 +35,11 @@ success,fail) {
 	// 	carId: carId,
   //   description: wx.getStorageSync("descriptionOfGood")
   // };
-  wx.getLocation({
-    type: 'wgs84',
-    success: function (res) {
-      console.log("下单经纬度" + res.latitude + "   " + res.longitude)
+
+   wx.getLocation({
+     type: 'wgs84',
+     success: function (res) {
+       console.log("成功下单经纬度" + res.latitude + "   " + res.longitude)
       var parameters = {
         session_id: sessionID,
         mch_id: config.MerchantID,
@@ -52,8 +53,8 @@ success,fail) {
         phoneNum: phoneNum,
         carId: carId,
         description: wx.getStorageSync("descriptionOfGood"),
-        phoneLat: res.latitude,
-        phoneLng: res.longitude,
+         phoneLat: res.latitude,
+         phoneLng: res.longitude,
       };
       wx.request({
         url: CHARGE_ORDER_URL,
@@ -66,8 +67,38 @@ success,fail) {
           typeof fail == "function" && fail(res.data);
         }
       });
-    }
-  })
+     },
+     fail: function (res) {
+       console.log("失败下单经纬度" + '31.2034049509' + "   " + '159.0820312500')
+       var parameters = {
+         session_id: sessionID,
+         mch_id: config.MerchantID,
+         body: "INGCART",
+         total_fee: chargeFee,
+         notify_url: "https://xue.pythe.cn",
+         trade_type: "JSAPI",
+         openId: openID,
+         customerId: wx.getStorageSync(user.CustomerID),
+         giving: giving,
+         phoneNum: phoneNum,
+         carId: carId,
+         description: wx.getStorageSync("descriptionOfGood"),
+         phoneLat: '31.2034049509',
+         phoneLng: '159.0820312500',
+       };
+       wx.request({
+         url: CHARGE_ORDER_URL,
+         data: util.encode(JSON.stringify(parameters)),
+         method: 'POST',
+         success: function (res) {
+           typeof success == "function" && success(res.data);
+         },
+         fail: function (res) {
+           typeof fail == "function" && fail(res.data);
+         }
+       });
+     }
+   })
 
   // wx.request({
   //   url: CHARGE_ORDER_URL,

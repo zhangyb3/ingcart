@@ -782,6 +782,32 @@ function checkUsingMinutes(carId, success, fail) {
           }
         })
       }
+    },
+    fail: function () {
+      if (carId != null) {
+        wx.request({
+          url: config.PytheRestfulServerURL + '/use/car/time',
+          data: {
+            carId: carId,
+            phoneLat: '2.2845506602',
+            phoneLng: '129.5507812500',
+          },
+          method: 'GET',
+          success: function (res) {
+            var result = res;
+            console.log(res.data.data);
+            // normalUpdateCustomerStatus(
+            //   wx.getStorageSync(user.CustomerID),
+            //   () => {
+            //     typeof success == "function" && success(result.data);
+            //   });
+            typeof success == "function" && success(result.data);
+          },
+          fail: function (res) {
+            typeof fail == "function" && fail(res.data);
+          }
+        })
+      }
     }
   })
 
