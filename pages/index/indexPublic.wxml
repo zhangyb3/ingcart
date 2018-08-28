@@ -273,7 +273,16 @@
       </cover-view>
     </cover-view>
 
-
+    <!-- <cover-view class='layer-map' style="" wx:if='{{selfReturnDelay == true}}'>
+      <cover-view class='layer-img-background'>
+        <cover-image src="../../images/self_return_refund.png" style='width:600rpx;height:600rpx;'>
+        </cover-image>
+        <cover-view style="display:flex;flex-direction:row;">
+          <cover-image src='../../images/hotspot_return_deposit.png' style='width:300rpx;height:100rpx;' bindtap='selfReturnToRefundDelay'></cover-image>
+          <cover-image src='../../images/hotspot_hold_on.png' style='width:300rpx;height:100rpx;' bindtap='selfReturnHoldOnDelay'></cover-image>
+        </cover-view>
+      </cover-view>
+    </cover-view> -->
 
     <cover-view class='layer-map' style="" wx:if='{{autoSelfReturn == true}}'>
       <cover-view class='layer-img-background'>
@@ -313,6 +322,14 @@
         </cover-image>
       </cover-view>
     </cover-view>
+
+
+            <!-- <cover-view class='layer-map' wx:if='{{selfReturnSuccessDelay == true }}' bindtap='disappearLockNotice'>
+      <cover-view class='layer-img-background'>
+        <cover-image src='../../images/self_return_success_delay.png' style='width:600rpx;height:580rpx;'>
+        </cover-image>
+      </cover-view>
+    </cover-view> -->
 
     <cover-view class='layer-map' wx:if='{{selfReturnFail == true }}' bindtap='disappearLockNotice'>
       <cover-view class='layer-img-background'>

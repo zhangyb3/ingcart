@@ -62,6 +62,7 @@ Page({
 		notifyLock: false,
 
 		selfReturn: false,
+    selfReturnDelay: false,
 		selfReturnSuccess: false,
 		selfReturnFail: false,
     s1countdown: '确定3(s)',
@@ -910,7 +911,7 @@ Page({
 				complete: function(res) {},
 			})
       var gstim = setInterval(function () {
-        if (wx.getStorageSync(user.Hotspot) == 1 || wx.getStorageSync(user.Hotspot) == 2 || wx.getStorageSync(user.Hotspot) == 3) {
+        if (wx.getStorageSync(user.Hotspot) == 2) {
           clearInterval(gstim);
           wx.hideLoading();
           clearTimeout(gstimRange);
@@ -925,20 +926,9 @@ Page({
       var gstimRange = setTimeout(function () {
         clearInterval(gstim);
         wx.hideLoading();
-        if (wx.getStorageSync(user.Hotspot) == 0) {
-          wx.showModal({
-            title: '提示',
-            content: '车锁未关闭，请关锁稍候重试',
-            showCancel: false,
-            confirmText: '我知道了',
-            success: function (res) {
-              that.endUseCar()
-             },
-            fail: function (res) { },
-            complete: function (res) { },
-          });
-        
-        }
+        that.setData({
+          selfReturnDelay: true,
+        });
       }, 15000);
 			
 		}
@@ -1370,6 +1360,7 @@ Page({
 			notifyLock: false,
 			selfReturnSuccess: false,
 			selfReturnFail: false,
+      selfReturnSuccessDelay: false,
 		});
 		
 	},
@@ -1389,30 +1380,136 @@ Page({
 
     
 		var that = this;
-    if (that.data.pStatus == 3) {
-      var qrId = 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==';
+    // if (that.data.pStatus == 3) {
+    //   var qrId = 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==';
 
-      if (qrId == 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==') {
+    //   if (qrId == 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==') {
+    //     that.setData({
+    //       selfReturn: false
+    //     })
+    //     var date = new Date();
+    //     //确在用车
+    //     if (wx.getStorageSync(user.UsingCar) > 0) {
+
+    //       //在还车点附近
+    //       if ((wx.getStorageSync(user.Hotspot) == 1 || wx.getStorageSync(user.Hotspot) == 2 || wx.getStorageSync(user.Hotspot) == 3) && wx.getStorageSync(user.LockLevel) >= 3) {
+    //         console.log("我是zhaozha，我现在慌的一批")
+    //         wx.showLoading({
+    //           title: '退款检测(15秒)',
+    //           mask: true,
+    //           success: function (res) { },
+    //           fail: function (res) { },
+    //           complete: function (res) { },
+    //         })
+    //         var gstims = setInterval(function () {
+    //           if (wx.getStorageSync(user.Hotspot) == 2) {
+    //             wx.hideLoading();
+    //             wx.request({
+    //               url: config.PytheRestfulServerURL + '/manage/urgent/refund/',//小程序版退费
+    //               data: {
+    //                 phoneNum: wx.getStorageSync(user.UsingCar),
+    //                 date: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':00',
+    //                 managerId: -1,
+    //               },
+    //               method: 'POST',
+    //               success: function (res) {
+    //                 wx.hideLoading();
+    //                 that.setData({
+    //                   selfReturn: false,
+    //                 });
+    //                 if (res.data.status == 200) {
+
+    //                   clearTimeout(gstimsRange);
+    //                   clearInterval(gstims);
+    //                   that.setData({
+    //                     selfReturnSuccess: true,
+    //                   });
+    //                 }
+    //                 if (res.data.status == 400) {
+    //                   console.log("toBe2")
+    //                   console.log(res.data.msg)
+    //                   that.setData({
+    //                     selfReturnFail: true,
+    //                   });
+    //                 }
+    //               },
+    //               fail: function (res) { },
+    //               complete: function (res) { },
+    //             });
+
+    //           } else {
+    //             console.log("fail to unlock!!!!")
+    //           }
+    //         }, 3000);
+    //         var gstimsRange = setTimeout(function () {
+    //           clearInterval(gstims);
+    //           wx.hideLoading();
+    //           that.setData({
+    //             selfReturnSuccess: true,
+    //           });
+    //           // if (wx.getStorageSync(user.Hotspot) == 0) {
+    //           //   wx.showModal({
+    //           //     title: '提示',
+    //           //     content: '车锁未关闭，请关锁稍候重试',
+    //           //     showCancel: false,
+    //           //     confirmText: '我知道了',
+    //           //     success: function (res) {
+    //           //       that.endUseCar();
+    //           //     },
+    //           //     fail: function (res) { },
+    //           //     complete: function (res) { },
+    //           //   });
+    //           // } else if (wx.getStorageSync(user.Hotspot) == 3) {
+    //           //   wx.showModal({
+    //           //     title: '提示',
+    //           //     content: '不在还车范围内，请推至还车点',
+    //           //     showCancel: false,
+    //           //     confirmText: '我知道了',
+    //           //     success: function (res) {
+    //           //       that.endUseCar();
+    //           //     },
+    //           //     fail: function (res) { },
+    //           //     complete: function (res) { },
+    //           //   });
+    //           // }
+    //         }, 15000);
+
+    //       }
+    //       else {
+    //         console.log('other situation !!!!!!!!!!');
+    //       }
+
+    //     }
+    //     //没有行程
+    //     else {
+    //       wx.hideLoading();
+    //       that.setData({
+    //         selfReturn: false,
+    //       });
+    //       wx.showModal({
+    //         title: '提示',
+    //         content: '用户尚无行程，押金退款失败',
+    //         showCancel: false,
+    //         confirmText: '我知道了',
+    //         success: function (res) { },
+    //         fail: function (res) { },
+    //         complete: function (res) { },
+    //       })
+    //     }
+    //   }
+
+    // } else 
+    if (that.data.pStatus == 4 || that.data.pStatus == 3){
+      // var qrId = 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==';
+
+      // if (qrId == 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==') {
         that.setData({
           selfReturn: false
         })
         var date = new Date();
         //确在用车
         if (wx.getStorageSync(user.UsingCar) > 0) {
-
-          //在还车点附近
-          if ((wx.getStorageSync(user.Hotspot) == 1 || wx.getStorageSync(user.Hotspot) == 2 || wx.getStorageSync(user.Hotspot) == 3) && wx.getStorageSync(user.LockLevel) >= 3) {
-            console.log("我是zhaozha，我现在慌的一批")
-            wx.showLoading({
-              title: '退款检测(15秒)',
-              mask: true,
-              success: function (res) { },
-              fail: function (res) { },
-              complete: function (res) { },
-            })
-            var gstims = setInterval(function () {
-              if (wx.getStorageSync(user.Hotspot) == 2) {
-                wx.hideLoading();
+                // wx.hideLoading();
                 wx.request({
                   url: config.PytheRestfulServerURL + '/manage/urgent/refund/',//小程序版退费
                   data: {
@@ -1422,21 +1519,21 @@ Page({
                   },
                   method: 'POST',
                   success: function (res) {
-                    wx.hideLoading();
+                    // wx.hideLoading();
                     that.setData({
                       selfReturn: false,
                     });
                     if (res.data.status == 200) {
 
-                      clearTimeout(gstimsRange);
-                      clearInterval(gstims);
+                      // clearTimeout(gstimsRange);
+                      // clearInterval(gstims);
                       that.setData({
                         selfReturnSuccess: true,
                       });
                     }
                     if (res.data.status == 400) {
-                      console.log("toBe2")
-                      console.log(res.data.msg)
+                      // console.log("toBe2")
+                      // console.log(res.data.msg)
                       that.setData({
                         selfReturnFail: true,
                       });
@@ -1445,45 +1542,6 @@ Page({
                   fail: function (res) { },
                   complete: function (res) { },
                 });
-
-              } else {
-                console.log("fail to unlock!!!!")
-              }
-            }, 3000);
-            var gstimsRange = setTimeout(function () {
-              clearInterval(gstims);
-              wx.hideLoading();
-              if (wx.getStorageSync(user.Hotspot) == 0) {
-                wx.showModal({
-                  title: '提示',
-                  content: '车锁未关闭，请关锁稍候重试',
-                  showCancel: false,
-                  confirmText: '我知道了',
-                  success: function (res) {
-                    that.endUseCar();
-                  },
-                  fail: function (res) { },
-                  complete: function (res) { },
-                });
-              } else if (wx.getStorageSync(user.Hotspot) == 3) {
-                wx.showModal({
-                  title: '提示',
-                  content: '不在还车范围内，请推至还车点',
-                  showCancel: false,
-                  confirmText: '我知道了',
-                  success: function (res) {
-                    that.endUseCar();
-                  },
-                  fail: function (res) { },
-                  complete: function (res) { },
-                });
-              }
-            }, 15000);
-
-          }
-          else {
-            console.log('other situation !!!!!!!!!!');
-          }
 
         }
         //没有行程
@@ -1502,52 +1560,189 @@ Page({
             complete: function (res) { },
           })
         }
-      }
+      // }
+    }
 
-    } else if (that.data.pStatus == 4){
+ 
+
+				
+
+
+
+
+    
+	},
+
+  //自行还车扫码停止计费
+  selfReturnToRefundDelay: function () {
+
+
+
+    var that = this;
+    // if (that.data.pStatus == 3) {
+    //   var qrId = 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==';
+
+    //   if (qrId == 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==') {
+    //     that.setData({
+    //       selfReturnDelay: false
+    //     })
+    //     var date = new Date();
+    //     //确在用车
+    //     if (wx.getStorageSync(user.UsingCar) > 0) {
+
+    //       //在还车点附近
+    //       if ((wx.getStorageSync(user.Hotspot) == 1 || wx.getStorageSync(user.Hotspot) == 2 || wx.getStorageSync(user.Hotspot) == 3) && wx.getStorageSync(user.LockLevel) >= 3) {
+    //         console.log("我是zhaozha，我现在慌的一批")
+    //         wx.showLoading({
+    //           title: '退款检测(15秒)',
+    //           mask: true,
+    //           success: function (res) { },
+    //           fail: function (res) { },
+    //           complete: function (res) { },
+    //         })
+    //         var gstims = setInterval(function () {
+    //           if (wx.getStorageSync(user.Hotspot) == 2) {
+    //             wx.hideLoading();
+    //             wx.request({
+    //               url: config.PytheRestfulServerURL + '/manage/urgent/refund/',//小程序版退费
+    //               data: {
+    //                 phoneNum: wx.getStorageSync(user.UsingCar),
+    //                 date: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':00',
+    //                 managerId: -1,
+    //               },
+    //               method: 'POST',
+    //               success: function (res) {
+    //                 wx.hideLoading();
+    //                 that.setData({
+    //                   selfReturn: false,
+    //                 });
+    //                 if (res.data.status == 200) {
+
+    //                   clearTimeout(gstimsRange);
+    //                   clearInterval(gstims);
+    //                   that.setData({
+    //                     selfReturnSuccess: true,
+    //                   });
+    //                 }
+    //                 if (res.data.status == 400) {
+    //                   console.log("toBe2")
+    //                   console.log(res.data.msg)
+    //                   that.setData({
+    //                     selfReturnFail: true,
+    //                   });
+    //                 }
+    //               },
+    //               fail: function (res) { },
+    //               complete: function (res) { },
+    //             });
+
+    //           } else {
+    //             console.log("fail to unlock!!!!")
+    //           }
+    //         }, 3000);
+    //         var gstimsRange = setTimeout(function () {
+    //           clearInterval(gstims);
+    //           wx.hideLoading();
+    //           if (wx.getStorageSync(user.Hotspot) == 0) {
+    //             wx.showModal({
+    //               title: '提示',
+    //               content: '车锁未关闭，请关锁稍候重试',
+    //               showCancel: false,
+    //               confirmText: '我知道了',
+    //               success: function (res) {
+    //                 that.endUseCar();
+    //               },
+    //               fail: function (res) { },
+    //               complete: function (res) { },
+    //             });
+    //           } else if (wx.getStorageSync(user.Hotspot) == 3) {
+    //             wx.showModal({
+    //               title: '提示',
+    //               content: '不在还车范围内，请推至还车点',
+    //               showCancel: false,
+    //               confirmText: '我知道了',
+    //               success: function (res) {
+    //                 that.endUseCar();
+    //               },
+    //               fail: function (res) { },
+    //               complete: function (res) { },
+    //             });
+    //           }
+    //         }, 15000);
+
+    //       }
+    //       else {
+    //         console.log('other situation !!!!!!!!!!');
+    //       }
+
+    //     }
+    //     //没有行程
+    //     else {
+    //       wx.hideLoading();
+    //       that.setData({
+    //         selfReturn: false,
+    //       });
+    //       wx.showModal({
+    //         title: '提示',
+    //         content: '用户尚无行程，押金退款失败',
+    //         showCancel: false,
+    //         confirmText: '我知道了',
+    //         success: function (res) { },
+    //         fail: function (res) { },
+    //         complete: function (res) { },
+    //       })
+    //     }
+    //   }
+
+    // } else 
+    if (that.data.pStatus == 4 || that.data.pStatus == 3 ) {
       var qrId = 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==';
 
       if (qrId == 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==') {
         that.setData({
-          selfReturn: false
+          selfReturnDelay: false
         })
         var date = new Date();
         //确在用车
         if (wx.getStorageSync(user.UsingCar) > 0) {
-                wx.hideLoading();
-                wx.request({
-                  url: config.PytheRestfulServerURL + '/manage/urgent/refund/',//小程序版退费
-                  data: {
-                    phoneNum: wx.getStorageSync(user.UsingCar),
-                    date: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':00',
-                    managerId: -1,
-                  },
-                  method: 'POST',
-                  success: function (res) {
-                    wx.hideLoading();
-                    that.setData({
-                      selfReturn: false,
-                    });
-                    if (res.data.status == 200) {
+          wx.hideLoading();
+          wx.request({
+            url: config.PytheRestfulServerURL + '/manage/urgent/refund/',//小程序版退费
+            data: {
+              phoneNum: wx.getStorageSync(user.UsingCar),
+              date: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':00',
+              managerId: -1,
+            },
+            method: 'POST',
+            success: function (res) {
+              wx.hideLoading();
+              that.setData({
+                selfReturn: false,
+              });
+              if (res.data.status == 200) {
 
-                      clearTimeout(gstimsRange);
-                      clearInterval(gstims);
-                      that.setData({
-                        selfReturnSuccess: true,
-                      });
-                    }
-                    if (res.data.status == 400) {
-                      console.log("toBe2")
-                      console.log(res.data.msg)
-                      that.setData({
-                        selfReturnFail: true,
-                      });
-                    }
-                  },
-                  fail: function (res) { },
-                  complete: function (res) { },
+                clearTimeout(gstimsRange);
+                clearInterval(gstims);
+                that.setData({
+                  selfReturnSuccess: true,
                 });
-
+              }
+              if (res.data.status == 400) {
+                console.log("toBe2")
+                console.log(res.data.msg)
+                that.setData({
+                  selfReturnFail: true,
+                });
+              }
+            },
+            fail: function (res) { },
+            complete: function (res) { },
+          });
+          // wx.hideLoading();
+          // that.setData({
+          //   selfReturnSuccessDelay: true,
+          //   delay: false
+          // });
         }
         //没有行程
         else {
@@ -1568,15 +1763,15 @@ Page({
       }
     }
 
- 
-
-				
 
 
 
 
-    
-	},
+
+
+
+
+  },
 
 	selfReturnHoldOn:function(){
 
@@ -1586,6 +1781,17 @@ Page({
       });
     
 	},
+
+
+  selfReturnHoldOnDelay: function () {
+
+    var that = this;
+    that.setData({
+      selfReturnDelay: false,
+    });
+
+  },
+
 
   autoSelfReturnHoldOn: function () {
 
@@ -2160,20 +2366,23 @@ function checkUsingCarStatus(the, success, fail)
               var gstimRange = setTimeout(function () {
                 clearInterval(gstim);
                 wx.hideLoading();
-                if (result.data.hotspot == 0) {
-                  wx.showModal({
-                    title: '提示',
-                    content: '车锁未关闭，请关锁稍候重试',
-                    showCancel: false,
-                    confirmText: '我知道了',
-                    success: function (res) {
-                      that.endUseCar()
-                    },
-                    fail: function (res) { },
-                    complete: function (res) { },
-                  });
+                that.setData({
+                  selfReturn: true,
+                });
+                // if (result.data.hotspot == 0) {
+                //   wx.showModal({
+                //     title: '提示',
+                //     content: '车锁未关闭，请关锁稍候重试',
+                //     showCancel: false,
+                //     confirmText: '我知道了',
+                //     success: function (res) {
+                //       that.endUseCar()
+                //     },
+                //     fail: function (res) { },
+                //     complete: function (res) { },
+                //   });
 
-                }
+                // }
               }, 15000);
 
             }
