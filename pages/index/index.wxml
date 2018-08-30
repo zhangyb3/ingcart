@@ -134,7 +134,7 @@
           </cover-view>
 
           <cover-view class='info-ingcart'>
-            <cover-view class='end-use' bindtap='endUseCar' style='float:right;margin-right:1px;'>结束用车</cover-view>
+            <cover-view class='end-use' bindtap='endUseCar' style='background:red;float:right;margin-right:1px;color:white;border: 1px solid red;'>还车退押金</cover-view>
           </cover-view>
         </cover-view>
         <cover-view style='height:1px;background-color:#e6e6e6;'></cover-view>
@@ -201,14 +201,14 @@
         </cover-view>
       </cover-view>
     </cover-view>
-        <!-- <cover-image style='width:120rpx;height:120rpx;position:fixed;bottom:120px;right:0;' src='https://wx.ingcart.com/xcx/fuli.png' bindtap='showFuli' wx:if='{{showTFuli }}'></cover-image>
+         <!-- <cover-image style='width:120rpx;height:120rpx;position:fixed;bottom:120px;right:0;' src='https://wx.ingcart.com/xcx/fuli.png' bindtap='showFuli' wx:if='{{showTFuli }}'></cover-image>
 
     <cover-view class='layer-map' wx:if='{{showTFuliTS }}'>
       <cover-view class='layer-img-background'>
         <cover-image src="https://wx.ingcart.com/xcx/fulits.png" style='width:600rpx;height:720rpx;'  bindtap="hideFuli" >
         </cover-image>
       </cover-view>
-    </cover-view> -->
+    </cover-view>  -->
 
 
 
@@ -275,16 +275,12 @@
 
 
 
-    <!-- <cover-view class='layer-map' style="" wx:if='{{selfReturnDelay == true}}'>
+     <cover-view class='layer-map' style="" wx:if='{{selfReturnDelay == true}}'>
       <cover-view class='layer-img-background'>
-        <cover-image src="../../images/self_return_refund.png" style='width:600rpx;height:600rpx;'>
+        <cover-image src="../../images/fail_to_refund.png" style='width:600rpx;height:700rpx;' bindtap='selfReturnToRefundDelay'>
         </cover-image>
-        <cover-view style="display:flex;flex-direction:row;">
-          <cover-image src='../../images/hotspot_return_deposit.png' style='width:300rpx;height:100rpx;' bindtap='selfReturnToRefundDelay'></cover-image>
-          <cover-image src='../../images/hotspot_hold_on.png' style='width:300rpx;height:100rpx;' bindtap='selfReturnHoldOnDelay'></cover-image>
-        </cover-view>
       </cover-view>
-    </cover-view> -->
+    </cover-view> 
 
 
     <cover-view class='layer-map' style=""  wx:if='{{showT1 == true}}'>
