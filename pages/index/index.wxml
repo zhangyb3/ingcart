@@ -274,6 +274,13 @@
     </cover-view>
 
 
+    <cover-view class='layer-map' style="" wx:if='{{selfReturn4 == true}}'>
+      <cover-view class='layer-img-background'>
+        <cover-image src="../../images/4.png" style='width:600rpx;height:650rpx;' bindtap='selfReturn4HoldOn'>
+        </cover-image>
+      </cover-view> 
+    </cover-view>
+
 
      <cover-view class='layer-map' style="" wx:if='{{selfReturnDelay == true}}'>
       <cover-view class='layer-img-background'>

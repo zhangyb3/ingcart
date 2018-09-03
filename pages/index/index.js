@@ -66,6 +66,7 @@ Page({
 		selfReturnSuccess: false,
     selfReturnSuccessDelay: false,
 		selfReturnFail: false,
+    selfReturn4:false,
     delay:true,
     s1countdown: '确定3(s)',
     test:false,
@@ -1544,9 +1545,15 @@ Page({
                 var gstimsRange = setTimeout(function () {
                   clearInterval(gstims);
                   wx.hideLoading();
-                  that.setData({
-                    selfReturnDelay: true
-                  })
+                  if (wx.getStorageSync(user.Hotspot) == 4) {
+                    that.setData({
+                      selfReturn4: true
+                    })
+                  }else{
+                    that.setData({
+                      selfReturnDelay: true
+                    })
+                  }
                 },15000);
             }
             //没有行程
@@ -1786,6 +1793,15 @@ Page({
       });
     
 	},
+
+  selfReturn4HoldOn: function () {
+
+    var that = this;
+    that.setData({
+      selfReturn4: false,
+    });
+
+  },
 
 
   //自行还车扫码停止计费

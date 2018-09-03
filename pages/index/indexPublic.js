@@ -65,6 +65,7 @@ Page({
     selfReturnDelay: false,
 		selfReturnSuccess: false,
 		selfReturnFail: false,
+    selfReturn4:false,
     s1countdown: '确定3(s)',
     test:false,
     blueFlag: false,
@@ -1576,6 +1577,15 @@ Page({
     
 	},
 
+  selfReturn4HoldOn: function () {
+
+    var that = this;
+    that.setData({
+      selfReturn4: false,
+    });
+
+  },
+
 
   selfReturnHoldOnDelay: function () {
 
@@ -2171,7 +2181,7 @@ function checkUsingCarStatus(the, success, fail)
 
             if (result.data.p_status == 3) {
               var gstim = setInterval(function () {
-                if (result.data.hotspot == 1 || result.data.hotspot == 2 || result.data.hotspot == 3) {
+                if ( result.data.hotspot == 2) {
                   clearInterval(gstim);
                   wx.hideLoading();
                   clearTimeout(gstimRange);
@@ -2193,9 +2203,15 @@ function checkUsingCarStatus(the, success, fail)
               var gstimRange = setTimeout(function () {
                 clearInterval(gstim);
                 wx.hideLoading();
-                that.setData({
-                  selfReturnDelay: true,
-                });
+                if (wx.getStorageSync(user.Hotspot) == 4) {
+                  that.setData({
+                    selfReturn4: true
+                  })
+                } else {
+                  that.setData({
+                    selfReturnDelay: true
+                  })
+                }
                 // if (result.data.hotspot == 0) {
                 //   wx.showModal({
                 //     title: '提示',
