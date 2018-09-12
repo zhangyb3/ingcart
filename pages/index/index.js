@@ -1514,7 +1514,9 @@ Page({
                 })
                 var gstims = setInterval(function () {
                   if (wx.getStorageSync(user.Hotspot) == 2) {
+                    clearInterval(gstim);
                     wx.hideLoading();
+                    clearTimeout(gstimRange);
                     wx.request({
                       url: config.PytheRestfulServerURL + '/manage/urgent/refund/',//小程序版退费
                       data: {
