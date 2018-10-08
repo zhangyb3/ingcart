@@ -1670,7 +1670,7 @@ Page({
                   complete: function (res) { },
                 })
                 var gstims = setInterval(function () {
-                  if (wx.getStorageSync(user.Hotspot) == 2) {
+                  if (wx.getStorageSync(user.Hotspot) == 2 || wx.getStorageSync(user.Hotspot) == 3) {
                     clearInterval(gstims);
                     wx.hideLoading();
                     clearTimeout(gstimsRange);
@@ -1704,9 +1704,10 @@ Page({
                 var gstimsRange = setTimeout(function () {
                   clearInterval(gstims);
                   wx.hideLoading();
-                  that.setData({
-                    selfReturn: true
-                  })
+                    that.setData({
+                      selfReturn: true
+                    })
+                  
                 }, 15000);
               }
               //没有行程
