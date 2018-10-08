@@ -2699,17 +2699,26 @@ function getUserLocation(the) {
 					else
 					{
 						console.log('!!!!!!!!!!!!!!! unload !!!!!!!!!!!!!!!!');
-						wx.openSetting({
-							success: function(res) {
-								//if(data.authSetting["scope.userLocation"] == true)
-								{
-									getUserLocation(that);
-									that.onShow();
-								}
-							},
-							fail: function(res) {},
-							complete: function(res) {},
-						})
+            wx.showModal({
+              title: '位置授权',
+              content: '我们需要获取您的地理位置',
+              success(res) {
+                if (res.confirm) {
+                  wx.openSetting({
+                    success: function (res) {
+                      //if(data.authSetting["scope.userLocation"] == true)
+                      {
+                        getUserLocation(that);
+                        that.onShow();
+                      }
+                    },
+                    fail: function (res) { },
+                    complete: function (res) { },
+                  })
+                }
+              }
+            })
+
 					}
 				},
 				fail: function (res) { },
