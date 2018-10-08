@@ -983,26 +983,42 @@ function loginSystem(the, success, fail) {
 	wx.login({
 		success: function (res) {
 			// success
-			wx.getUserInfo({
-				success: function (res) {
-					// success
-					console.log(res.rawData);
-					var rawData = JSON.parse(res.rawData);
-					wx.setStorageSync('avatarUrl', rawData.avatarUrl);
-					// wx.setStorageSync('userNickName', rawData.nickName);
-					wx.setStorageSync('wxNickName', rawData.nickName);
+      wx.getSetting({
+        success(res) {
+          if (res.authSetting['scope.userInfo']) {
+            // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+            wx.getUserInfo({
+              success: function (res) {
+                // success
+                console.log(res.rawData);
+                var rawData = JSON.parse(res.rawData);
+                wx.setStorageSync('avatarUrl', rawData.avatarUrl);
+                // wx.setStorageSync('userNickName', rawData.nickName);
+                wx.setStorageSync('wxNickName', rawData.nickName);
 
-					// that.setData({
-					// 	avatar: wx.getStorageSync('avatarUrl'),
-					// });
-				},
-				fail: function () {
-					// fail
-				},
-				complete: function () {
-					// complete
-				}
-			})
+                // that.setData({
+                // 	avatar: wx.getStorageSync('avatarUrl'),
+                // });
+              },
+              fail: function () {
+                // fail
+              },
+              complete: function () {
+                // complete
+              }
+            })
+          } else {
+            wx.navigateTo({
+              url: '/pages/register/autho',
+            })
+          }
+        }, fail(res) {
+          wx.navigateTo({
+            url: '/pages/register/autho',
+          })
+        }
+      })
+
 		},
 		fail: function () {
 			// fail

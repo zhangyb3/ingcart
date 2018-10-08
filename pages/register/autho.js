@@ -39,27 +39,12 @@ Page({
       }
     } else {
       // 在没有 open-type=getUserInfo 版本的兼容处理
-      wx.getSetting({
-        success(res) {
-          if (res.authSetting['scope.userInfo']) {
-            // 已经授权，可以直接调用 getUserInfo 获取头像昵称
-            wx.getUserInfo({
-              success: res => {
-                app.globalData.userInfo = res.userInfo
-                this.setData({
-                  userInfo: res.userInfo,
-                  hasUserInfo: true
-                })
-              }
-            })
-          } else {
-            wx.navigateTo({
-              url: '/pages/register/autho',
-            })
-          }
-        }, fail(res) {
-          wx.navigateTo({
-            url: '/pages/register/autho',
+      wx.getUserInfo({
+        success: res => {
+          app.globalData.userInfo = res.userInfo
+          this.setData({
+            userInfo: res.userInfo,
+            hasUserInfo: true
           })
         }
       })
@@ -217,6 +202,10 @@ Page({
 			complete: function (res) { },
 		})
 	},
-
+  bindGetUserInfo(e) {
+    wx.navigateTo({
+      url: '/pages/index/index',
+    })
+  }
 	
 })

@@ -1808,7 +1808,7 @@ Page({
         fail: function (res) { },
         complete: function (res) { },
       });
-    } 
+    
 
   },
   selfReturnToRefundDelay2: function () {

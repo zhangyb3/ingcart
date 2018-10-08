@@ -1,0 +1,14 @@
+<view class='accedit-page'>
+       
+    <view class='accedit-logo'>
+          <image src='/images/accedit_log.png' mode='widthFix'></image> 
+    </view>
+    
+    <view class='accedit-button'>
+       <view class='accedit-txt'><image src='/images/wx_log.png'></image>微信授权</view>
+       <button class='acceditBtn' plain='true' open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo"></button>
+    </view>
+
+
+</view>
+

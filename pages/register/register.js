@@ -264,25 +264,41 @@ Page({
 							console.log('session key : ' + wx.getStorageSync('SessionKey'));
 							console.log('openid : ' + wx.getStorageSync('OpenID'));
 
-							wx.getUserInfo({
-								withCredentials: true,
-								success: function (res) { },
-								fail: function (res) { },
-								complete: function (res) {
-									console.log("encryptedData", res.encryptedData);
-									var session_key = wx.getStorageSync("SessionKey");
-									var encryptedData = res.encryptedData;
-									var iv = res.iv;
+              wx.getSetting({
+                success(res) {
+                  if (res.authSetting['scope.userInfo']) {
+                    // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+                    wx.getUserInfo({
+                      withCredentials: true,
+                      success: function (res) { },
+                      fail: function (res) { },
+                      complete: function (res) {
+                        console.log("encryptedData", res.encryptedData);
+                        var session_key = wx.getStorageSync("SessionKey");
+                        var encryptedData = res.encryptedData;
+                        var iv = res.iv;
 
-									var pc = new WXBizDataCrypt(config.AppID, session_key)
-									var result = pc.decryptData(encryptedData, iv);
-									console.log("!!!decode: " + JSON.stringify(result));
-									wx.setStorageSync(user.UnionID, result.unionId);
-                  console.log("zhaozha:===>>" + result.unionId)
+                        var pc = new WXBizDataCrypt(config.AppID, session_key)
+                        var result = pc.decryptData(encryptedData, iv);
+                        console.log("!!!decode: " + JSON.stringify(result));
+                        wx.setStorageSync(user.UnionID, result.unionId);
+                        console.log("zhaozha:===>>" + result.unionId)
 
 
-								},
-							})
+                      },
+                    })
+                  } else {
+                    wx.navigateTo({
+                      url: '/pages/register/autho',
+                    })
+                  }
+                }, fail(res) {
+                  wx.navigateTo({
+                    url: '/pages/register/autho',
+                  })
+                }
+              })
+
 
 
 						}

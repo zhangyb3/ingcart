@@ -16,7 +16,8 @@
 		"pages/register/accedit",
     "pages/logs/logs",
     "pages/activity/activity",
-    "pages/agreement/agreement"
+    "pages/agreement/agreement",
+    "pages/register/autho"
     
   ],
   "window":{

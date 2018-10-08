@@ -53,16 +53,31 @@ App({
       //调用登录接口
       wx.login({
         success: function () {
-          wx.getUserInfo({
-            success: function (res) {
-              that.globalData.userInfo = res.userInfo
-              that.globalData.iv = res.iv
-              that.globalData.encryptedData = res.encryptedData
-              console.log(res.userInfo);
-              console.log(res.encryptedData);
-              console.log(res.iv);
-              typeof cb == "function" && cb(that.globalData.userInfo)
+          wx.getSetting({
+            success(res) {
+              if (res.authSetting['scope.userInfo']) {
+                // 已经授权，可以直接调用 getUserInfo 获取头像昵称
+                wx.getUserInfo({
+                  success: function (res) {
+                    that.globalData.userInfo = res.userInfo
+                    that.globalData.iv = res.iv
+                    that.globalData.encryptedData = res.encryptedData
+                    console.log(res.userInfo);
+                    console.log(res.encryptedData);
+                    console.log(res.iv);
+                    typeof cb == "function" && cb(that.globalData.userInfo)
 
+                  }
+                })
+              } else {
+                wx.navigateTo({
+                  url: '/pages/register/autho',
+                })
+              }
+            }, fail(res) {
+              wx.navigateTo({
+                url: '/pages/register/autho',
+              })
             }
           })
         }
