@@ -146,6 +146,11 @@ Page({
 // 页面显示
   onShow: function(){
 		var that = this;
+    // console.log("wo要開始刷新了")
+    // wx.navigateTo({
+    //   url: '/pages/register/autho',
+    // })
+
 		refreshPage(that);
 		that.setData({
 			latitude: wx.getStorageSync(user.Latitude) || that.data.latitude,
@@ -2870,144 +2875,300 @@ function gotoUnlock(the, qrId, success, fail)
 		code = that.data.couponCode;
 		
 	}
-	wx.setStorageSync('using_coupon_code', code);
-  console.log('qrId:' + qrId + 'type' + type + 'code' + code +'customerId'+wx.getStorageSync(user.CustomerID))
-	wx.request({
-		url: config.PytheRestfulServerURL + '/qr/unlock/prepare',
-		data: {
-			customerId: wx.getStorageSync(user.CustomerID),
-			qrId: qrId,
-			carId: qrId,
-			type: type,
-			code: code,
-		},
-		method: 'GET',
-		success: function (res) {
-			var result = res.data;
-      if (result.data==null){
-        wx.setStorageSync("descriptionOfGood", "")
-      }else{
-        wx.setStorageSync("descriptionOfGood", res.data.data.description)
+
+
+  if (wx.getStorageSync(user.CustomerID) == '') {
+    console.log("重新获取customerid")
+    wx.showLoading({
+      title: '加载数据',
+      mask: true,
+      success: function (res) { },
+      fail: function (res) { },
+      complete: function (res) { },
+    });
+
+
+    operation.loginSystem(
+      that,
+      () => {
+        wx.hideLoading();
+        refreshPage(that);
+        wx.setStorageSync('using_coupon_code', code);
+        console.log('qrId:' + qrId + 'type' + type + 'code' + code + 'customerId' + wx.getStorageSync(user.CustomerID))
+        wx.request({
+          url: config.PytheRestfulServerURL + '/qr/unlock/prepare',
+          data: {
+            customerId: wx.getStorageSync(user.CustomerID),
+            qrId: qrId,
+            carId: qrId,
+            type: type,
+            code: code,
+          },
+          method: 'GET',
+          success: function (res) {
+            var result = res.data;
+            if (result.data == null) {
+              wx.setStorageSync("descriptionOfGood", "")
+            } else {
+              wx.setStorageSync("descriptionOfGood", res.data.data.description)
+            }
+            if (result.status == 200) {
+
+              // var continueToUnlock = true;
+              that.setData({
+                lockLevel: result.data.car_level,
+              });
+              console.log('lock level', that.data.lockLevel);
+              if (that.data.lockLevel >= 3) {
+                //checkBluetooth(that);
+                wx.showLoading({
+                  title: '开锁中...',
+                  mask: true,
+                  success: function (res) { },
+                  fail: function (res) { },
+                  complete: function (res) { },
+                })
+                wx.request({
+                  url: config.PytheRestfulServerURL + '/web/unlock',
+                  data: {
+                    customerId: wx.getStorageSync(user.CustomerID),
+                    qrId: qrId,
+                    carId: qrId,
+                  },
+                  method: 'POST',
+                  success: function (res) {
+                    wx.hideLoading();
+                    if (res.data.status == 200) {
+
+                      wx.showToast({
+                        title: res.data.msg,
+                        icon: '',
+                        image: '',
+                        duration: 3000,
+                        mask: true,
+                        success: function (res) { },
+                        fail: function (res) { },
+                        complete: function (res) { },
+                      });
+                      operation.normalUpdateCustomerStatus(
+                        wx.getStorageSync(user.CustomerID),
+                        () => {
+                          checkUsingCarStatus(that);
+                        },
+                      );
+                      that.setData({
+                        wxts2: true
+                      })
+                    }
+                    else {
+                      wx.hideLoading();
+                      console.log("redirect to progress page !!!!!!!!!!!!!!!!");
+                      that.setData({
+                        lyqrId: qrId
+                      })
+                      checkBluetooth(that);
+
+                    }
+
+                  },
+                  fail: function (res) { },
+                  complete: function (res) {
+                    wx.hideLoading();
+                  },
+                })
+              }
+
+              else {
+                console.log('进入开锁......2')
+                doUnlock(that, qrId);
+              }
+
+
+            }
+            else {
+              if (result.status == 300) {
+                that.setData({
+                  isNotEnough: true,
+                  price: result.data.price,
+                  giving: result.data.giving,
+                  hints: result.data.annotation,
+                  pStatus: wx.getStorageSync(user.PStatus),
+                  unlockQR: qrId,
+                });
+
+
+
+              }
+              else {
+
+
+                wx.showModal({
+                  title: '提示',
+                  content: result.msg,
+                  showCancel: false,
+                  confirmText: '我知道了',
+                  success: function (res) {
+
+                  },
+                  fail: function (res) { },
+                  complete: function (res) { },
+                })
+              }
+
+            }
+
+
+          },
+          fail: function (res) {
+            typeof fail == "function" && fail(res);
+
+          },
+          complete: function (res) {
+
+          }
+        });
       }
-			if (result.status == 200) {
+    );
+  }else{
+    wx.setStorageSync('using_coupon_code', code);
+    console.log('qrId:' + qrId + 'type' + type + 'code' + code + 'customerId' + wx.getStorageSync(user.CustomerID))
+    wx.request({
+      url: config.PytheRestfulServerURL + '/qr/unlock/prepare',
+      data: {
+        customerId: wx.getStorageSync(user.CustomerID),
+        qrId: qrId,
+        carId: qrId,
+        type: type,
+        code: code,
+      },
+      method: 'GET',
+      success: function (res) {
+        var result = res.data;
+        if (result.data == null) {
+          wx.setStorageSync("descriptionOfGood", "")
+        } else {
+          wx.setStorageSync("descriptionOfGood", res.data.data.description)
+        }
+        if (result.status == 200) {
 
-				// var continueToUnlock = true;
-				that.setData({
-					lockLevel: result.data.car_level,
-				});
-				console.log('lock level',that.data.lockLevel);
-				if(that.data.lockLevel >= 3)
-				{
-          //checkBluetooth(that);
-					wx.showLoading({
-						title: '开锁中...',
-						mask: true,
-						success: function(res) {},
-						fail: function(res) {},
-						complete: function(res) {},
-					})
-					wx.request({
-						url: config.PytheRestfulServerURL + '/web/unlock',
-						data: {
-							customerId: wx.getStorageSync(user.CustomerID),
-							qrId: qrId,
-							carId: qrId,
-						},
-						method: 'POST',
-						success: function(res) {
-							wx.hideLoading();
-							if(res.data.status == 200)
-							{
-								
-								wx.showToast({
-									title: res.data.msg,
-									icon: '',
-									image: '',
-									duration: 3000,
-									mask: true,
-									success: function(res) {},
-									fail: function(res) {},
-									complete: function(res) {},
-								});
-								operation.normalUpdateCustomerStatus(
-									wx.getStorageSync(user.CustomerID),
-									() => {
-										checkUsingCarStatus(that);
-									},
-								);
-                that.setData({
-                  wxts2:true
-                })
-							}
-							else
-							{
-								wx.hideLoading();
-								console.log("redirect to progress page !!!!!!!!!!!!!!!!");
-                that.setData({
-                  lyqrId: qrId
-                })
-                checkBluetooth(that);
-								
-							}
-							
-						},
-						fail: function(res) {},
-						complete: function(res) {
-							wx.hideLoading();
-						},
-					})
-				}
+          // var continueToUnlock = true;
+          that.setData({
+            lockLevel: result.data.car_level,
+          });
+          console.log('lock level', that.data.lockLevel);
+          if (that.data.lockLevel >= 3) {
+            //checkBluetooth(that);
+            wx.showLoading({
+              title: '开锁中...',
+              mask: true,
+              success: function (res) { },
+              fail: function (res) { },
+              complete: function (res) { },
+            })
+            wx.request({
+              url: config.PytheRestfulServerURL + '/web/unlock',
+              data: {
+                customerId: wx.getStorageSync(user.CustomerID),
+                qrId: qrId,
+                carId: qrId,
+              },
+              method: 'POST',
+              success: function (res) {
+                wx.hideLoading();
+                if (res.data.status == 200) {
 
-				else
-				{
-          console.log('进入开锁......2')
-					doUnlock(that, qrId);
-				}
-				
+                  wx.showToast({
+                    title: res.data.msg,
+                    icon: '',
+                    image: '',
+                    duration: 3000,
+                    mask: true,
+                    success: function (res) { },
+                    fail: function (res) { },
+                    complete: function (res) { },
+                  });
+                  operation.normalUpdateCustomerStatus(
+                    wx.getStorageSync(user.CustomerID),
+                    () => {
+                      checkUsingCarStatus(that);
+                    },
+                  );
+                  that.setData({
+                    wxts2: true
+                  })
+                }
+                else {
+                  wx.hideLoading();
+                  console.log("redirect to progress page !!!!!!!!!!!!!!!!");
+                  that.setData({
+                    lyqrId: qrId
+                  })
+                  checkBluetooth(that);
 
-			}
-			else {
-				if (result.status == 300) {
-					that.setData({
-						isNotEnough: true,
-						price: result.data.price,
-						giving: result.data.giving,
-						hints: result.data.annotation,
-						pStatus: wx.getStorageSync(user.PStatus),
-						unlockQR: qrId,
-					});
-					
+                }
 
+              },
+              fail: function (res) { },
+              complete: function (res) {
+                wx.hideLoading();
+              },
+            })
+          }
 
-				}
-				else {
-
-
-					wx.showModal({
-						title: '提示',
-						content: result.msg,
-						showCancel: false,
-						confirmText: '我知道了',
-						success: function (res) {
-
-						},
-						fail: function (res) { },
-						complete: function (res) { },
-					})
-				}
-
-			}
+          else {
+            console.log('进入开锁......2')
+            doUnlock(that, qrId);
+          }
 
 
-		},
-		fail: function (res) {
-			typeof fail == "function" && fail(res);
+        }
+        else {
+          if (result.status == 300) {
+            that.setData({
+              isNotEnough: true,
+              price: result.data.price,
+              giving: result.data.giving,
+              hints: result.data.annotation,
+              pStatus: wx.getStorageSync(user.PStatus),
+              unlockQR: qrId,
+            });
 
-		},
-		complete: function (res) {
 
-		}
-	});
+
+          }
+          else {
+
+
+            wx.showModal({
+              title: '提示',
+              content: result.msg,
+              showCancel: false,
+              confirmText: '我知道了',
+              success: function (res) {
+
+              },
+              fail: function (res) { },
+              complete: function (res) { },
+            })
+          }
+
+        }
+
+
+      },
+      fail: function (res) {
+        typeof fail == "function" && fail(res);
+
+      },
+      complete: function (res) {
+
+      }
+    });
+  }
+
+
+
+
 
 }
 

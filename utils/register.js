@@ -93,6 +93,7 @@ function commitRegister(the, success, fail)
           });
         }
         else if (res.data.status == 200) {
+          console.log("customerId" + res.data.data.customerId)
           wx.setStorageSync(user.CustomerID, res.data.data.customerId);
 
           wx.setStorageSync(user.Description, res.data.data.description);

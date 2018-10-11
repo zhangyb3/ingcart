@@ -880,7 +880,7 @@ function normalUpdateCustomerStatus(customerId, success, fail)
     success: function (res) {
       // console.log(res);
       var info = res.data.data;
-
+      console.log("customerid"+info.customerId)
       wx.setStorageSync(user.CustomerID, info.customerId);
       wx.setStorageSync(user.Description, info.description);
       wx.setStorageSync(user.Status, info.status);
@@ -1056,6 +1056,7 @@ function loginSystem(the, success, fail) {
 					else 
 					{
 						wx.setStorageSync('alreadyRegister', 'yes');
+            console.log("customer" + registerInfo.customerId)
 						wx.setStorageSync(user.CustomerID, registerInfo.customerId);
 						wx.setStorageSync(user.Description, registerInfo.description);
 						wx.setStorageSync(user.Status, registerInfo.status);

@@ -203,6 +203,7 @@ Page({
 		})
 	},
   bindGetUserInfo(e) {
+
     wx.navigateTo({
       url: '/pages/index/index',
     })

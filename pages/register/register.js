@@ -154,6 +154,7 @@ Page({
 						});
 					}
 					else if (res.data.status == 200) {
+            console.log("customer" + res.data.data.customerId)
 						wx.setStorageSync(user.CustomerID, res.data.data.customerId);
 
 						wx.setStorageSync(user.Description, res.data.data.description);
