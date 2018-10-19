@@ -1513,7 +1513,9 @@ Page({
           if (res.errMsg == 'scanCode:ok') {
           if (res.rawData == 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==') {
             that.setData({
-              selfReturn: false
+              selfReturn: false,
+              selfReturnDelaystep1: false,
+              selfReturnDelaystep2: false
             })
             var date = new Date();
             //确在用车
@@ -1950,6 +1952,8 @@ Page({
                 // wx.hideLoading();
                 that.setData({
                   selfReturn: false,
+                  selfReturnDelaystep1: false,
+                  selfReturnDelaystep2: false
                 });
                 if (res.data.status == 200) {
                   that.setData({

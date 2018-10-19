@@ -951,6 +951,8 @@ Page({
           clearTimeout(gstimRange);
           that.setData({
             selfReturn: true,
+            selfReturnDelaystep1: false,
+            selfReturnDelaystep2: false
           });
 
         } else {
@@ -1535,7 +1537,9 @@ Page({
 
       // if (qrId == 'aHR0cDovL3dlaXhpbi5xcS5jb20vci9waWpkeGRQRU40NUlyWmVtOTMyMA==') {
         that.setData({
-          selfReturn: false
+          selfReturn: false,
+          selfReturnDelaystep1: false,
+          selfReturnDelaystep2: false
         })
         var date = new Date();
         //确在用车
@@ -1866,6 +1870,8 @@ Page({
           clearTimeout(gstimRange);
           that.setData({
             selfReturn: true,
+            selfReturnDelaystep1: false,
+            selfReturnDelaystep2: false
           });
 
         } else {
