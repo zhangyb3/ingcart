@@ -64,6 +64,8 @@ Page({
 		selfReturn: false,
     selfReturnDelay: false,
     selfReturnDelay2: false,
+    selfReturnDelaystep1: false,
+    selfReturnDelaystep2: false,
 		selfReturnSuccess: false,
 		selfReturnFail: false,
     selfReturn4:false,
@@ -1849,6 +1851,52 @@ Page({
     }
 
   },
+  selfReturnToRefundDelaystep1: function () {
+    var that = this;
+    that.setData({
+      selfReturnDelaystep1: false
+    })
+    if (that.data.pStatus == 5) {
+      var lockchecktime = 15;
+      var gstim = setInterval(function () {
+        lockchecktime = lockchecktime - 1;
+        if (wx.getStorageSync(user.Hotspot) == 2 || wx.getStorageSync(user.Hotspot) == 3) {
+          clearInterval(gstim);
+          wx.hideLoading();
+          clearTimeout(gstimRange);
+          that.setData({
+            selfReturn: true,
+          });
+
+        } else {
+          wx.showLoading({
+            title: '车锁检测(' + lockchecktime+'秒)',
+            mask: true,
+            success: function (res) { },
+            fail: function (res) { },
+            complete: function (res) { },
+          })
+          console.log("fail to unlock!!!!")
+        }
+      }, 1000);
+      var gstimRange = setTimeout(function () {
+        clearInterval(gstim);
+        wx.hideLoading();
+        that.setData({
+          selfReturnDelaystep2: true
+        })
+      }, 15000);
+
+    }
+
+  },
+  selfReturnToRefundDelaystep2: function () {
+    var that = this;
+    that.setData({
+      selfReturnDelaystep2: false
+    })
+
+  },
 	// 去我的页面
 	toMy: function () {
 		
@@ -2300,9 +2348,10 @@ function checkUsingCarStatus(the, success, fail)
                     selfReturn: true,
                   });
             }
-
+            var lockchecktime = 15;
             if (result.data.p_status == 5) {
               var gstim = setInterval(function () {
+                lockchecktime = lockchecktime -1;
                 if (result.data.hotspot == 2 || result.data.hotspot == 3) {
                   clearInterval(gstim);
                   wx.hideLoading();
@@ -2313,7 +2362,7 @@ function checkUsingCarStatus(the, success, fail)
 
                 } else {
                   wx.showLoading({
-                    title: '车锁检测(15秒)',
+                    title: '车锁检测(' + lockchecktime+'秒)',
                     mask: true,
                     success: function (res) { },
                     fail: function (res) { },
@@ -2325,9 +2374,26 @@ function checkUsingCarStatus(the, success, fail)
               var gstimRange = setTimeout(function () {
                 clearInterval(gstim);
                 wx.hideLoading();
-                  that.setData({
-                    selfReturnDelay2: true
+                lockchecktime = 30
+                var checktime = setInterval(function(){
+                  lockchecktime = lockchecktime - 1;
+                  wx.showLoading({
+                    title: '后台检测(' + lockchecktime + '秒)',
+                    mask: true,
+                    success: function (res) { },
+                    fail: function (res) { },
+                    complete: function (res) { },
                   })
+                },1000);
+                setTimeout(function () {
+                  that.setData({
+                    selfReturnDelaystep1: true
+                  })
+                },1000)
+                setTimeout(function(){
+                    clearInterval(checktime);
+                    wx.hideLoading()
+                  },30000)
               }, 15000);
 
             }

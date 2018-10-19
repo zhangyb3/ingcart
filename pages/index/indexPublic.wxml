@@ -280,9 +280,23 @@
       </cover-view>
     </cover-view> 
 
-         <cover-view class='layer-map' style="" wx:if='{{selfReturnDelay2 == true}}'>
+    <cover-view class='layer-map' style="" wx:if='{{selfReturnDelay2 == true}}'>
       <cover-view class='layer-img-background'>
         <cover-image src="../../images/fail_to_refund.png" style='width:600rpx;height:700rpx;' bindtap='selfReturnToRefundDelay2'>
+        </cover-image>
+      </cover-view>
+    </cover-view> 
+
+        <cover-view class='layer-map' style="" wx:if='{{selfReturnDelaystep1 == true}}'>
+      <cover-view class='layer-img-background'>
+        <cover-image src="../../images/fail_to_refund_step1.png" style='width:600rpx;height:580rpx;' bindtap='selfReturnToRefundDelaystep1'>
+        </cover-image>
+      </cover-view>
+    </cover-view> 
+
+            <cover-view class='layer-map' style="" wx:if='{{selfReturnDelaystep2 == true}}'>
+      <cover-view class='layer-img-background'>
+        <cover-image src="../../images/fail_to_refund_step2.png" style='width:600rpx;height:580rpx;' bindtap='selfReturnToRefundDelaystep2'>
         </cover-image>
       </cover-view>
     </cover-view> 
