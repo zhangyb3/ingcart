@@ -2749,55 +2749,55 @@ function gotoUnlock(the, qrId, success, fail)
 
 function getUserLocation(the) {
 	console.log('location !!!!!!!!!!!!!!!');
-	var that = the;
-	wx.getLocation({
-		type: "wgs84",
-		success: (res) => {
-			wx.setStorageSync(user.Latitude, res.latitude);
-			wx.setStorageSync(user.Longitude, res.longitude);
-		},
-		fail: (res) => {
-			wx.showModal({
-				title: '提示',
-				content: '如果不能提供位置，将无法使用很多功能',
-				showCancel: true,
-				cancelText: '拒绝',
-				confirmText: '接受',
-				success: function (res) {
-					if (res.cancel) {
-						wx.setStorageSync(user.Latitude, 22.60204);
-						wx.setStorageSync(user.Longitude, 113.978616);
-					}
-					else
-					{
-						console.log('!!!!!!!!!!!!!!! unload !!!!!!!!!!!!!!!!');
-            wx.showModal({
-              title: '位置授权',
-              content: '我们需要获取您的地理位置',
-              success(res) {
-                if (res.confirm) {
-                  wx.openSetting({
-                    success: function (res) {
-                      //if(data.authSetting["scope.userLocation"] == true)
-                      {
-                        getUserLocation(that);
-                        that.onShow();
-                      }
-                    },
-                    fail: function (res) { },
-                    complete: function (res) { },
-                  })
-                }
-              }
-            })
+	// var that = the;
+	// wx.getLocation({
+	// 	type: "wgs84",
+	// 	success: (res) => {
+	// 		wx.setStorageSync(user.Latitude, res.latitude);
+	// 		wx.setStorageSync(user.Longitude, res.longitude);
+	// 	},
+	// 	fail: (res) => {
+	// 		wx.showModal({
+	// 			title: '提示',
+	// 			content: '如果不能提供位置，将无法使用很多功能',
+	// 			showCancel: true,
+	// 			cancelText: '拒绝',
+	// 			confirmText: '接受',
+	// 			success: function (res) {
+	// 				if (res.cancel) {
+	// 					wx.setStorageSync(user.Latitude, 22.60204);
+	// 					wx.setStorageSync(user.Longitude, 113.978616);
+	// 				}
+	// 				else
+	// 				{
+	// 					console.log('!!!!!!!!!!!!!!! unload !!!!!!!!!!!!!!!!');
+  //           wx.showModal({
+  //             title: '位置授权',
+  //             content: '我们需要获取您的地理位置',
+  //             success(res) {
+  //               if (res.confirm) {
+  //                 wx.openSetting({
+  //                   success: function (res) {
+  //                     //if(data.authSetting["scope.userLocation"] == true)
+  //                     {
+  //                       getUserLocation(that);
+  //                       that.onShow();
+  //                     }
+  //                   },
+  //                   fail: function (res) { },
+  //                   complete: function (res) { },
+  //                 })
+  //               }
+  //             }
+  //           })
 
-					}
-				},
-				fail: function (res) { },
-				complete: function (res) { },
-			})
-		}
-	});
+	// 				}
+	// 			},
+	// 			fail: function (res) { },
+	// 			complete: function (res) { },
+	// 		})
+	// 	}
+	// });
 }
 
 function scanToUnlock(the){

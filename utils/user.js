@@ -32,4 +32,5 @@ module.exports = {
 		Token: "Token",
 		Hotspot:"Hotspot",
 		LockLevel: "LockLevel",
+    CARID:"CARID"
 }

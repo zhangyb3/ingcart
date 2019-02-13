@@ -39,7 +39,7 @@ App({
     wx.setStorageSync('alreadyRegister', 'no');
     // wx.setStorageSync('logoutSystem', 'yes');
 
-		
+
 		
 		
 		// this.ingcartLockManager = new IngcartSdk.IngcartLockManager(options);
@@ -53,9 +53,9 @@ App({
       //调用登录接口
       wx.login({
         success: function () {
-          wx.getSetting({
-            success(res) {
-              if (res.authSetting['scope.userInfo']) {
+          // wx.getSetting({
+          //   success(res) {
+          //     if (res.authSetting['scope.userInfo']) {
                 // 已经授权，可以直接调用 getUserInfo 获取头像昵称
                 wx.getUserInfo({
                   success: function (res) {
@@ -69,17 +69,18 @@ App({
 
                   }
                 })
-              } else {
-                wx.navigateTo({
-                  url: '/pages/register/autho',
-                })
-              }
-            }, fail(res) {
-              wx.navigateTo({
-                url: '/pages/register/autho',
-              })
-            }
-          })
+              // }
+              //  else {
+              //   wx.navigateTo({
+              //     url: '/pages/register/autho',
+              //   })
+              // }
+            // }, fail(res) {
+            //   wx.navigateTo({
+            //     url: '/pages/register/autho',
+            //   })
+          //   }
+          // })
         }
       })
     }

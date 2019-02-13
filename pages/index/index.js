@@ -82,6 +82,7 @@ Page({
     zoo:false,
     wxts:false,
     wxts2:false,
+    faultScanFlag:false,
     carId:'',
   },
 
@@ -120,10 +121,17 @@ Page({
 			wx.setStorageSync('reload', 'yes');
 		}
 
-		this.data.qrIdFromWX = operation.urlProcess(decodeURIComponent(parameters.q)).id ;
-		console.log("qrIdFromWX!!!!!!!!!!!!!!!!!!!!!!!!!", this.data.qrIdFromWX);
+		//this.data.qrIdFromWX = operation.urlProcess(decodeURIComponent(parameters.q)).id ;
+    this.data.qrIdFromWX = wx.getStorageSync(user.CARID)
+    console.log("=============----------->" + this.data.qrIdFromWX)
+    if (this.data.qrIdFromWX==""){
+      this.data.qrIdFromWX = null
+    }
+
+
+
 		that.data.from = parameters.from;
-		
+
     wx.showShareMenu({
       withShareTicket: true
     });
@@ -358,10 +366,12 @@ Page({
 
 								var qrId = that.data.qrIdFromWX;
 								console.log("!!!!!!!!!!!!qrIdFromWX!!!!!!!!", this.data.qrIdFromWX);
-                that.setData({
-                  lyqrId: this.data.qrIdFromWX,
-                  showT2:true
-                })
+                  that.setData({
+                    lyqrId: this.data.qrIdFromWX,
+                    showT2: true
+                  })
+                
+
                
                 // wx.showModal({
                 //   title: '提示',
@@ -1479,6 +1489,14 @@ Page({
     }
 	},
 
+  //扫错码
+  faultScan: function (e) {
+    var that = this;
+    that.setData({
+        faultScanFlag: false,
+    });
+  },
+
 	//取消锁车提示
 	disappearLockNotice: function (e) {
 		var that = this;
@@ -1590,6 +1608,12 @@ Page({
                 complete: function (res) { },
               })
             }
+          }else{
+            console.log("扫错码了！！！")
+            that.setData({
+              selfReturn: false,
+              faultScanFlag: true,
+            });
           }
 
 
@@ -1654,6 +1678,12 @@ Page({
                 complete: function (res) { },
               })
             }
+          }else{
+            console.log("扫错码了！！！")
+            that.setData({
+              selfReturn: false,
+              faultScanFlag: true,
+            });
           }
         }
       });
@@ -1753,6 +1783,12 @@ Page({
                   complete: function (res) { },
                 })
               }
+            }else{
+              console.log("扫错码了！！！")
+              that.setData({
+                selfReturn: false,
+                faultScanFlag:true,
+              });
             }
 
 
@@ -3290,56 +3326,57 @@ function gotoUnlock(the, qrId, success, fail)
 
 function getUserLocation(the) {
 	console.log('location !!!!!!!!!!!!!!!');
-	var that = the;
-	wx.getLocation({
-		type: "wgs84",
-		success: (res) => {
-			wx.setStorageSync(user.Latitude, res.latitude);
-			wx.setStorageSync(user.Longitude, res.longitude);
-		},
-		fail: (res) => {
-			wx.showModal({
-				title: '提示',
-				content: '如果不能提供位置，将无法使用很多功能',
-				showCancel: true,
-				cancelText: '拒绝',
-				confirmText: '接受',
-				success: function (res) {
-					if (res.cancel) {
-						wx.setStorageSync(user.Latitude, 22.60204);
-						wx.setStorageSync(user.Longitude, 113.978616);
-					}
-					else
-					{
-						console.log('!!!!!!!!!!!!!!! unload !!!!!!!!!!!!!!!!');
+	// var that = the;
+	// wx.getLocation({
+	// 	type: "wgs84",
+	// 	success: (res) => {
+	// 		wx.setStorageSync(user.Latitude, res.latitude);
+	// 		wx.setStorageSync(user.Longitude, res.longitude);
+	// 	},
+	// 	fail: (res) => {
+	// 		wx.showModal({
+	// 			title: '提示',
+	// 			content: '如果不能提供位置，将无法使用很多功能',
+	// 			showCancel: true,
+	// 			cancelText: '拒绝',
+	// 			confirmText: '接受',
+	// 			success: function (res) {
+	// 				if (res.cancel) {
+	// 					wx.setStorageSync(user.Latitude, 22.60204);
+	// 					wx.setStorageSync(user.Longitude, 113.978616);
+	// 				}
+	// 				else
+	// 				{
+	// 					console.log('!!!!!!!!!!!!!!! unload !!!!!!!!!!!!!!!!');
 
-            wx.showModal({
-              title: '位置授权',
-              content: '我们需要获取您的地理位置',
-              success(res) {
-                if (res.confirm) {
-                  wx.openSetting({
-                    success: function (res) {
-                      //if(data.authSetting["scope.userLocation"] == true)
-                      {
-                        getUserLocation(that);
-                        that.onShow();
-                      }
-                    },
-                    fail: function (res) { },
-                    complete: function (res) { },
-                  })
-                }
-              }
-            })
-					}
-				},
-				fail: function (res) { },
-				complete: function (res) { },
-			})
-		}
-	});
+  //           wx.showModal({
+  //             title: '位置授权',
+  //             content: '我们需要获取您的地理位置',
+  //             success(res) {
+  //               if (res.confirm) {
+  //                 wx.openSetting({
+  //                   success: function (res) {
+  //                     //if(data.authSetting["scope.userLocation"] == true)
+  //                     {
+  //                       getUserLocation(that);
+  //                       that.onShow();
+  //                     }
+  //                   },
+  //                   fail: function (res) { },
+  //                   complete: function (res) { },
+  //                 })
+  //               }
+  //             }
+  //           })
+	// 				}
+	// 			},
+	// 			fail: function (res) { },
+	// 			complete: function (res) { },
+	// 		})
+	// 	}
+	// });
 }
+
 
 function scanToUnlock(the){
 

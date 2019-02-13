@@ -96,9 +96,9 @@ Page({
 					that,
 					() => {
 						wx.hideLoading();
-						wx.navigateBack({
-							delta: 5,
-						})
+            wx.navigateTo({
+              url: '/pages/index/index',
+            })
 
 					}
 				);
@@ -265,9 +265,9 @@ Page({
 							console.log('session key : ' + wx.getStorageSync('SessionKey'));
 							console.log('openid : ' + wx.getStorageSync('OpenID'));
 
-              wx.getSetting({
-                success(res) {
-                  if (res.authSetting['scope.userInfo']) {
+              // wx.getSetting({
+              //   success(res) {
+              //     if (res.authSetting['scope.userInfo']) {
                     // 已经授权，可以直接调用 getUserInfo 获取头像昵称
                     wx.getUserInfo({
                       withCredentials: true,
@@ -288,17 +288,17 @@ Page({
 
                       },
                     })
-                  } else {
-                    wx.navigateTo({
-                      url: '/pages/register/autho',
-                    })
-                  }
-                }, fail(res) {
-                  wx.navigateTo({
-                    url: '/pages/register/autho',
-                  })
-                }
-              })
+              //     } else {
+              //       wx.navigateTo({
+              //         url: '/pages/register/autho',
+              //       })
+              //     }
+              //   }, fail(res) {
+              //     wx.navigateTo({
+              //       url: '/pages/register/autho',
+              //     })
+              //   }
+              // })
 
 
 

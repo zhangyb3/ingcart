@@ -163,9 +163,9 @@ var remoteLogin = (success, fail) => {
                         console.log('openid : ' + wx.getStorageSync('OpenID'));
 
 
-                      wx.getSetting({
-                        success(res) {
-                          if (res.authSetting['scope.userInfo']) {
+                      // wx.getSetting({
+                      //   success(res) {
+                      //     if (res.authSetting['scope.userInfo']) {
                             // 已经授权，可以直接调用 getUserInfo 获取头像昵称
                             wx.getUserInfo({
                               withCredentials: true,
@@ -185,17 +185,17 @@ var remoteLogin = (success, fail) => {
                                 typeof success == "function" && success();
                               },
                             })
-                          } else {
-                            wx.navigateTo({
-                              url: '/pages/register/autho',
-                            })
-                          }
-                        }, fail(res) {
-                          wx.navigateTo({
-                            url: '/pages/register/autho',
-                          })
-                        }
-                      })
+                      //     } else {
+                      //       wx.navigateTo({
+                      //         url: '/pages/register/autho',
+                      //       })
+                      //     }
+                      //   }, fail(res) {
+                      //     wx.navigateTo({
+                      //       url: '/pages/register/autho',
+                      //     })
+                      //   }
+                      // })
                                        
                           
                     }
@@ -206,9 +206,9 @@ var remoteLogin = (success, fail) => {
 }
 
 var getUserInfo = (success, fail) => {
-  wx.getSetting({
-    success(res) {
-      if (res.authSetting['scope.userInfo']) {
+  // wx.getSetting({
+  //   success(res) {
+  //     if (res.authSetting['scope.userInfo']) {
         // 已经授权，可以直接调用 getUserInfo 获取头像昵称
         wx.getUserInfo({
           success: function (res) {
@@ -233,17 +233,17 @@ var getUserInfo = (success, fail) => {
             typeof fail == "function" && fail(res);
           }
         });
-      } else {
-        wx.navigateTo({
-          url: '/pages/register/autho',
-        })
-      }
-    }, fail(res) {
-      wx.navigateTo({
-        url: '/pages/register/autho',
-      })
-    }
-  })
+  //     } else {
+  //       wx.navigateTo({
+  //         url: '/pages/register/autho',
+  //       })
+  //     }
+  //   }, fail(res) {
+  //     wx.navigateTo({
+  //       url: '/pages/register/autho',
+  //     })
+  //   }
+  // })
 
     
 
@@ -261,9 +261,9 @@ var getUserAllData = (success, fail) => {
         // console.log(res.code);
         var login_code = res.code;
 
-        wx.getSetting({
-          success(res) {
-            if (res.authSetting['scope.userInfo']) {
+        // wx.getSetting({
+        //   success(res) {
+        //     if (res.authSetting['scope.userInfo']) {
               // 已经授权，可以直接调用 getUserInfo 获取头像昵称
               wx.getUserInfo({
                 success: function (res) {
@@ -277,17 +277,17 @@ var getUserAllData = (success, fail) => {
                   typeof success == "function" && success(userData);
                 }
               })
-            } else {
-              wx.navigateTo({
-                url: '/pages/register/autho',
-              })
-            }
-          }, fail(res) {
-            wx.navigateTo({
-              url: '/pages/register/autho',
-            })
-          }
-        })
+        //     } else {
+        //       wx.navigateTo({
+        //         url: '/pages/register/autho',
+        //       })
+        //     }
+        //   }, fail(res) {
+        //     wx.navigateTo({
+        //       url: '/pages/register/autho',
+        //     })
+        //   }
+        // })
 
 
 

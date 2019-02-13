@@ -244,6 +244,15 @@
       </cover-view>
     </cover-view>
 
+    <cover-view class='layer-map' wx:if='{{faultScanFlag==true }}' bindtap='faultScan'>
+      <cover-view class='layer-img-background'>
+       <cover-image src="../../images/fault_scan.png" >
+        </cover-image>
+      </cover-view>
+    </cover-view>
+
+
+
     <cover-view class='layer-map' style="" wx:if='{{hotspotOn == true && showHotspotNotice == true}}'>
       <cover-view class='layer-img-background'>
         <cover-image src="../../images/hotspot_refund.png" >
